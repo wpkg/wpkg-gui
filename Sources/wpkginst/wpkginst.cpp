@@ -8,6 +8,8 @@
 #include "..\components\security.h"
 #include "..\components\securefile.h"
 #include "..\components\parameters.h"
+#include "XmlSettings.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,7 +43,12 @@ CWpkgInstApp theApp;
 BOOL CWpkgInstApp::InitInstance()
 {
 	CWinApp::InitInstance();
+	
+	CParameters param;
 	CSecret s;
+	s.m_strScriptFile = "wpkg.js";
+	s.m_strScriptParameters = " /synchronize /nonotify /quiet";
+	s.m_strScriptExecUser = "SYSTEM";
 
 	// remove secret data and return imediatelly
 	if(CString("/remove").CompareNoCase(m_lpCmdLine)==0)
@@ -49,8 +56,6 @@ BOOL CWpkgInstApp::InitInstance()
 		s.DeleteSecret();
 		return TRUE;
 	}
-
-	CParameters param;
 
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size
@@ -61,21 +66,88 @@ BOOL CWpkgInstApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("WPKG Installer"));
 
-	param.SetCommandLine(m_lpCmdLine);
-	param.Compute();
-
-
-	//TODO: kasowanie = usuñ
-	//s.DeleteSecret();
-	//AfxMessageBox(m_lpCmdLine);
-	/////////////////////////
+	
+	///////////////////////////////////////////////////////////
+	//
+	// TODO: comment 2 lines below (used for test/debug only)
+	// s.DeleteSecret();			// to delete secret box
+	// AfxMessageBox(m_lpCmdLine);	// to show command line
+	//
+	// program optional command line (used for test/debug only):
+	// --settingsfile=settings.xml
+	//
+	///////////////////////////////////////////////////////////
 	
 	BOOL bSilent = FALSE;
-	CString str = param.GetParameter("silent");
-	if(str.CompareNoCase("YES")==0)
+
+	if(CString("").CompareNoCase(m_lpCmdLine)!=0)
 	{
-		bSilent = TRUE;
+		param.SetCommandLine(m_lpCmdLine);
+		param.Compute();
+		CString strFile = param.GetParameter("settingsfile");
+		if(!strFile.IsEmpty())
+		{
+
+			CXmlSettings st;
+			CString str;
+
+			try
+			{
+				// note:
+				// the XML parameters are case sensitive
+				CString name,value;
+				int count;
+
+				::CoInitialize(NULL);
+
+				st.CreateInstance();
+				st.Load(strFile);
+				
+				st.GetParameter("/configuration/file",value);
+				s.m_strScriptFile = value;
+								
+				st.GetParameterList("/configuration/script-variable",count);
+				for(int i=0; i<count;i++)
+				{
+					st.GetParameter(i,name,value);
+					s.m_strVarArray.Add(name);
+					s.m_strVarArray.Add(value);
+				}
+		
+				st.GetParameter("/configuration/silent",value);
+				if(value.CompareNoCase("YES")==0)
+				{
+					bSilent = TRUE;
+				}
+			
+				st.GetParameter("/configuration/parameters",value);
+				s.m_strScriptParameters = value;
+				
+				st.GetParameter("/configuration/path-user",value);
+				s.m_strScriptConnUser = value;
+				st.GetParameter("/configuration/path-pasword",value);
+				s.m_strScriptConnPassword = value;
+				st.GetParameter("/configuration/exec-user",value);
+				s.m_strScriptExecUser = value;
+
+				st.GetParameter("/configuration/exec-password",value);
+				s.m_strScriptExecPassword = value;
+				st.GetParameter("/configuration/pre-action",value);
+				s.m_strPreAction = value;
+				st.GetParameter("/configuration/post-action",value);
+				s.m_strPostAction = value;
+			
+			}
+			catch(_com_error e)
+			{
+				CString str;
+				str.Format("Error occured while reading parameter from settings file:\n%s",e.ErrorMessage());
+				AfxMessageBox(str);
+			}
+		}
 	}
+	else
+		s.LoadSecret();
 
 	if(!CSecurity::IsAdmin())
 	{
@@ -85,41 +157,20 @@ BOOL CWpkgInstApp::InitInstance()
 	}
 
 
-	if(CString("").CompareNoCase(m_lpCmdLine)!=0)
-	{
-		s.m_strScriptPath = param.GetParameter("path");
-		s.m_strScriptFile = param.GetParameter("file");
-		if(s.m_strScriptFile.IsEmpty())
-			s.m_strScriptFile = "wpkg.js";
-		s.m_strScriptParameters = param.GetParameter("parameters");
-		if(s.m_strScriptParameters.IsEmpty())
-			s.m_strScriptParameters = " /synchronize /nonotify /quiet";
-		s.m_strScriptConnUser = param.GetParameter("PathUser");
-		s.m_strScriptConnPassword = param.GetParameter("PathPassword");
-		s.m_strScriptExecUser = param.GetParameter("ExecUser");
-		if(s.m_strScriptExecUser.IsEmpty())
-			s.m_strScriptExecUser = "SYSTEM";
-		s.m_strScriptExecPassword = param.GetParameter("execpassword");
-		s.m_strScriptVarName1 = param.GetParameter("ScriptVarName1");
-		s.m_strScriptVarValue1 = param.GetParameter("ScriptVarValue1");
-
-	}
-	else
-		s.LoadSecret();
-
-
 	CWpkgInstDlg dlg;
-	dlg.m_strScriptPath = s.m_strScriptPath;
 	dlg.m_strScriptFile = s.m_strScriptFile;
 	dlg.m_strScriptParameters = s.m_strScriptParameters;
 	dlg.m_strScriptConnUser = s.m_strScriptConnUser;
 	dlg.m_strScriptConnPassword = s.m_strScriptConnPassword;
 	dlg.m_strScriptExecUser = s.m_strScriptExecUser;
 	dlg.m_strScriptExecPassword = s.m_strScriptExecPassword;
-	dlg.m_strScriptVarName1 = s.m_strScriptVarName1;
-	dlg.m_strScriptVarValue1 = s.m_strScriptVarValue1;
+	dlg.AddScriptVarData(s.m_strVarArray);
+	dlg.m_strPreAction = s.m_strPreAction;
+	dlg.m_strPostAction = s.m_strPostAction;
+	dlg.m_bPreAction = !dlg.m_strPreAction.IsEmpty();
+	dlg.m_bPostAction = !dlg.m_strPostAction.IsEmpty();
 
-	
+		
 	INT_PTR nResponse = IDCANCEL;
 
 	if(!bSilent)
@@ -127,16 +178,16 @@ BOOL CWpkgInstApp::InitInstance()
 		m_pMainWnd = &dlg;
 		nResponse = dlg.DoModal();
 
-		s.m_strScriptPath = dlg.m_strScriptPath;
 		s.m_strScriptFile = dlg.m_strScriptFile;
 		s.m_strScriptParameters = dlg.m_strScriptParameters;
 		s.m_strScriptConnUser = dlg.m_strScriptConnUser;
 		s.m_strScriptConnPassword = dlg.m_strScriptConnPassword;
 		s.m_strScriptExecUser = dlg.m_strScriptExecUser;
 		s.m_strScriptExecPassword = dlg.m_strScriptExecPassword;
-		s.m_strScriptVarName1 = dlg.m_strScriptVarName1;
-		s.m_strScriptVarValue1 = dlg.m_strScriptVarValue1;
-
+		s.m_strVarArray.RemoveAll();
+		dlg.GetScriptVarData(s.m_strVarArray);
+		s.m_strPreAction = dlg.m_strPreAction;
+		s.m_strPostAction = dlg.m_strPostAction;
 
 	}
 	else

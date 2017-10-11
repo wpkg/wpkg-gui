@@ -166,21 +166,30 @@ NTSTATUS CSecret::OpenPolicy(
 void CSecret::Load(void)
 {
 	CMemFile mf;
+	int varCount;
 	mf.Attach((BYTE*)m_pSecretBuffer,m_dwSecretSize);
 
 	CArchive ar(&mf,CArchive::load);
-
-	ar>>m_strScriptPath;
+	
 	ar>>m_strScriptFile;
 	ar>>m_strScriptParameters;
 	ar>>m_strScriptConnUser;
 	ar>>m_strScriptConnPassword;
 	ar>>m_strScriptExecUser;
 	ar>>m_strScriptExecPassword;
-	ar>>m_strScriptVarName1;
-	ar>>m_strScriptVarValue1;
 
+	ar>>varCount;
+	for(int i=0; i<varCount;i+=2)
+	{
+		CString str;
+		ar>>str;
+		m_strVarArray.Add(str);
+		ar>>str;
+		m_strVarArray.Add(str);
+	}
 
+	ar>>m_strPreAction;
+	ar>>m_strPostAction;
 
 	ar.Close();
 	mf.Close();
@@ -192,15 +201,22 @@ void CSecret::Store(void)
 	
 	CArchive ar(&mf,CArchive::store);
 
-	ar<<m_strScriptPath;
 	ar<<m_strScriptFile;
 	ar<<m_strScriptParameters;
 	ar<<m_strScriptConnUser;
 	ar<<m_strScriptConnPassword;
 	ar<<m_strScriptExecUser;
 	ar<<m_strScriptExecPassword;
-	ar<<m_strScriptVarName1;
-	ar<<m_strScriptVarValue1;
+
+	ar<<(int)m_strVarArray.GetCount();
+	for(int i=0; i<m_strVarArray.GetCount();i+=2)
+	{
+		ar<<m_strVarArray.GetAt(i);
+		ar<<m_strVarArray.GetAt(i+1);
+	}
+
+	ar<<m_strPreAction;
+	ar<<m_strPostAction;
 	
 	ar.Close();
 	m_dwSecretSize = (DWORD)mf.GetLength();

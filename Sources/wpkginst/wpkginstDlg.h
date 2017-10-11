@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "listctrlEx.h"
+
 
 // CWpkgInstDlg dialog
 class CWpkgInstDlg : public CDialog
@@ -20,6 +22,10 @@ public:
 
 // Implementation
 protected:
+	void ShowAdvanced();
+	CStringArray m_strVarArray;
+	CListCtrlEx m_PathVariables;
+
 	HICON m_hIcon;
 
 	// Generated message map functions
@@ -28,8 +34,8 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-
-	CString m_strScriptPath;
+	
+	
 	CString m_strScriptFile;
 	CString m_strScriptParameters;
 	CString m_strScriptConnUser;
@@ -38,8 +44,20 @@ public:
 	CString m_strScriptExecPassword;
 
 	afx_msg void OnBnClickedButtonHelp();
-	CString m_strScriptVarValue1;
-	CString m_strScriptVarName1;
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedButtonSelectFile();
+	afx_msg void OnBnClickedButtonPathvariableNew();
+	afx_msg void OnBnClickedButtonPathvariableDelete();
+
+
+	void AddScriptVarData(CStringArray& data);
+	void GetScriptVarData(CStringArray& data);
+	CString m_strPreAction;
+	CString m_strPostAction;
+	BOOL m_bPreAction;
+	BOOL m_bPostAction;
+	afx_msg void OnBnClickedCheck();
+	afx_msg void OnBnClickedButtonAdvanced();
+	afx_msg void OnBnClickedButtonSelectPrefile();
+	afx_msg void OnBnClickedButtonSelectPostfile();
 };

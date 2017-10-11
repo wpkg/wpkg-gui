@@ -105,14 +105,27 @@ void CNetConnection::NetErrorHandler( DWORD dwErrorCode )
 void CNetConnection::AddConnection(CString RemotePath, CString user,
 	CString password)
 {
+	CString strRemotePath = RemotePath;
+
+	int pos = RemotePath.Find("\\",2);
+	if(pos!=-1)
+	{
+		pos = RemotePath.Find("\\",pos+1);
+		if(pos!=-1)
+			strRemotePath = RemotePath.Left(pos);
+	}
+	
+	
+		
+
 	
 	// disconnect - closing files
-	DWORD Error = DisconnectFromServer(RemotePath);
+	DWORD Error = DisconnectFromServer(strRemotePath);
 		
 	NETRESOURCE nr;
 	nr.dwType = RESOURCETYPE_ANY;
 	nr.lpLocalName = NULL ;
-	nr.lpRemoteName = RemotePath.GetBuffer();
+	nr.lpRemoteName = strRemotePath.GetBuffer();
 	nr.lpProvider = NULL;
 
 	

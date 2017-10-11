@@ -7,6 +7,7 @@
 #include ".\wpkginstdlg.h"
 
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -19,15 +20,14 @@
 
 CWpkgInstDlg::CWpkgInstDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CWpkgInstDlg::IDD, pParent)
-	,m_strScriptPath(_T(""))
 	,m_strScriptFile(_T("wpkg.js"))
 	,m_strScriptParameters(_T(""))
 	,m_strScriptConnUser(_T(""))
 	,m_strScriptConnPassword(_T(""))
 	,m_strScriptExecUser(_T(""))
 	,m_strScriptExecPassword(_T(""))
-	,m_strScriptVarValue1(_T(""))
-	,m_strScriptVarName1(_T(""))
+	,m_strPreAction(_T(""))
+	,m_strPostAction(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -35,15 +35,17 @@ CWpkgInstDlg::CWpkgInstDlg(CWnd* pParent /*=NULL*/)
 void CWpkgInstDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT_PATH, m_strScriptPath);
 	DDX_Text(pDX, IDC_EDIT_SCRIPT_FILE, m_strScriptFile);
 	DDX_Text(pDX, IDC_EDIT_SCRIPT_PARAMATERS, m_strScriptParameters);
 	DDX_Text(pDX, IDC_EDIT_SCRIPT_PATH_USER, m_strScriptConnUser);
 	DDX_Text(pDX, IDC_EDIT_SCRIPT_PATH_PASSWORD, m_strScriptConnPassword);
 	DDX_Text(pDX, IDC_EDIT_SCRIPT_EXEC_USER, m_strScriptExecUser);
 	DDX_Text(pDX, IDC_EDIT_SCRIPT_EXEC_PASSWORD, m_strScriptExecPassword);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT_VAR_VALUE1, m_strScriptVarValue1);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT_VAR_NAME1, m_strScriptVarName1);
+	DDX_Control(pDX, IDC_LIST_SCRIPT_VARIABLES, m_PathVariables);
+	DDX_Text(pDX, IDC_EDIT_SCRIPT_PREACTION, m_strPreAction);
+	DDX_Text(pDX, IDC_EDIT_SCRIPT_POSTACTION, m_strPostAction);
+	DDX_Check(pDX, IDC_CHECK_PRE, m_bPreAction);
+	DDX_Check(pDX, IDC_CHECK_POST, m_bPostAction);
 }
 
 BEGIN_MESSAGE_MAP(CWpkgInstDlg, CDialog)
@@ -53,6 +55,13 @@ BEGIN_MESSAGE_MAP(CWpkgInstDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_HELP, OnBnClickedButtonHelp)
 	ON_BN_CLICKED(IDOK, OnBnClickedOk)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_FILE, OnBnClickedButtonSelectFile)
+	ON_BN_CLICKED(IDC_BUTTON_SCRIPTVARIABLE_NEW, OnBnClickedButtonPathvariableNew)
+	ON_BN_CLICKED(IDC_BUTTON_SCRIPTVARIABLE_DELETE, OnBnClickedButtonPathvariableDelete)
+	ON_BN_CLICKED(IDC_CHECK_PRE, OnBnClickedCheck)
+	ON_BN_CLICKED(IDC_CHECK_POST, OnBnClickedCheck)
+	ON_BN_CLICKED(IDC_BUTTON_ADVANCED, OnBnClickedButtonAdvanced)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_PREFILE, OnBnClickedButtonSelectPrefile)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_POSTFILE, OnBnClickedButtonSelectPostfile)
 END_MESSAGE_MAP()
 
 
@@ -68,6 +77,22 @@ BOOL CWpkgInstDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
+	m_PathVariables.SetExtendedStyle(LVS_EX_FLATSB|LVS_EX_INFOTIP|
+		LVS_EX_GRIDLINES);
+	m_PathVariables.InsertColumn(0,"Name",LVCFMT_LEFT,220);
+	m_PathVariables.InsertColumn(1,"Value",LVCFMT_LEFT,220);
+	
+	int pos = 0;
+	for(int i=0;i<m_strVarArray.GetCount();i+=2)
+	{
+		pos = m_PathVariables.InsertItem(pos,m_strVarArray.GetAt(i));
+		m_PathVariables.SetItemText(pos,1,m_strVarArray.GetAt(i+1));
+		pos++;
+	}
+
+	ShowAdvanced();
+
+	
 	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -129,31 +154,181 @@ void CWpkgInstDlg::OnBnClickedButtonHelp()
 
 void CWpkgInstDlg::OnBnClickedOk()
 {
-	// TODO: Add your control notification handler code here
 	UpdateData();
 
-	if(m_strScriptPath.IsEmpty() || m_strScriptFile.IsEmpty() )
+	if(m_strScriptFile.IsEmpty() )
 		AfxMessageBox(IDS_FIELD_REQUIRED);
 	else
+	{
+		m_strVarArray.RemoveAll();
+
+		for(int i=0;i<m_PathVariables.GetItemCount();i++)
+		{
+			m_strVarArray.Add(m_PathVariables.GetItemText(i,0));
+			m_strVarArray.Add(m_PathVariables.GetItemText(i,1));
+		}
 		OnOK();
+	}
 }
 
 void CWpkgInstDlg::OnBnClickedButtonSelectFile()
 {
-	try
+	UpdateData();
+
+	CFileDialog  fdlg( TRUE,NULL, NULL, 0, "Script files (*.js)|*.js||",  NULL );
+
+	if(fdlg.DoModal()==IDOK)
 	{
-		CFileDialog  fdlg( TRUE,NULL, NULL, 0, "Script files (*.js)|*.js||",  NULL );
-		if(fdlg.DoModal()==IDOK)
-		{
-			//m_strScriptFile = fdlg.GetPathName();
-			m_strScriptFile = fdlg.GetFileName();
-			UpdateData(FALSE);
-		}
-	}
-	catch(CException* e)
-	{
-		e->ReportError();
-		e->Delete();
+		m_strScriptFile = fdlg.GetPathName();
+		UpdateData(FALSE);
 	}
 
+}
+
+void CWpkgInstDlg::OnBnClickedButtonPathvariableNew()
+{
+	int count = m_PathVariables.GetItemCount();
+	count = m_PathVariables.InsertItem(count,"enter name...");
+	m_PathVariables.SetItemText(count,1,"enter value...");
+	m_PathVariables.EditSubLabel(count,0);
+}
+
+
+void CWpkgInstDlg::OnBnClickedButtonPathvariableDelete()
+{
+	int nItem = -1;
+	nItem = m_PathVariables.GetNextItem(nItem,LVNI_SELECTED);
+	if(nItem!=-1)
+		m_PathVariables.DeleteItem(nItem);
+}
+
+
+
+void CWpkgInstDlg::AddScriptVarData(CStringArray& data)
+{
+	m_strVarArray.Copy(data);
+	
+}
+
+void CWpkgInstDlg::GetScriptVarData(CStringArray& data)
+{
+	data.Copy(m_strVarArray);
+}
+
+void CWpkgInstDlg::ShowAdvanced()
+{
+	CRect rr;
+	static BOOL bAdvanced = FALSE;
+	int offset = bAdvanced ? 240 : -240;
+
+	GetDlgItem(IDC_LIST_SCRIPT_VARIABLES)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_LIST_SCRIPT_VARIABLES)->EnableWindow(bAdvanced);
+
+	GetDlgItem(IDC_STATIC_GROUP_SCRIPTVARIABLES)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_STATIC_GROUP_SCRIPTVARIABLES)->EnableWindow(bAdvanced);
+
+	GetDlgItem(IDC_STATIC_SCRIPTVARIABLES)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_STATIC_SCRIPTVARIABLES)->EnableWindow(bAdvanced);
+
+	GetDlgItem(IDC_BUTTON_SCRIPTVARIABLE_DELETE)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_BUTTON_SCRIPTVARIABLE_DELETE)->EnableWindow(bAdvanced);
+
+	GetDlgItem(IDC_BUTTON_SCRIPTVARIABLE_NEW)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_BUTTON_SCRIPTVARIABLE_NEW)->EnableWindow(bAdvanced);
+
+	GetDlgItem(IDC_CHECK_PRE)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_CHECK_PRE)->EnableWindow(bAdvanced);
+
+	GetDlgItem(IDC_CHECK_POST)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_CHECK_POST)->EnableWindow(bAdvanced);
+
+	GetDlgItem(IDC_EDIT_SCRIPT_PREACTION)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_EDIT_SCRIPT_PREACTION)->EnableWindow(bAdvanced & m_bPreAction);
+
+	GetDlgItem(IDC_EDIT_SCRIPT_POSTACTION)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_EDIT_SCRIPT_POSTACTION)->EnableWindow(bAdvanced & m_bPostAction);
+
+	GetDlgItem(IDC_STATIC_ACTIONS)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_STATIC_ACTIONS)->EnableWindow(bAdvanced);
+
+	GetDlgItem(IDC_BUTTON_SELECT_PREFILE)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_BUTTON_SELECT_PREFILE)->EnableWindow(bAdvanced & m_bPreAction);
+
+	GetDlgItem(IDC_BUTTON_SELECT_POSTFILE)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_BUTTON_SELECT_POSTFILE)->EnableWindow(bAdvanced & m_bPostAction);
+
+	if(bAdvanced)
+		GetDlgItem(IDC_BUTTON_ADVANCED)->SetWindowText("<< General");
+	else
+		GetDlgItem(IDC_BUTTON_ADVANCED)->SetWindowText("Advanced >>");
+
+	GetDlgItem(IDC_BUTTON_ADVANCED)->GetWindowRect(&rr);
+	ScreenToClient(&rr);
+	rr.OffsetRect(0,offset);
+	GetDlgItem(IDC_BUTTON_ADVANCED)->MoveWindow(&rr);
+
+	GetDlgItem(IDC_BUTTON_HELP)->GetWindowRect(&rr);
+	ScreenToClient(&rr);
+	rr.OffsetRect(0,offset);
+	GetDlgItem(IDC_BUTTON_HELP)->MoveWindow(&rr);
+
+	GetDlgItem(IDOK)->GetWindowRect(&rr);
+	ScreenToClient(&rr);
+	rr.OffsetRect(0,offset);
+	GetDlgItem(IDOK)->MoveWindow(&rr);
+	
+	GetWindowRect(&rr);
+	rr.bottom += offset;
+	MoveWindow(&rr);
+
+	CenterWindow();
+
+	bAdvanced = !bAdvanced;
+
+}
+
+void CWpkgInstDlg::OnBnClickedCheck()
+{
+	UpdateData();
+
+	GetDlgItem(IDC_EDIT_SCRIPT_PREACTION)->EnableWindow(m_bPreAction);
+	if(!m_bPreAction)
+		GetDlgItem(IDC_EDIT_SCRIPT_PREACTION)->SetWindowText("");
+	GetDlgItem(IDC_EDIT_SCRIPT_POSTACTION)->EnableWindow(m_bPostAction);
+	if(!m_bPostAction)
+		GetDlgItem(IDC_EDIT_SCRIPT_POSTACTION)->SetWindowText("");
+	GetDlgItem(IDC_BUTTON_SELECT_PREFILE)->EnableWindow(m_bPreAction);
+	GetDlgItem(IDC_BUTTON_SELECT_POSTFILE)->EnableWindow(m_bPostAction);
+}
+
+void CWpkgInstDlg::OnBnClickedButtonAdvanced()
+{
+	ShowAdvanced();
+}
+
+void CWpkgInstDlg::OnBnClickedButtonSelectPrefile()
+{
+	UpdateData();
+
+	CFileDialog  fdlg( TRUE,NULL, NULL, 0, "Executable files (*.exe; *.bat; *com)|*.exe; *.bat; *.com|All files (*.*)|*.*||",  NULL );
+
+	if(fdlg.DoModal()==IDOK)
+	{
+		m_strPreAction = fdlg.GetPathName();
+		UpdateData(FALSE);
+	}
+
+}
+
+void CWpkgInstDlg::OnBnClickedButtonSelectPostfile()
+{
+	UpdateData();
+
+	CFileDialog  fdlg( TRUE,NULL, NULL, 0, "Executable files (*.exe; *.bat; *com)|*.exe; *.bat; *.com|All files (*.*)|*.*||",  NULL );
+
+	if(fdlg.DoModal()==IDOK)
+	{
+		m_strPostAction = fdlg.GetPathName();
+		UpdateData(FALSE);
+	}
 }

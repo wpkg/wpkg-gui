@@ -116,7 +116,6 @@ LsaOpenPolicy(
 }
 #endif
 
-//#define SECRET_BUFFER_SIZE 4096
 
 
 class CSecret
@@ -129,15 +128,16 @@ public:
 	DWORD DeleteSecret();
 
 public:
-	CString m_strScriptPath;
 	CString m_strScriptFile;
 	CString m_strScriptParameters;
 	CString m_strScriptConnUser;
 	CString m_strScriptConnPassword;
 	CString m_strScriptExecUser;
 	CString m_strScriptExecPassword;
-	CString m_strScriptVarName1;
-	CString m_strScriptVarValue1;
+	CStringArray m_strVarArray;
+	
+	CString m_strPreAction;
+	CString m_strPostAction;
 
 private:
 	void Load(void);
@@ -156,5 +156,5 @@ private:
 
 
 public:
-	int Serialize(void);
+	//int Serialize(void);
 };

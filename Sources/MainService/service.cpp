@@ -689,34 +689,61 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 		security.LogonUser(secret.m_strScriptExecUser.GetBuffer(),
 			secret.m_strScriptExecPassword.GetBuffer(),hToken);
 
+		
 		// add message to event log
 		AddMessageToMessageLog("Set script security context: successfuly done."); 
 
-		// connect to the remote resource
-		connection.AddConnection(secret.m_strScriptPath,
-			secret.m_strScriptConnUser,secret.m_strScriptConnPassword);
-
-		AddMessageToMessageLog("Network resource: successfuly connected"); 
+		// connect to the remote resource if required
 		
-		CString command(" ");
-		command += secret.m_strScriptPath;
-		if(command.Right(1)!="\\")
-			command += '\\';
+		if(PathIsNetworkPath(secret.m_strScriptFile))
+		{
+			connection.AddConnection(secret.m_strScriptFile,
+				secret.m_strScriptConnUser,secret.m_strScriptConnPassword);
 
+			AddMessageToMessageLog("Network resource: successfuly connected"); 
+		}
+
+		
+		
+		CString command("cscript.exe ");
+		
 		command += secret.m_strScriptFile;
 		command += " ";
 		command += secret.m_strScriptParameters;
 
-		
-		SetEnvironmentVariable(secret.m_strScriptVarName1, secret.m_strScriptVarValue1);
+		BOOL OK;
+
+		for(int i=0; i<secret.m_strVarArray.GetCount(); i+=2)
+		{
+			OK = SetEnvironmentVariable(secret.m_strVarArray.GetAt(i), secret.m_strVarArray.GetAt(i+1));
+		}
+
+		if(!secret.m_strPreAction.IsEmpty())
+		{
+			security.AddDesktopPermission(hToken);
+			process.CreateProcess(hToken, secret.m_strPreAction.GetBuffer());
+			AddMessageToMessageLog("Script pre action execution: successfuly done");
+		}
 
 		// run cscript and wait for termination
 		process.CreateProcess(hToken, command.GetBuffer());
+		
+
 		AddMessageToMessageLog("Script execution: successfuly done"); 
 
+		if(!secret.m_strPostAction.IsEmpty())
+		{
+			security.AddDesktopPermission(hToken);
+			process.CreateProcess(hToken, secret.m_strPostAction.GetBuffer());
+			AddMessageToMessageLog("Script post execution: successfuly done");
+		}
+
 		// disconnect from network resource
-		connection.Disconnect(secret.m_strScriptPath);
-		AddMessageToMessageLog("Network resource: successfuly disconnected"); 
+		if(PathIsNetworkPath(secret.m_strScriptFile))
+		{
+			connection.Disconnect(secret.m_strScriptFile);
+			AddMessageToMessageLog("Network resource: successfuly disconnected"); 
+		}
 		
 	}
 	catch(CException* exc)

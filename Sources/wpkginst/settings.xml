@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<file>wpkg.js</file>
+	<path-user>path user</path-user>
+	<path-pasword>password</path-pasword>
+	<exec-user>exec user</exec-user>
+	<exec-password>password</exec-password>
+	<parameters>/quiet /nonotify /synchronize</parameters>
+	<silent>NO</silent>
+	<pre-action>notepad.exe</pre-action>
+	<post-action>notepad.exe</post-action>
+	<script-variable name="SCRIPTVARNAME1">SCRIPTVARVALUE1</script-variable>
+	<script-variable name="SCRIPTVARNAME2">SCRIPTVARVALUE2</script-variable>
+	<script-variable name="SCRIPTVARNAME3">SCRIPTVARVALUE3</script-variable>
+	<script-variable name="SCRIPTVARNAME4">SCRIPTVARVALUE4</script-variable>
+	<script-variable name="SCRIPTVARNAME5">SCRIPTVARVALUE5</script-variable>
+	<script-variable name="SCRIPTVARNAME6">SCRIPTVARVALUE6</script-variable>
+	<script-variable name="SCRIPTVARNAME7">SCRIPTVARVALUE7</script-variable>
+	<script-variable name="SCRIPTVARNAME8">SCRIPTVARVALUE8</script-variable>
+	<script-variable name="SCRIPTVARNAME9">SCRIPTVARVALUE9</script-variable>
+</configuration>

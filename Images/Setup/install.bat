@@ -1,1 +1,1 @@
-msiexec /qb /i WPKGSetup.msi PATH="\\server\deploy\wpkg" FILE="wpkg.js" PARAMETERS="/quiet /nonotify /synchronize" PATHUSER="wpkguer" PATHPASSWORD="password" EXECUSER="SYSTEM" SCRIPTVARNAME1="SOFTWARE" SCRIPTVARVALUE1="\\server\deploy\software" SILENT="NO"
+msiexec /qb /i WPKGSetup.msi SETTINGSFILE=f:\wpkg\images\setup\settings.xml

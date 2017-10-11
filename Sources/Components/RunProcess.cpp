@@ -2,6 +2,8 @@
 #include ".\runprocess.h"
 #include "exceptionex.h"
 
+
+
 CRunProcess::CRunProcess(void)
 {
 }
@@ -11,13 +13,12 @@ CRunProcess::~CRunProcess(void)
 }
 
 
-void CRunProcess::CreateProcess(HANDLE hToken, char* commandLine)
+void CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, WORD dwShow)
 {
 
 	char command[4096];
 	DWORD Error;
 	ZeroMemory(command,4096);
-	strcat(command,"cscript.exe ");
 	strcat(command,commandLine);
 
 	STARTUPINFO si;
@@ -31,13 +32,11 @@ void CRunProcess::CreateProcess(HANDLE hToken, char* commandLine)
 	si.lpTitle = NULL; 
 	si.lpDesktop = "WinSta0\\Default"; 
 	si.dwX = si.dwY = si.dwXSize = si.dwYSize = 0L; 
-	si.dwFlags = 0; 
-	si.wShowWindow = SW_SHOW; 
+	si.dwFlags = STARTF_USESHOWWINDOW; 
+	si.wShowWindow = dwShow; 
 	si.lpReserved2 = NULL; 
 	si.cbReserved2 = 0; 
 
-	// zmiana ¿etonu na poziomie procesu
-	// ten przywilej wymagany
 	BOOL OK=FALSE;
 
 	if(hToken)
@@ -57,8 +56,8 @@ void CRunProcess::CreateProcess(HANDLE hToken, char* commandLine)
 	}
 	else
 	{
-		OK = ::CreateProcess( NULL,		// No module name (use command line). 
-			command,							// Command line. 
+		OK = ::CreateProcess( NULL,	// No module name (use command line). 
+			command,				// Command line. 
 			NULL,					// Process handle not inheritable. 
 			NULL,					// Thread handle not inheritable. 
 			FALSE,					// Set handle inheritance to FALSE. 
