@@ -1,0 +1,6 @@
+MessageId=0x1
+Severity=Success
+SymbolicName=MESSAGE
+Language=English
+%1
+.

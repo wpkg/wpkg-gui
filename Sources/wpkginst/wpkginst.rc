@@ -1,0 +1,215 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Polish resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_PLK)
+#ifdef _WIN32
+LANGUAGE LANG_POLISH, SUBLANG_DEFAULT
+#pragma code_page(1250)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\wpkginst.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\wpkginst.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_IS_NOT_ADMIN        "You must have an administrative privilege to run this tool."
+    IDS_FIELD_REQUIRED      "Please fill required field(s)."
+END
+
+#endif    // Polish resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_WPKGINST_DIALOG DIALOGEX 0, 0, 323, 286
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "WPKG Installer Parameters"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT_SCRIPT_PATH,111,18,195,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_FILE,110,38,195,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_PARAMATERS,111,58,195,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_PATH_USER,111,78,195,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_PATH_PASSWORD,111,98,195,12,ES_PASSWORD | 
+                    ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_EXEC_USER,111,144,195,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_EXEC_PASSWORD,111,164,195,12,ES_PASSWORD | 
+                    ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_VAR_NAME1,111,213,195,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_VAR_VALUE1,111,231,195,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "&Help...",IDC_BUTTON_HELP,179,264,66,16
+    PUSHBUTTON      "&Save",IDOK,249,264,66,16
+    GROUPBOX        "Script source",IDC_STATIC,7,7,308,112
+    GROUPBOX        "Script execution context",IDC_STATIC,7,133,308,52
+    LTEXT           "User:",IDC_STATIC,15,144,81,12
+    LTEXT           "Password:",IDC_STATIC,15,161,81,12
+    GROUPBOX        "Script variable",IDC_STATIC,7,199,308,52
+    LTEXT           "Name:",IDC_STATIC,15,213,81,12
+    LTEXT           "Value:",IDC_STATIC,15,231,81,12
+    LTEXT           "Script path (required):",IDC_STATIC,15,21,81,12
+    LTEXT           "Script file (required):",IDC_STATIC,15,41,81,12
+    LTEXT           "Script parameters:",IDC_STATIC,15,61,81,12
+    LTEXT           "Script path user:",IDC_STATIC,15,81,81,12
+    LTEXT           "Script path password:",IDC_STATIC,15,101,81,12
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "Comments", "This is an installer for WPKG, an automated software deployment, upgrade and removal program for Windows"
+            VALUE "CompanyName", "wpkg.org"
+            VALUE "FileDescription", "WPKG Installer Parameters"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "wpkginst"
+            VALUE "LegalCopyright", "(c) Artur Majuch.  All rights reserved."
+            VALUE "OriginalFilename", "wpkginst.exe"
+            VALUE "ProductName", "WPKG"
+            VALUE "ProductVersion", "1.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_WPKGINST_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 315
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 279
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#include "res\wpkginst.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "WPKGSetup", "WPKGSetup.vdproj", "{FDF4B645-5830-4BFD-8232-F0053DCF1CC1}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{FDF4B645-5830-4BFD-8232-F0053DCF1CC1}.Debug.ActiveCfg = Debug
+		{FDF4B645-5830-4BFD-8232-F0053DCF1CC1}.Debug.Build.0 = Debug
+		{FDF4B645-5830-4BFD-8232-F0053DCF1CC1}.Release.ActiveCfg = Release
+		{FDF4B645-5830-4BFD-8232-F0053DCF1CC1}.Release.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
