@@ -3,7 +3,11 @@
 
 #pragma once
 
-#include "listctrlEx.h"
+//#include "listctrlEx.h"
+
+#include "TabCtrlEx.h"
+#include "afxcmn.h"
+
 
 
 // CWpkgInstDlg dialog
@@ -23,13 +27,12 @@ public:
 // Implementation
 protected:
 	void ShowAdvanced();
-	CStringArray m_strVarArray;
-	CListCtrlEx m_PathVariables;
-
+	
 	HICON m_hIcon;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
+	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
@@ -46,22 +49,31 @@ public:
 	afx_msg void OnBnClickedButtonHelp();
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedButtonSelectFile();
-	afx_msg void OnBnClickedButtonPathvariableNew();
-	afx_msg void OnBnClickedButtonPathvariableDelete();
 
 
 	void AddScriptVarData(CStringArray& data);
 	void GetScriptVarData(CStringArray& data);
-	CString m_strPreAction;
-	CString m_strPostAction;
-	BOOL m_bPreAction;
-	BOOL m_bPostAction;
-	BOOL m_bShowGUI;
 
-	afx_msg void OnBnClickedCheck();
+
+	static CString m_strPreAction;
+	static CString m_strPostAction;
+	static BOOL m_bPreAction;
+	static BOOL m_bPostAction;
+	static BOOL m_bShowGUI;
+	// Logon delay in minutes
+	static DWORD m_dwLogonDelay;
+
+	static CString m_strMessage1;
+	static CString m_strMessage2;
+
+
 	afx_msg void OnBnClickedButtonAdvanced();
-	afx_msg void OnBnClickedButtonSelectPrefile();
-	afx_msg void OnBnClickedButtonSelectPostfile();
 
 	afx_msg void OnBnClickedButtonExportSettings();
+	CTabCtrlEx m_TabSettings;
+	void ReadLogonDelay(void);
+	void SaveLogonDelay(void);
+	void SaveLogonMessages(void);
+	void ReadLogonMessages(void);
+	afx_msg void OnBnClickedButtonAbout();
 };

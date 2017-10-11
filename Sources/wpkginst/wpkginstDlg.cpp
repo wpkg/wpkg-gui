@@ -6,6 +6,7 @@
 #include "wpkginstDlg.h"
 #include ".\wpkginstdlg.h"
 #include "XmlSettings.h"
+#include "afxcmn.h"
 
 
 
@@ -15,7 +16,103 @@
 
 #pragma warning(disable : 4996)
 
+// CAboutDlg dialog used for App About
+
+static DWORD dwStreamOffset = 0;
+
+static DWORD CALLBACK 
+LicenseStreamInCallback(DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb)
+{
+
+	HRSRC h = FindResource(NULL,"IDR_RTF","RTF");
+	DWORD size = SizeofResource(NULL,h);
+	HGLOBAL hGlobal = LoadResource(NULL,h);
+	LPBYTE buffer = (LPBYTE)LockResource(hGlobal);
+	
+	DWORD copied = min((DWORD)cb,size-dwStreamOffset);
+	memcpy(pbBuff,buffer+dwStreamOffset,copied);
+	dwStreamOffset += copied;
+
+	*pcb = copied;
+
+	return 0;
+}
+
+
+class CAboutDlg : public CDialog
+{
+public:
+	CAboutDlg();
+
+// Dialog Data
+	enum { IDD = IDD_ABOUTBOX };
+
+	protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+// Implementation
+protected:
+	DECLARE_MESSAGE_MAP()
+public:
+	CRichEditCtrl m_rEdit;
+	virtual BOOL OnInitDialog();
+};
+
+CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
+{
+}
+
+void CAboutDlg::DoDataExchange(CDataExchange* pDX)
+{
+	CDialog::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_RICHEDIT, m_rEdit);
+}
+
+
+BOOL CAboutDlg::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+
+	// TODO:  Add extra initialization here
+	CRect rr;
+	m_rEdit.GetRect(&rr);
+	rr.DeflateRect(10,10,10,10);
+	m_rEdit.SetRect(&rr);
+	
+	m_rEdit.SetOptions(ECOOP_OR, ECO_AUTOWORDSELECTION);
+	
+	EDITSTREAM es;
+
+	dwStreamOffset = 0;
+	es.dwCookie = (DWORD)0;
+	es.pfnCallback = LicenseStreamInCallback; 
+	m_rEdit.StreamIn(SF_RTF, es);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
+}
+
+
+BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
+END_MESSAGE_MAP()
+
+
+
+
+
+
+
 // CWpkgInstDlg dialog
+
+CString CWpkgInstDlg::m_strPreAction;
+CString CWpkgInstDlg::m_strPostAction;
+BOOL CWpkgInstDlg::m_bPreAction;
+BOOL CWpkgInstDlg::m_bPostAction;
+BOOL CWpkgInstDlg::m_bShowGUI;
+DWORD CWpkgInstDlg::m_dwLogonDelay;
+
+CString CWpkgInstDlg::m_strMessage1;
+CString CWpkgInstDlg::m_strMessage2;
 
 
 
@@ -27,11 +124,16 @@ CWpkgInstDlg::CWpkgInstDlg(CWnd* pParent /*=NULL*/)
 	,m_strScriptConnPassword(_T(""))
 	,m_strScriptExecUser(_T(""))
 	,m_strScriptExecPassword(_T(""))
-	,m_strPreAction(_T(""))
-	,m_strPostAction(_T(""))
-	, m_bShowGUI(FALSE)
+	
 {
+	m_strPreAction.Empty();
+	m_strPostAction.Empty();
+	m_bShowGUI = FALSE;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+
+	ReadLogonDelay();
+	ReadLogonMessages();
+
 }
 
 void CWpkgInstDlg::DoDataExchange(CDataExchange* pDX)
@@ -43,29 +145,20 @@ void CWpkgInstDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_SCRIPT_PATH_PASSWORD, m_strScriptConnPassword);
 	DDX_Text(pDX, IDC_EDIT_SCRIPT_EXEC_USER, m_strScriptExecUser);
 	DDX_Text(pDX, IDC_EDIT_SCRIPT_EXEC_PASSWORD, m_strScriptExecPassword);
-	DDX_Control(pDX, IDC_LIST_SCRIPT_VARIABLES, m_PathVariables);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT_PREACTION, m_strPreAction);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT_POSTACTION, m_strPostAction);
-	DDX_Check(pDX, IDC_CHECK_PRE, m_bPreAction);
-	DDX_Check(pDX, IDC_CHECK_POST, m_bPostAction);
-	DDX_Check(pDX, IDC_CHECK_SHOW_GUI, m_bShowGUI);
+	DDX_Control(pDX, IDC_TAB_ADVANCED, m_TabSettings);
 }
 
 BEGIN_MESSAGE_MAP(CWpkgInstDlg, CDialog)
+	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_BUTTON_HELP, OnBnClickedButtonHelp)
 	ON_BN_CLICKED(IDOK, OnBnClickedOk)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_FILE, OnBnClickedButtonSelectFile)
-	ON_BN_CLICKED(IDC_BUTTON_SCRIPTVARIABLE_NEW, OnBnClickedButtonPathvariableNew)
-	ON_BN_CLICKED(IDC_BUTTON_SCRIPTVARIABLE_DELETE, OnBnClickedButtonPathvariableDelete)
-	ON_BN_CLICKED(IDC_CHECK_PRE, OnBnClickedCheck)
-	ON_BN_CLICKED(IDC_CHECK_POST, OnBnClickedCheck)
 	ON_BN_CLICKED(IDC_BUTTON_ADVANCED, OnBnClickedButtonAdvanced)
-	ON_BN_CLICKED(IDC_BUTTON_SELECT_PREFILE, OnBnClickedButtonSelectPrefile)
-	ON_BN_CLICKED(IDC_BUTTON_SELECT_POSTFILE, OnBnClickedButtonSelectPostfile)
 	ON_BN_CLICKED(IDC_BUTTON_EXPORT_SETTINGS, OnBnClickedButtonExportSettings)
+	ON_BN_CLICKED(IDC_BUTTON_ABOUT, OnBnClickedButtonAbout)
 END_MESSAGE_MAP()
 
 
@@ -75,31 +168,55 @@ BOOL CWpkgInstDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
+	// Add "About..." menu item to system menu.
+
+	// IDM_ABOUTBOX must be in the system command range.
+	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
+	ASSERT(IDM_ABOUTBOX < 0xF000);
+
+	CMenu* pSysMenu = GetSystemMenu(FALSE);
+	if (pSysMenu != NULL)
+	{
+		CString strAboutMenu;
+		strAboutMenu.LoadString(IDS_ABOUTBOX);
+		if (!strAboutMenu.IsEmpty())
+		{
+			pSysMenu->AppendMenu(MF_SEPARATOR);
+			pSysMenu->AppendMenu(MF_STRING, IDM_ABOUTBOX, strAboutMenu);
+		}
+	}
+
+
+
 	// Set the icon for this dialog.  The framework does this automatically
 	//  when the application's main window is not a dialog
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-	m_PathVariables.SetExtendedStyle(LVS_EX_FLATSB|LVS_EX_INFOTIP|
-		LVS_EX_GRIDLINES);
-	m_PathVariables.InsertColumn(0,"Name",LVCFMT_LEFT,220);
-	m_PathVariables.InsertColumn(1,"Value",LVCFMT_LEFT,220);
-	
-	int pos = 0;
-	for(int i=0;i<m_strVarArray.GetCount();i+=2)
-	{
-		pos = m_PathVariables.InsertItem(pos,m_strVarArray.GetAt(i));
-		m_PathVariables.SetItemText(pos,1,m_strVarArray.GetAt(i+1));
-		pos++;
-	}
 
+	m_TabSettings.InitTabs();
 	ShowAdvanced();
 
 	
 	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
+
+void CWpkgInstDlg::OnSysCommand(UINT nID, LPARAM lParam)
+{
+	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
+	{
+		CAboutDlg dlgAbout;
+		dlgAbout.DoModal();
+	}
+	else
+	{
+		CDialog::OnSysCommand(nID, lParam);
+	}
+}
+
+
 
 // If you add a minimize button to your dialog, you will need the code below
 //  to draw the icon.  For MFC applications using the document/view model,
@@ -158,20 +275,15 @@ void CWpkgInstDlg::OnBnClickedButtonHelp()
 
 void CWpkgInstDlg::OnBnClickedOk()
 {
-	UpdateData();
+	BOOL bResult = FALSE;
+	bResult = UpdateData() && m_TabSettings.UpdateData();
 
 	if(m_strScriptFile.IsEmpty() )
 		AfxMessageBox(IDS_FIELD_REQUIRED);
 	else
 	{
-		m_strVarArray.RemoveAll();
-
-		for(int i=0;i<m_PathVariables.GetItemCount();i++)
-		{
-			m_strVarArray.Add(m_PathVariables.GetItemText(i,0));
-			m_strVarArray.Add(m_PathVariables.GetItemText(i,1));
-		}
-		OnOK();
+		if(bResult)
+			OnOK();
 	}
 }
 
@@ -189,83 +301,27 @@ void CWpkgInstDlg::OnBnClickedButtonSelectFile()
 
 }
 
-void CWpkgInstDlg::OnBnClickedButtonPathvariableNew()
-{
-	int count = m_PathVariables.GetItemCount();
-	count = m_PathVariables.InsertItem(count,"enter name...");
-	m_PathVariables.SetItemText(count,1,"enter value...");
-	m_PathVariables.EditSubLabel(count,0);
-}
-
-
-void CWpkgInstDlg::OnBnClickedButtonPathvariableDelete()
-{
-	int nItem = -1;
-	nItem = m_PathVariables.GetNextItem(nItem,LVNI_SELECTED);
-	if(nItem!=-1)
-		m_PathVariables.DeleteItem(nItem);
-}
-
-
 
 void CWpkgInstDlg::AddScriptVarData(CStringArray& data)
 {
-	m_strVarArray.Copy(data);
-	
+	m_TabSettings.AddScriptVarData(data);
 }
 
 void CWpkgInstDlg::GetScriptVarData(CStringArray& data)
 {
-	data.Copy(m_strVarArray);
+	m_TabSettings.GetScriptVarData(data);
 }
 
 void CWpkgInstDlg::ShowAdvanced()
 {
 	CRect rr;
 	static BOOL bAdvanced = FALSE;
-	int offset = bAdvanced ? 280 : -280;
+	int offset = bAdvanced ? 315 : -315;
 
-	GetDlgItem(IDC_STATIC_GUI)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_STATIC_GUI)->EnableWindow(bAdvanced);
 
-	GetDlgItem(IDC_CHECK_SHOW_GUI)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_CHECK_SHOW_GUI)->EnableWindow(bAdvanced);
+	GetDlgItem(IDC_TAB_ADVANCED)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_TAB_ADVANCED)->EnableWindow(bAdvanced);
 
-	GetDlgItem(IDC_LIST_SCRIPT_VARIABLES)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_LIST_SCRIPT_VARIABLES)->EnableWindow(bAdvanced);
-
-	GetDlgItem(IDC_STATIC_GROUP_SCRIPTVARIABLES)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_STATIC_GROUP_SCRIPTVARIABLES)->EnableWindow(bAdvanced);
-
-	GetDlgItem(IDC_STATIC_SCRIPTVARIABLES)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_STATIC_SCRIPTVARIABLES)->EnableWindow(bAdvanced);
-
-	GetDlgItem(IDC_BUTTON_SCRIPTVARIABLE_DELETE)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_BUTTON_SCRIPTVARIABLE_DELETE)->EnableWindow(bAdvanced);
-
-	GetDlgItem(IDC_BUTTON_SCRIPTVARIABLE_NEW)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_BUTTON_SCRIPTVARIABLE_NEW)->EnableWindow(bAdvanced);
-
-	GetDlgItem(IDC_CHECK_PRE)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_CHECK_PRE)->EnableWindow(bAdvanced);
-
-	GetDlgItem(IDC_CHECK_POST)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_CHECK_POST)->EnableWindow(bAdvanced);
-
-	GetDlgItem(IDC_EDIT_SCRIPT_PREACTION)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_EDIT_SCRIPT_PREACTION)->EnableWindow(bAdvanced & m_bPreAction);
-
-	GetDlgItem(IDC_EDIT_SCRIPT_POSTACTION)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_EDIT_SCRIPT_POSTACTION)->EnableWindow(bAdvanced & m_bPostAction);
-
-	GetDlgItem(IDC_STATIC_ACTIONS)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_STATIC_ACTIONS)->EnableWindow(bAdvanced);
-
-	GetDlgItem(IDC_BUTTON_SELECT_PREFILE)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_BUTTON_SELECT_PREFILE)->EnableWindow(bAdvanced & m_bPreAction);
-
-	GetDlgItem(IDC_BUTTON_SELECT_POSTFILE)->ShowWindow(bAdvanced);
-	GetDlgItem(IDC_BUTTON_SELECT_POSTFILE)->EnableWindow(bAdvanced & m_bPostAction);
 
 	if(bAdvanced)
 		GetDlgItem(IDC_BUTTON_ADVANCED)->SetWindowText("<< General");
@@ -276,6 +332,11 @@ void CWpkgInstDlg::ShowAdvanced()
 	ScreenToClient(&rr);
 	rr.OffsetRect(0,offset);
 	GetDlgItem(IDC_BUTTON_ADVANCED)->MoveWindow(&rr);
+
+	GetDlgItem(IDC_BUTTON_ABOUT)->GetWindowRect(&rr);
+	ScreenToClient(&rr);
+	rr.OffsetRect(0,offset);
+	GetDlgItem(IDC_BUTTON_ABOUT)->MoveWindow(&rr);
 
 	GetDlgItem(IDC_BUTTON_HELP)->GetWindowRect(&rr);
 	ScreenToClient(&rr);
@@ -302,55 +363,19 @@ void CWpkgInstDlg::ShowAdvanced()
 
 }
 
-void CWpkgInstDlg::OnBnClickedCheck()
-{
-	UpdateData();
-
-	GetDlgItem(IDC_EDIT_SCRIPT_PREACTION)->EnableWindow(m_bPreAction);
-	if(!m_bPreAction)
-		GetDlgItem(IDC_EDIT_SCRIPT_PREACTION)->SetWindowText("");
-	GetDlgItem(IDC_EDIT_SCRIPT_POSTACTION)->EnableWindow(m_bPostAction);
-	if(!m_bPostAction)
-		GetDlgItem(IDC_EDIT_SCRIPT_POSTACTION)->SetWindowText("");
-	GetDlgItem(IDC_BUTTON_SELECT_PREFILE)->EnableWindow(m_bPreAction);
-	GetDlgItem(IDC_BUTTON_SELECT_POSTFILE)->EnableWindow(m_bPostAction);
-}
 
 void CWpkgInstDlg::OnBnClickedButtonAdvanced()
 {
 	ShowAdvanced();
 }
 
-void CWpkgInstDlg::OnBnClickedButtonSelectPrefile()
-{
-	UpdateData();
 
-	CFileDialog  fdlg( TRUE,NULL, NULL, 0, "Executable files (*.exe; *.bat; *com)|*.exe; *.bat; *.com|All files (*.*)|*.*||",  NULL );
-
-	if(fdlg.DoModal()==IDOK)
-	{
-		m_strPreAction = fdlg.GetPathName();
-		UpdateData(FALSE);
-	}
-
-}
-
-void CWpkgInstDlg::OnBnClickedButtonSelectPostfile()
-{
-	UpdateData();
-
-	CFileDialog  fdlg( TRUE,NULL, NULL, 0, "Executable files (*.exe; *.bat; *com)|*.exe; *.bat; *.com|All files (*.*)|*.*||",  NULL );
-
-	if(fdlg.DoModal()==IDOK)
-	{
-		m_strPostAction = fdlg.GetPathName();
-		UpdateData(FALSE);
-	}
-}
 
 void CWpkgInstDlg::OnBnClickedButtonExportSettings()
 {
 	UpdateData();
+	m_TabSettings.UpdateData();
+
 	CString xmlFilePath;
 
 	CFileDialog  fdlg( FALSE,"xml", "settings", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
@@ -379,10 +404,17 @@ void CWpkgInstDlg::OnBnClickedButtonExportSettings()
 		st.WriteParameter("post-action",m_strPostAction);
 		st.WriteParameter("show-GUI",m_bShowGUI?"YES":"NO");
 
-		for(int i=0; i<m_PathVariables.GetItemCount(); i++)
+		CString tempStr;
+		tempStr.Format("%u",m_dwLogonDelay);
+		st.WriteParameter("logon-delay",tempStr);
+		st.WriteParameter("logon-message-1",m_strMessage1);
+		st.WriteParameter("logon-message-2",m_strMessage2);
+
+		CListCtrl* pPathVariables = m_TabSettings.GetScriptVarCtrl();
+		for(int i=0; i<pPathVariables->GetItemCount(); i++)
 		{
-			st.WriteParameterEx(m_PathVariables.GetItemText(i,0),
-				m_PathVariables.GetItemText(i,1));
+			st.WriteParameterEx(pPathVariables->GetItemText(i,0),
+				pPathVariables->GetItemText(i,1));
 		}
 		
 		st.Save(xmlFilePath);
@@ -399,3 +431,122 @@ void CWpkgInstDlg::OnBnClickedButtonExportSettings()
 		AfxMessageBox("Unknown error occured while writing parameter to settings file");
 	}
 }
+
+void CWpkgInstDlg::ReadLogonDelay(void)
+{
+	m_dwLogonDelay = 0;
+
+	HKEY phkResult;
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+		"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Notify\\WPKGLogon",
+		0,
+		KEY_READ,
+		&phkResult );
+
+	DWORD cbData = 4;
+	DWORD Type;
+	
+	RegQueryValueEx( phkResult,
+		"MaxWait", 0, &Type, (BYTE*)&m_dwLogonDelay, &cbData );
+
+	RegCloseKey(phkResult); 
+
+	m_dwLogonDelay /= 60;
+
+
+}
+
+void CWpkgInstDlg::SaveLogonDelay(void)
+{
+	HKEY phkResult;
+	DWORD lpdwDisposition = REG_CREATED_NEW_KEY;
+
+	m_dwLogonDelay *= 60;
+
+	RegCreateKeyEx(HKEY_LOCAL_MACHINE,
+		"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Notify\\WPKGLogon",
+		0, NULL, REG_OPTION_NON_VOLATILE,
+		KEY_ALL_ACCESS,
+		NULL,
+		&phkResult,
+		&lpdwDisposition);
+
+
+	RegSetValueEx( phkResult,
+		"MaxWait", 0, REG_DWORD, (BYTE*)&m_dwLogonDelay, 4 );
+
+	RegCloseKey(phkResult); 
+
+
+}
+
+void CWpkgInstDlg::SaveLogonMessages(void)
+{
+	HKEY phkResult;
+	DWORD lpdwDisposition = REG_CREATED_NEW_KEY;
+
+	char* buffer1 = m_strMessage1.GetBuffer();
+	char* buffer2 = m_strMessage2.GetBuffer();
+
+	
+
+	RegCreateKeyEx(HKEY_LOCAL_MACHINE,
+		"SOFTWARE\\WPKG.ORG\\Logon Settings",
+		0, NULL, REG_OPTION_NON_VOLATILE,
+		KEY_ALL_ACCESS,
+		NULL,
+		&phkResult,
+		&lpdwDisposition);
+
+
+	RegSetValueEx( phkResult,
+		"Logon message 1", 0, REG_SZ, (BYTE*)buffer1, m_strMessage1.GetLength()+1 );
+
+	RegSetValueEx( phkResult,
+		"Logon message 2", 0, REG_SZ, (BYTE*)buffer2, m_strMessage2.GetLength()+1 );
+
+	RegCloseKey(phkResult); 
+
+	m_strMessage1.ReleaseBuffer();
+	m_strMessage2.ReleaseBuffer();
+
+}
+
+void CWpkgInstDlg::ReadLogonMessages(void)
+{
+	m_strMessage1 = "WPKG is installing applications and applying settings...";
+	m_strMessage2 = "Please wait, don't restart or power off your computer...";
+
+	HKEY phkResult;
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+		"SOFTWARE\\WPKG.ORG\\Logon Settings",
+		0,
+		KEY_READ,
+		&phkResult );
+
+	char* buffer1 = m_strMessage1.GetBufferSetLength(1024);
+	char* buffer2 = m_strMessage2.GetBufferSetLength(1024);
+	DWORD cbData = 1024;
+	DWORD Type;
+	
+	RegQueryValueEx( phkResult,
+		"Logon message 1", 0, &Type, (BYTE*)buffer1, &cbData );
+
+	cbData = 1024;
+	RegQueryValueEx( phkResult,
+		"Logon message 2", 0, &Type, (BYTE*)buffer2, &cbData );
+
+
+	RegCloseKey(phkResult); 
+
+	m_strMessage1.ReleaseBuffer();
+	m_strMessage2.ReleaseBuffer();
+
+}
+
+void CWpkgInstDlg::OnBnClickedButtonAbout()
+{
+	CAboutDlg dlgAbout;
+	dlgAbout.DoModal();
+}
+

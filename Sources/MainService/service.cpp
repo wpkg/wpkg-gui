@@ -27,6 +27,7 @@ static CRunProcess process;
 
 
 static HANDLE  hServerEvents[3] = {NULL,NULL,NULL};
+static HANDLE  hWorking = NULL;
 
 
 //
@@ -625,6 +626,20 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 
 	security.AllowAdminAccesSa();
 
+	// run exe only once
+	//hWorking = CreateMutex( &security.m_sa, TRUE, "WORKING_WPKG_SRVR");
+
+    hWorking = CreateEvent(
+        NULL,					// no security attributes
+        FALSE,					// manual reset event
+        FALSE,					// not-signalled
+        "WORKING_WPKG_SRVR");   // name
+
+  
+    if ( hWorking == NULL)
+        return;
+
+
 	// create the event object. The control handler function signals
     // this event when it receives the "stop" control code.
     //
@@ -684,7 +699,7 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 
 	try
 	{
-
+		
 		
 		// Load secret data
 		secret.LoadSecret();
@@ -760,6 +775,11 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 	}
 
 
+	// working done
+	if(hWorking)
+	{
+		SetEvent(hWorking);
+	}
 	
 	while(TRUE)
 	{
@@ -772,7 +792,6 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 			try
 			{
 				//... feature for manual start signal
-				
 			}
 			catch(CException* e)
 			{
@@ -796,6 +815,14 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 	}
 
 cleanup:
+
+	// working done
+	if(hWorking)
+	{
+		SetEvent(hWorking);
+		CloseHandle(hWorking);
+	}
+	
 
 	if (hServerEvents[0])
 		CloseHandle(hServerEvents[0]);

@@ -164,6 +164,15 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\TabCtrlEx.cpp">
+			</File>
+			<File
+				RelativePath=".\TabGeneral.cpp">
+			</File>
+			<File
+				RelativePath=".\TabLogonSettings.cpp">
+			</File>
+			<File
 				RelativePath=".\wpkginst.cpp">
 			</File>
 			<File
@@ -205,6 +214,15 @@
 				RelativePath=".\stdafx.h">
 			</File>
 			<File
+				RelativePath=".\TabCtrlEx.h">
+			</File>
+			<File
+				RelativePath=".\TabGeneral.h">
+			</File>
+			<File
+				RelativePath=".\TabLogonSettings.h">
+			</File>
+			<File
 				RelativePath=".\wpkginst.h">
 			</File>
 			<File
@@ -228,6 +246,9 @@
 				RelativePath=".\res\wpkginst.rc2">
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\res\license.rtf">
+		</File>
 		<File
 			RelativePath=".\ReadMe.txt">
 		</File>

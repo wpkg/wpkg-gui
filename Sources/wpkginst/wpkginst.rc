@@ -68,8 +68,20 @@ IDR_MAINFRAME           ICON                    "res\\wpkginst.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// RTF
+//
+
+IDR_RTF                 RTF                     "res\\license.rtf"
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About WPKG Installer Parameters..."
+END
 
 STRINGTABLE 
 BEGIN
@@ -95,60 +107,100 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Dialog
 //
 
-IDD_WPKGINST_DIALOG DIALOGEX 0, 0, 323, 349
+IDD_ABOUTBOX DIALOGEX 0, 0, 446, 149
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "About WPKG Installer Parameters"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,5,5,20,20
+    LTEXT           "WPKG Installer Parameters - Version 0.9",IDC_STATIC,47,
+                    11,194,8,SS_NOPREFIX
+    DEFPUSHBUTTON   "OK",IDOK,391,5,50,16,WS_GROUP
+    CONTROL         "",IDC_RICHEDIT,"RichEdit20A",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | 
+                    WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,5,28,
+                    436,116
+END
+
+IDD_WPKGINST_DIALOG DIALOGEX 0, 0, 381, 350
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | 
     WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
 CAPTION "WPKG Installer Parameters"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    EDITTEXT        IDC_EDIT_SCRIPT_FILE,110,15,174,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_BUTTON_SELECT_FILE,287,15,20,12
-    EDITTEXT        IDC_EDIT_SCRIPT_PARAMATERS,110,34,195,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_SCRIPT_PATH_USER,110,53,195,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_SCRIPT_PATH_PASSWORD,110,72,195,12,ES_PASSWORD | 
+    EDITTEXT        IDC_EDIT_SCRIPT_FILE,110,13,230,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BUTTON_SELECT_FILE,346,13,20,12
+    EDITTEXT        IDC_EDIT_SCRIPT_PARAMATERS,110,31,256,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_PATH_USER,110,49,256,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_PATH_PASSWORD,110,67,256,12,ES_PASSWORD | 
                     ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_SCRIPT_EXEC_USER,110,107,195,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_SCRIPT_EXEC_PASSWORD,110,126,195,12,ES_PASSWORD | 
+    EDITTEXT        IDC_EDIT_SCRIPT_EXEC_USER,110,99,256,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_EXEC_PASSWORD,110,117,256,12,ES_PASSWORD | 
                     ES_AUTOHSCROLL
-    LTEXT           "",IDC_STATIC_SCRIPTVARIABLES,11,161,297,69,SS_SUNKEN
-    PUSHBUTTON      "<< General",IDC_BUTTON_ADVANCED,7,326,66,16
+    PUSHBUTTON      "<< General",IDC_BUTTON_ADVANCED,7,334,66,13
+    PUSHBUTTON      "&Help...",IDC_BUTTON_HELP,168,334,66,13
+    PUSHBUTTON      "&Save",IDOK,307,334,66,13
+    GROUPBOX        "Script source",IDC_STATIC,7,3,366,83
+    GROUPBOX        "Script execution context",IDC_STATIC,7,89,366,46
+    LTEXT           "User:",IDC_STATIC,15,99,81,12
+    LTEXT           "Password:",IDC_STATIC,15,114,81,12
+    LTEXT           "Script file path (required):",IDC_STATIC,15,16,93,12
+    LTEXT           "Script parameters:",IDC_STATIC,15,34,81,12
+    LTEXT           "Script path user:",IDC_STATIC,15,52,81,12
+    LTEXT           "Script path password:",IDC_STATIC,15,70,81,12
+    PUSHBUTTON      "&Export settings...",IDC_BUTTON_EXPORT_SETTINGS,238,334,
+                    66,13
+    CONTROL         "",IDC_TAB_ADVANCED,"SysTabControl32",0x0,7,137,366,194
+    PUSHBUTTON      "&About...",IDC_BUTTON_ABOUT,98,334,66,13
+END
+
+IDD_DIALOG_GENERAL DIALOGEX 0, 0, 363, 179
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "",IDC_STATIC_SCRIPTVARIABLES,11,13,338,69,SS_SUNKEN
     CONTROL         "Execute before",IDC_CHECK_PRE,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,17,249,65,10
+                    WS_TABSTOP,17,101,65,10
     CONTROL         "Execute after",IDC_CHECK_POST,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,17,267,60,10
-    EDITTEXT        IDC_EDIT_SCRIPT_PREACTION,89,249,195,12,ES_AUTOHSCROLL | 
+                    WS_TABSTOP,17,119,60,10
+    EDITTEXT        IDC_EDIT_SCRIPT_PREACTION,89,101,235,12,ES_AUTOHSCROLL | 
                     WS_DISABLED
-    EDITTEXT        IDC_EDIT_SCRIPT_POSTACTION,89,267,195,12,ES_AUTOHSCROLL | 
+    EDITTEXT        IDC_EDIT_SCRIPT_POSTACTION,89,119,235,12,ES_AUTOHSCROLL | 
                     WS_DISABLED
-    PUSHBUTTON      "...",IDC_BUTTON_SELECT_PREFILE,287,249,20,12,
+    PUSHBUTTON      "...",IDC_BUTTON_SELECT_PREFILE,329,101,20,12,
                     WS_DISABLED
-    PUSHBUTTON      "...",IDC_BUTTON_SELECT_POSTFILE,287,267,20,12,
+    PUSHBUTTON      "...",IDC_BUTTON_SELECT_POSTFILE,329,119,20,12,
                     WS_DISABLED
-    PUSHBUTTON      "&Help...",IDC_BUTTON_HELP,110,326,66,16
-    PUSHBUTTON      "&Save",IDOK,249,326,66,16
-    GROUPBOX        "Script source",IDC_STATIC,7,3,308,88
-    GROUPBOX        "Script execution context",IDC_STATIC,7,95,308,52
-    LTEXT           "User:",IDC_STATIC,15,107,81,12
-    LTEXT           "Password:",IDC_STATIC,15,123,81,12
-    GROUPBOX        "Script variables",IDC_STATIC_GROUP_SCRIPTVARIABLES,7,
-                    151,308,83
-    LTEXT           "Script file path (required):",IDC_STATIC,15,18,93,12
-    LTEXT           "Script parameters:",IDC_STATIC,15,37,81,12
-    LTEXT           "Script path user:",IDC_STATIC,15,56,81,12
-    LTEXT           "Script path password:",IDC_STATIC,15,75,81,12
+    GROUPBOX        "Script variables",IDC_STATIC_GROUP_SCRIPTVARIABLES,7,3,
+                    349,83
     CONTROL         "",IDC_LIST_SCRIPT_VARIABLES,"SysListView32",LVS_REPORT | 
                     LVS_SINGLESEL | LVS_EDITLABELS | LVS_ALIGNLEFT | 
-                    LVS_NOSORTHEADER | WS_TABSTOP,12,162,295,56
-    PUSHBUTTON      "New",IDC_BUTTON_SCRIPTVARIABLE_NEW,12,218,38,11,BS_FLAT
-    PUSHBUTTON      "Delete",IDC_BUTTON_SCRIPTVARIABLE_DELETE,50,218,38,11,
+                    LVS_NOSORTHEADER | WS_TABSTOP,12,14,336,56
+    PUSHBUTTON      "New",IDC_BUTTON_SCRIPTVARIABLE_NEW,12,70,38,11,BS_FLAT
+    PUSHBUTTON      "Delete",IDC_BUTTON_SCRIPTVARIABLE_DELETE,50,70,38,11,
                     BS_FLAT
-    GROUPBOX        "Additional actions",IDC_STATIC_ACTIONS,7,237,308,50
-    GROUPBOX        "Script user interface",IDC_STATIC_GUI,7,291,308,29
-    PUSHBUTTON      "&Export settings...",IDC_BUTTON_EXPORT_SETTINGS,180,326,
-                    66,16
+    GROUPBOX        "Additional actions",IDC_STATIC_ACTIONS,7,89,349,50
+    GROUPBOX        "Script user interface",IDC_STATIC_GUI,7,141,349,30
     CONTROL         "Show",IDC_CHECK_SHOW_GUI,"Button",BS_AUTOCHECKBOX | 
-                    WS_TABSTOP,17,304,33,10
+                    WS_TABSTOP,17,154,33,10
+END
+
+IDD_DIALOG_LOGON_SETTINGS DIALOGEX 0, 0, 363, 179
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Maximum logon delay",IDC_STATIC,7,7,349,31
+    LTEXT           "minutes",IDC_STATIC,72,20,26,8
+    EDITTEXT        IDC_EDIT_LOGON_DELAY,14,18,40,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        IDC_EDIT_LOGON_MESSAGE1,14,50,335,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_LOGON_MESSAGE2,14,87,335,15,ES_AUTOHSCROLL
+    GROUPBOX        "First message",IDC_STATIC,7,40,349,31
+    GROUPBOX        "Second message",IDC_STATIC,7,76,349,31
+    CONTROL         "",IDC_SPIN_LOGON_DELAY,"msctls_updown32",
+                    UDS_SETBUDDYINT | UDS_ARROWKEYS,53,17,10,15
 END
 
 
@@ -180,6 +232,7 @@ BEGIN
             VALUE "FileVersion", "1.0.0.1"
             VALUE "InternalName", "wpkginst"
             VALUE "LegalCopyright", "(c) Artur Majuch.  All rights reserved."
+            VALUE "LegalTrademarks", "(c) Artur Majuch.  All rights reserved."
             VALUE "OriginalFilename", "wpkginst.exe"
             VALUE "ProductName", "WPKG"
             VALUE "ProductVersion", "1.0.0.1"
@@ -200,12 +253,36 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO 
 BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 441
+        TOPMARGIN, 5
+        BOTTOMMARGIN, 144
+    END
+
     IDD_WPKGINST_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 315
+        RIGHTMARGIN, 373
         TOPMARGIN, 7
-        BOTTOMMARGIN, 342
+        BOTTOMMARGIN, 343
+    END
+
+    IDD_DIALOG_GENERAL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 356
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 172
+    END
+
+    IDD_DIALOG_LOGON_SETTINGS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 356
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 172
     END
 END
 #endif    // APSTUDIO_INVOKED

@@ -44,6 +44,9 @@ BOOL CWpkgInstApp::InitInstance()
 {
 	CWinApp::InitInstance();
 
+	AfxEnableControlContainer();
+	AfxInitRichEdit();
+
 	::CoInitialize(NULL);
 	
 	CParameters param;
@@ -81,85 +84,98 @@ BOOL CWpkgInstApp::InitInstance()
 	///////////////////////////////////////////////////////////
 	
 	BOOL bSilent = FALSE;
+	CWpkgInstDlg dlg;
+	CString strFile;
+	strFile.Empty();
 
 	if(CString("").CompareNoCase(m_lpCmdLine)!=0)
 	{
 		param.SetCommandLine(m_lpCmdLine);
 		param.Compute();
-		CString strFile = param.GetParameter("settingsfile");
-		if(!strFile.IsEmpty())
+		strFile = param.GetParameter("settingsfile");
+	}
+	if(!strFile.IsEmpty())
+	{
+
+		CXmlSettings st;
+		CString str;
+
+		try
 		{
+			// note:
+			// the XML parameters are case sensitive
+			CString name,value;
+			int count;
 
-			CXmlSettings st;
-			CString str;
-
-			try
+			st.CreateInstance();
+			st.Load(strFile);
+			
+			st.GetParameter("/configuration/file",value);
+			s.m_strScriptFile = value;
+							
+			st.GetParameterList("/configuration/script-variable",count);
+			for(int i=0; i<count;i++)
 			{
-				// note:
-				// the XML parameters are case sensitive
-				CString name,value;
-				int count;
-
-				st.CreateInstance();
-				st.Load(strFile);
-				
-				st.GetParameter("/configuration/file",value);
-				s.m_strScriptFile = value;
-								
-				st.GetParameterList("/configuration/script-variable",count);
-				for(int i=0; i<count;i++)
-				{
-					st.GetParameter(i,name,value);
-					s.m_strVarArray.Add(name);
-					s.m_strVarArray.Add(value);
-				}
+				st.GetParameter(i,name,value);
+				s.m_strVarArray.Add(name);
+				s.m_strVarArray.Add(value);
+			}
+	
+			st.GetParameter("/configuration/silent",value);
+			if(value.CompareNoCase("YES")==0)
+			{
+				bSilent = TRUE;
+			}
 		
-				st.GetParameter("/configuration/silent",value);
-				if(value.CompareNoCase("YES")==0)
-				{
-					bSilent = TRUE;
-				}
+			st.GetParameter("/configuration/parameters",value);
+			s.m_strScriptParameters = value;
 			
-				st.GetParameter("/configuration/parameters",value);
-				s.m_strScriptParameters = value;
-				
-				st.GetParameter("/configuration/path-user",value);
-				s.m_strScriptConnUser = value;
-				st.GetParameter("/configuration/path-password",value);
-				s.m_strScriptConnPassword = st.Decrypt(value);
-				st.GetParameter("/configuration/exec-user",value);
-				s.m_strScriptExecUser = value;
+			st.GetParameter("/configuration/path-user",value);
+			s.m_strScriptConnUser = value;
+			st.GetParameter("/configuration/path-password",value);
+			s.m_strScriptConnPassword = st.Decrypt(value);
+			st.GetParameter("/configuration/exec-user",value);
+			s.m_strScriptExecUser = value;
 
-				st.GetParameter("/configuration/exec-password",value);
-				s.m_strScriptExecPassword = st.Decrypt(value);
-				st.GetParameter("/configuration/pre-action",value);
-				s.m_strPreAction = value;
-				st.GetParameter("/configuration/post-action",value);
-				s.m_strPostAction = value;
+			st.GetParameter("/configuration/exec-password",value);
+			s.m_strScriptExecPassword = st.Decrypt(value);
+			st.GetParameter("/configuration/pre-action",value);
+			s.m_strPreAction = value;
+			st.GetParameter("/configuration/post-action",value);
+			s.m_strPostAction = value;
 
-				st.GetParameter("/configuration/show-GUI",value);
+			st.GetParameter("/configuration/show-GUI",value);
 
-				if(value.CompareNoCase("YES")==0)
-					s.m_bShowGUI = TRUE;
-				else
-					s.m_bShowGUI = FALSE;
-				
+			if(value.CompareNoCase("YES")==0)
+				s.m_bShowGUI = TRUE;
+			else
+				s.m_bShowGUI = FALSE;
+
+			st.GetParameter("/configuration/logon-delay",value);
+			dlg.m_dwLogonDelay = atol(value);
+			st.GetParameter("/configuration/logon-message-1",value);
+			dlg.m_strMessage1 = value;
+			st.GetParameter("/configuration/logon-message-2",value);
+			dlg.m_strMessage2 = value;
 			
-			}
-			catch(_com_error e)
-			{
-				CString str;
-				str.Format("Error occured while reading parameter from settings file:\n%s",e.ErrorMessage());
-				AfxMessageBox(str);
-			}
-			catch(...)
-			{
-				AfxMessageBox("Unknown error occured while reading parameter from settings file");
-			}
+			
+		
+		}
+		catch(_com_error e)
+		{
+			CString str;
+			str.Format("Error occured while reading parameter from settings file:\n%s",e.ErrorMessage());
+			AfxMessageBox(str);
+		}
+		catch(...)
+		{
+			AfxMessageBox("Unknown error occured while reading parameter from settings file");
 		}
 	}
 	else
+	{
 		s.LoadSecret();
+	}
 
 	if(!CSecurity::IsAdmin())
 	{
@@ -169,7 +185,7 @@ BOOL CWpkgInstApp::InitInstance()
 	}
 
 
-	CWpkgInstDlg dlg;
+	
 	dlg.m_strScriptFile = s.m_strScriptFile;
 	dlg.m_strScriptParameters = s.m_strScriptParameters;
 	dlg.m_strScriptConnUser = s.m_strScriptConnUser;
@@ -211,8 +227,9 @@ BOOL CWpkgInstApp::InitInstance()
 	{
 		// TODO: Place code here to handle when the dialog is
 		//  dismissed with OK
-
 		s.StoreSecret();
+		dlg.SaveLogonDelay();
+		dlg.SaveLogonMessages();
 	
 	}
 	else if (nResponse == IDCANCEL)

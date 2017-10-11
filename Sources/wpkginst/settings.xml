@@ -6,10 +6,13 @@
 	<exec-user>exec user</exec-user>
 	<exec-password>password</exec-password>
 	<parameters>/quiet /nonotify /synchronize</parameters>
-	<silent>YES</silent>
+	<silent>NO</silent>
 	<pre-action>notepad.exe</pre-action>
 	<post-action>notepad.exe</post-action>
-	<show-GUI>NO</show-GUI>
+	<show-GUI>YES</show-GUI>
+	<logon-delay>1</logon-delay>
+	<logon-message-1>TODO: insert logon message 1</logon-message-1>
+	<logon-message-2>TODO: insert logon message 2</logon-message-2>
 	<script-variable name="SCRIPTVARNAME1">SCRIPTVARVALUE1</script-variable>
 	<script-variable name="SCRIPTVARNAME2">SCRIPTVARVALUE2</script-variable>
 	<script-variable name="SCRIPTVARNAME3">SCRIPTVARVALUE3</script-variable>
