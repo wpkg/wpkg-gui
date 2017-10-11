@@ -262,6 +262,7 @@
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				ProgramDatabaseFile="$(IntDir)\$(TargetName).pdb"
+				GenerateMapFile="true"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -643,11 +644,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Components\Settings.h"
+				RelativePath="settings.h"
 				>
 			</File>
 			<File
-				RelativePath="settings.h"
+				RelativePath="..\Components\Settings.h"
 				>
 			</File>
 			<File

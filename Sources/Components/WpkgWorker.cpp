@@ -4,22 +4,64 @@
 CWpkgWorker::CWpkgWorker(void)
 {
 	m_bRestartSystem = FALSE;
+	m_iRepeatAction = 0;
 }
 
 CWpkgWorker::~CWpkgWorker(void)
 {
+	
 }
+
+void CWpkgWorker::TerminateProcesses()
+{
+	process.TerminateProcess();
+}
+
+void CWpkgWorker::WakeUpProcesses()
+{
+}
+
 
 void CWpkgWorker::Cleanup()
 {
 	CEventLog::AddMessageToLog("Working done. Perform cleanup."); 
 	m_wokerProgressInfo.WriteStartDate(CTime(0));
-	m_wokerProgressInfo.WaitForLogonDelay();
+	if(!process.IsNowTerminated())
+		m_wokerProgressInfo.WaitForLogonDelay();
 	CEventLog::AddMessageToLog("Cleanup done."); 
+	
 }
 
-
 void CWpkgWorker::WpkgClientAction()
+{
+	int iRepeat = secret.m_iRepeatCountOnFailure;
+	BOOL bOnStart = !IsRunOnShutdown();
+		
+	try
+	{
+		if(!process.IsNowTerminated())
+			DoAction();
+	}
+	catch(CException* exc)
+	{
+		
+		m_wokerProgressInfo.WriteStartDate(CTime(0));
+		char message[1024];
+		exc->GetErrorMessage(message,1024);
+		CEventLog::AddErrorMessageToLog(message);
+		if(/*bOnStart && */m_iRepeatAction<iRepeat)
+		{
+			exc->Delete();
+			m_iRepeatAction++;
+			Sleep(5000);
+			WpkgClientAction();
+		}
+		else
+			throw exc;
+	}
+}
+
+void CWpkgWorker::DoAction()
 {
 
 	HANDLE hToken = NULL;
@@ -206,12 +248,7 @@ void CWpkgWorker::WpkgClientAction()
 
 	// working done
 	m_wokerProgressInfo.WriteStartDate(CTime(0));
-
-
 	Sleep(3000);
-
-
-
 }
 
 void CWpkgWorker::PerformRestart(int iLoggedUsers)
@@ -241,5 +278,9 @@ void CWpkgWorker::Initialize(void)
 	// Load secret data
 	secret.LoadSecret();
 	CEventLog::m_PathToLogFile = secret.m_strLogFile;
+
+	CEventLog::AddMessageToLog("Initializing socket...");
+	if(!AfxSocketInit())
+		CEventLog::AddMessageToLog("Socket initialization failed.");
 
 }

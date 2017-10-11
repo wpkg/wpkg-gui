@@ -36,6 +36,7 @@ DWORD CSecret::m_dwServerPingScriptTimeout;
 CString CSecret::m_strServerIP;
 CString CSecret::m_ServerPingScriptFile;
 BOOL CSecret::m_bLaptopMode;
+int CSecret::m_iRepeatCountOnFailure;
 
 
 
@@ -234,10 +235,9 @@ void CSecret::FormatXml(CXmlSettings& st)
 
 
 	st.WriteParameter("logon-interrupt-password",st.Crypt(m_strInterruptPwd));
-	
-	
-	
-	
+
+	tempStr.Format("%u",m_iRepeatCountOnFailure);
+	st.WriteParameter("repeat-count-on-failure",tempStr);
 }
 
 void CSecret::Export(CString fileName)
@@ -418,8 +418,10 @@ void CSecret::ParseXml(CXmlSettings& st)
 	value.Empty();
 	st.GetParameter("/configuration/logon-interrupt-password",value);
 	m_strInterruptPwd = st.Decrypt(value);
-	
 
+	value = "0";
+	st.GetParameter("/configuration/repeat-count-on-failure",value);
+	m_iRepeatCountOnFailure = atol(value);
 }
 
 

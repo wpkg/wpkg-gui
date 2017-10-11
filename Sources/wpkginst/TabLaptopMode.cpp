@@ -22,7 +22,7 @@ void AFXAPI DDV_ServerTimeOut(
 		if(value<minVal || value>maxVal)
 		{
 			MessageBox(pDX->m_pDlgWnd->GetSafeHwnd(),
-				"Server connecting timeout - must be in range from 3 to 10 secods",
+				"Server connecting timeout - must be in range from 3 to 180 seconds",
 				"Warning",
 				MB_ICONWARNING);
 			
@@ -121,7 +121,7 @@ void CTabLaptopMode::DoDataExchange(CDataExchange* pDX)
 
 	DDX_Text(pDX, IDC_EDIT_SERVER_MAX_DELAY, CSecret::m_dwServerPingTimeout);
 	if(m_bValidate)
-		DDV_ServerTimeOut(pDX, CSecret::m_dwServerPingTimeout, 3, 10);
+		DDV_ServerTimeOut(pDX, CSecret::m_dwServerPingTimeout, 3, 180);
 	DDX_Text(pDX, IDC_EDIT_CUSTOM_SCRIPT_MAX_DELAY, CSecret::m_dwServerPingScriptTimeout);
 	if(m_bValidate)
 		DDV_ScriptTimeOut(pDX, CSecret::m_dwServerPingScriptTimeout, 3, 60);
@@ -162,7 +162,7 @@ BOOL CTabLaptopMode::OnInitDialog()
 	CPropertyPage::OnInitDialog();
 
 	// TODO:  Add extra initialization here
-	m_spinServerDelay.SetRange(3,10);
+	m_spinServerDelay.SetRange(3,180);
 	m_spinServerDelay.SetBuddy(GetDlgItem(IDC_EDIT_SERVER_MAX_DELAY));
 
 	m_spinCustomScriptDelay.SetRange(3,60);

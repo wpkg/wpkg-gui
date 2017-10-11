@@ -19,6 +19,7 @@ public:
 	} m_EventType;
 
 	HANDLE m_hFile;
+	BOOL* m_pbTerminate;
 
 };
 

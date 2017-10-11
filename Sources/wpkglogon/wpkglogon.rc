@@ -81,8 +81,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,8
- PRODUCTVERSION 1,0,0,8
+ FILEVERSION 1,0,0,10
+ PRODUCTVERSION 1,0,0,10
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -99,13 +99,13 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "wpkg.org"
             VALUE "FileDescription", "WPKG Client"
-            VALUE "FileVersion", "1, 0, 0, 8"
+            VALUE "FileVersion", "1, 0, 0, 10"
             VALUE "InternalName", "wpkglogon"
             VALUE "LegalCopyright", "(c) Artur Majuch.  All rights reserved."
             VALUE "LegalTrademarks", "(c) Artur Majuch.  All rights reserved."
             VALUE "OriginalFilename", "wpkglogon"
             VALUE "ProductName", "WPKG Client"
-            VALUE "ProductVersion", "1, 0, 0, 8"
+            VALUE "ProductVersion", "1, 0, 0, 10"
         END
     END
     BLOCK "VarFileInfo"

@@ -5,6 +5,26 @@
 #include "wpkginst.h"
 #include "BasePropertyPage.h"
 
+void AFXAPI DDV_RangeValidate(
+   CDataExchange* pDX,
+   unsigned value,
+   unsigned minVal,
+   unsigned maxVal,
+   char* message 
+)
+{
+	if(pDX->m_bSaveAndValidate)
+	{
+		if(value<minVal || value>maxVal)
+		{
+			MessageBox(pDX->m_pDlgWnd->GetSafeHwnd(),
+				message,
+				"Warning",
+				MB_ICONWARNING);
+			pDX->Fail();
+		}
+	}
+}
 
 // CBasePropertyPage dialog
 

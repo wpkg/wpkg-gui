@@ -16,25 +16,26 @@ CEventLog::~CEventLog(void)
 
 void CEventLog::AddEntryToLog(WORD wType, LPCTSTR lpszMsg)
 {
+	TRACE1("%s\n",lpszMsg);
 	HANDLE  hEventSource;
-		// Use event logging to log the error.
-		//
-		hEventSource = RegisterEventSource(NULL, m_strAppName);
+	// Use event logging to log the error.
+	//
+	hEventSource = RegisterEventSource(NULL, m_strAppName);
 
-		if (hEventSource != NULL)
-		{
-			ReportEvent(hEventSource, // handle of event source
-				wType,                // event type
-				0,                    // event category
-				1,                    // event ID
-				NULL,                 // current user's SID
-				1,                    // strings in lpszStrings
-				0,                    // no bytes of raw data
-				&lpszMsg,// array of error strings
-				NULL);                // no raw data
+	if (hEventSource != NULL)
+	{
+		ReportEvent(hEventSource, // handle of event source
+			wType,                // event type
+			0,                    // event category
+			1,                    // event ID
+			NULL,                 // current user's SID
+			1,                    // strings in lpszStrings
+			0,                    // no bytes of raw data
+			&lpszMsg,// array of error strings
+			NULL);                // no raw data
 
-			(VOID) DeregisterEventSource(hEventSource);
-		}
+		(VOID) DeregisterEventSource(hEventSource);
+	}
 
 
 	if(!m_PathToLogFile.IsEmpty())
@@ -43,8 +44,10 @@ void CEventLog::AddEntryToLog(WORD wType, LPCTSTR lpszMsg)
 		report.m_bFlush = TRUE;
 		report.OpenReport(m_PathToLogFile);
 		report.AddInfo(lpszMsg);
+
 		report.Close();
 	}
+
 
 
 }

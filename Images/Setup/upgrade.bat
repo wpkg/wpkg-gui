@@ -1,0 +1,1 @@
+msiexec /i WPKG32.msi /norestart ALLUSERS=1 SETTINGSFILE=F:\WPKG\Images\Setup\settingsStartup.xml

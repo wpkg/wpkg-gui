@@ -34,6 +34,10 @@ void CPrioritySettings::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_LOG_FILE, CSecret::m_strLogFile);
 	DDX_Check(pDX, IDC_CHECK_LOG_TO_FILE, m_bLogToFile);
 
+	DDX_Text(pDX, IDC_EDIT_REPEAT_COUNT, CSecret::m_iRepeatCountOnFailure);
+	DDV_RangeValidate(pDX, CSecret::m_iRepeatCountOnFailure, 0, 10, "Repeat count - must be in range from 0 to 10 times");
+	DDX_Control(pDX, IDC_SPIN_REPEAT_COUNT, m_spinRepeatCount);
+
 
 }
 
@@ -52,6 +56,9 @@ BOOL CPrioritySettings::OnInitDialog()
 	CPropertyPage::OnInitDialog();
 
 	// TODO:  Add extra initialization here
+	m_spinRepeatCount.SetRange(0,10);
+	m_spinRepeatCount.SetBuddy(GetDlgItem(IDC_EDIT_REPEAT_COUNT));
+
 
 	
 	PriorityToCombo(CSecret::m_dwPriority);

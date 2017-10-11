@@ -22,8 +22,12 @@ private:
 	CRunProcess process;
 	CFileMap m_wokerProgressInfo;
 	CProgressMessage progressMessage;
+	void DoAction();
+	int m_iRepeatAction;
 
 public:
+	void TerminateProcesses();
+	void WakeUpProcesses();
 	void PerformRestart(int iLoggedUsers);
 	BOOL IsMustStop();
 	BOOL IsRunOnShutdown();

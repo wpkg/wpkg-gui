@@ -59,9 +59,11 @@ static DWORD CreateMessage(char* commandLine)
 
 
 	// Close process and thread handles. 
+	DWORD exitCode = 0;
+	
 	WaitForSingleObject(pi.hProcess,INFINITE);
 
-	DWORD exitCode = 0;
+
 	GetExitCodeProcess(pi.hProcess,&exitCode);
 
 	CloseHandle( pi.hProcess );
@@ -161,8 +163,9 @@ extern "C" void WINAPI WLEventStartup (PWLX_NOTIFICATION_INFO pInfo)
 extern "C" void WINAPI WLEventShutdown (PWLX_NOTIFICATION_INFO pInfo)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
+	
 	CSecret secret;
+	
 	secret.m_bRunOnShutdown = FALSE;
 	try
 	{
@@ -197,6 +200,7 @@ extern "C" void WINAPI WLEventShutdown (PWLX_NOTIFICATION_INFO pInfo)
 
 	if(dwTimeOut>0)
 	{
+	
 		HANDLE  hStartEvent = NULL;
 
 		hStartEvent = CreateEvent(
@@ -208,9 +212,7 @@ extern "C" void WINAPI WLEventShutdown (PWLX_NOTIFICATION_INFO pInfo)
 		if ( hStartEvent )
 		{
 			SetEvent(hStartEvent);
-			CloseHandle(hStartEvent);
 		}
-
 
 
 		RegOpenKeyEx(HKEY_LOCAL_MACHINE,
@@ -231,9 +233,14 @@ extern "C" void WINAPI WLEventShutdown (PWLX_NOTIFICATION_INFO pInfo)
 			"Path", 0, &Type, (BYTE*)value, &cbData );
 		RegCloseKey(phkResult); 
 
+		//CreateMessage("D:\\Microsoft Visual Studio 8\\Common7\\Tools\\Bin\\winnt\\Dbmon.Exe");
 		strcat(value,"WPKGMessage.exe");
-
 		CreateMessage(value);
+		
+		if ( hStartEvent )
+		{
+			CloseHandle(hStartEvent);
+		}
 
 	}
 

@@ -418,6 +418,10 @@ void CWpkgInstDlg::SaveLogonDelay(void)
 
 	RegCloseKey(phkResult);
 
+	shDelay = CSecret::m_dwShutdownDelay * 60 * 1000;
+	if(shDelay==0)
+		shDelay = 20000;
+
 	if(osi.dwMajorVersion<=5)
 	{
 

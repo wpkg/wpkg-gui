@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include ".\runprocess.h"
 #include "exceptionex.h"
+#include "afxmt.h"
 
 
 //DWORD CRunProcess::m_dwStartMode;
@@ -11,52 +12,67 @@
 
 CRunProcess::CRunProcess(void)
 {
+	m_hTerminateProcess = NULL;
+	m_hTerminateProcess = CreateEvent(
+		NULL,    // no security attributes
+		TRUE,    // manual reset event
+		FALSE,   // not-signalled
+		NULL);   // no name
+
+	m_bTerminate = FALSE;
 }
 
 CRunProcess::~CRunProcess(void)
 {
+	if(m_hTerminateProcess)
+		CloseHandle( m_hTerminateProcess );
+}
+
+BOOL CRunProcess::IsNowTerminated()
+{
+	return m_bTerminate;
 }
 
 BOOL CRunProcess::PreventSystemShutdown()
 {
-   HANDLE hToken;              // handle to process token 
-   TOKEN_PRIVILEGES tkp;       // pointer to token structure 
- 
-   // Get the current process token handle  so we can get shutdown 
-   // privilege. 
- 
-   if (!OpenProcessToken(GetCurrentProcess(), 
-         TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) 
-      return FALSE; 
- 
-   // Get the LUID for shutdown privilege. 
- 
-   LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, 
-         &tkp.Privileges[0].Luid); 
- 
-   tkp.PrivilegeCount = 1;  // one privilege to set    
-   tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED; 
- 
-   // Get shutdown privilege for this process. 
- 
-   AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, 
-        (PTOKEN_PRIVILEGES)NULL, 0); 
- 
-   if (GetLastError() != ERROR_SUCCESS) 
-      return FALSE; 
- 
-   // Prevent the system from shutting down. 
- 
-   if ( !AbortSystemShutdown(NULL) ) 
-      return FALSE; 
- 
-   // Disable shutdown privilege. 
- 
-   tkp.Privileges[0].Attributes = 0; 
-   AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, 
-       (PTOKEN_PRIVILEGES) NULL, 0); 
- 
-   return TRUE;
+	HANDLE hToken;              // handle to process token 
+	TOKEN_PRIVILEGES tkp;       // pointer to token structure 
+
+	// Get the current process token handle  so we can get shutdown 
+	// privilege. 
+
+	if (!OpenProcessToken(GetCurrentProcess(), 
+		TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) 
+		return FALSE; 
+
+	// Get the LUID for shutdown privilege. 
+
+	LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, 
+		&tkp.Privileges[0].Luid); 
+
+	tkp.PrivilegeCount = 1;  // one privilege to set    
+	tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED; 
+
+	// Get shutdown privilege for this process. 
+
+	AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, 
+		(PTOKEN_PRIVILEGES)NULL, 0); 
+
+	if (GetLastError() != ERROR_SUCCESS) 
+		return FALSE; 
+
+	// Prevent the system from shutting down. 
+
+	if ( !AbortSystemShutdown(NULL) ) 
+		return FALSE; 
+
+	// Disable shutdown privilege. 
+
+	tkp.Privileges[0].Attributes = 0; 
+	AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, 
+		(PTOKEN_PRIVILEGES) NULL, 0); 
+
+	return TRUE;
 }
 
 void CRunProcess::ReadRestartInfo(void)
@@ -75,7 +91,7 @@ void CRunProcess::ReadRestartInfo(void)
 
 	DWORD cbData = 4;
 	DWORD Type;
-	
+
 	//RegQueryValueEx( phkResult,
 	//	"Mode", 0, &Type, (BYTE*)&CRunProcess::m_dwStartMode, &cbData );
 
@@ -123,11 +139,11 @@ void CRunProcess::RestartSystem(char* message, int countOfLoggedUsers)
 	HANDLE hToken=NULL; 
 	TOKEN_PRIVILEGES tkp; 
 	DWORD error = 0;
- 
+
 	// Get a token for this process. 
- 
+
 	BOOL OK = OpenProcessToken(GetCurrentProcess(), 
-        TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken);
+		TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken);
 
 	if(!OK)
 	{
@@ -137,12 +153,12 @@ void CRunProcess::RestartSystem(char* message, int countOfLoggedUsers)
 			CExceptionEx::ThrowError("RestartSystem->OpenProcessToken",error);
 	}
 
-    
- 
+
+
 	// Get the LUID for the shutdown privilege. 
- 
+
 	OK = LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, 
-        &tkp.Privileges[0].Luid); 
+		&tkp.Privileges[0].Luid); 
 
 	if(!OK)
 	{
@@ -152,14 +168,14 @@ void CRunProcess::RestartSystem(char* message, int countOfLoggedUsers)
 			CExceptionEx::ThrowError("RestartSystem->LookupPrivilegeValue",error);
 	}
 
- 
+
 	tkp.PrivilegeCount = 1;  // one privilege to set    
 	tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED; 
- 
+
 	// Get the shutdown privilege for this process. 
- 
+
 	OK = AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, 
-        (PTOKEN_PRIVILEGES)NULL, 0); 
+		(PTOKEN_PRIVILEGES)NULL, 0); 
 
 	if(!OK)
 	{
@@ -170,8 +186,8 @@ void CRunProcess::RestartSystem(char* message, int countOfLoggedUsers)
 	}
 
 
-	
- 
+
+
 	// Shut down the system and force all applications to close. 
 
 	SetLastError(0);
@@ -203,9 +219,21 @@ void CRunProcess::RestartSystem(char* message, int countOfLoggedUsers)
 
 	tkp.Privileges[0].Attributes = 0; 
 	AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, 
-        (PTOKEN_PRIVILEGES) NULL, 0); 
- 
-	
+		(PTOKEN_PRIVILEGES) NULL, 0); 
+
+
+}
+
+void CRunProcess::TerminateProcess()
+{
+	m_bTerminate = TRUE;
+	SetEvent(m_hTerminateProcess);
+}
+
+void CRunProcess::WakeUpProcess()
+{
+	m_bTerminate = FALSE;
+	ResetEvent(m_hTerminateProcess);
 }
 
 
@@ -220,9 +248,9 @@ DWORD CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI
 	strcat(command,commandLine);
 
 	STARTUPINFO si;
-    PROCESS_INFORMATION pi;
-	
-    ZeroMemory( &si, sizeof(si) );
+	PROCESS_INFORMATION pi;
+
+	ZeroMemory( &si, sizeof(si) );
 	ZeroMemory( &pi, sizeof(pi) );
 
 	si.cb = sizeof(STARTUPINFO); 
@@ -243,7 +271,7 @@ DWORD CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI
 	si.dwX = si.dwY = si.dwXSize = si.dwYSize = 0L; 
 	si.dwFlags = STARTF_USESHOWWINDOW; 
 
-	
+
 	//si.wShowWindow = SW_SHOW; 
 	si.lpReserved2 = NULL; 
 	si.cbReserved2 = 0; 
@@ -287,7 +315,7 @@ DWORD CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI
 			NULL,
 			&si,					// Pointer to STARTUPINFO structure.
 			&pi );					// Pointer to PROCESS_INFORMATION structure.
-		   
+
 	}
 
 	if(!OK)
@@ -296,86 +324,36 @@ DWORD CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI
 		CExceptionEx::ThrowError("CreateProcess",Error);
 	}
 
+	e.m_EventType = e.typeMessage;
+	e.m_pbTerminate = &m_bTerminate;
+	m_eventSender.FireEvent(NULL,e);
 
 	
-	e.m_EventType = e.typeMessage;
-	m_eventSender.FireEvent(NULL,e);
-    
-
-    // Close process and thread handles. 
+	// Close process and thread handles. 
 	DWORD exitCode = 0;
-	DWORD dwResult = WaitForSingleObject(pi.hProcess,dwWait);
-	if(WAIT_TIMEOUT==dwResult)
-	{
-		exitCode = 2;
-		TerminateProcess(pi.hProcess,2);
-	}
-	else	
-		GetExitCodeProcess(pi.hProcess,&exitCode);
+	HANDLE  hServerEvents[2] = {pi.hProcess,m_hTerminateProcess};
 
-    CloseHandle( pi.hProcess );
-    CloseHandle( pi.hThread );
+	DWORD dwResult = WaitForMultipleObjects(2, hServerEvents, FALSE,  INFINITE );
+
+	//DWORD dwResult = WaitForSingleObject(pi.hProcess,dwWait);
+	switch(dwResult)
+	{
+	case WAIT_TIMEOUT:
+	case WAIT_OBJECT_0+1:
+
+		exitCode = 2;
+		::TerminateProcess(pi.hProcess,2);
+		break;
+
+	default:
+		GetExitCodeProcess(pi.hProcess,&exitCode);
+	}
+
+	CloseHandle( pi.hProcess );
+	CloseHandle( pi.hThread );
 	Sleep(100);
 
-	
+
 	return exitCode;
 
 }
-
-/*
-HANDLE hTokenNew = NULL, hTokenDup = NULL;
- HMODULE  hmod = LoadLibrary("kernel32.dll");
- WTSGETACTIVECONSOLESESSIONID lpfnWTSGetActiveConsoleSessionId = (WTSGETACTIVECONSOLESESSIONID)GetProcAddress(hmod,"WTSGetActiveConsoleSessionId"); 
- DWORD dwSessionId = lpfnWTSGetActiveConsoleSessionId();
- WTSQueryUserToken(dwSessionId, &hToken);
- DuplicateTokenEx(hTokenNew,MAXIMUM_ALLOWED,NULL,SecurityIdentification,TokenPrimary,&hTokenDup);
- //
- WriteToLog("Calling lpfnCreateEnvironmentBlock");
- ZeroMemory( &si, sizeof( STARTUPINFO ) );
- si.cb = sizeof( STARTUPINFO );
- si.lpDesktop = "winsta0\\default";
-
-
- LPVOID  pEnv = NULL;
- DWORD dwCreationFlag = NORMAL_PRIORITY_CLASS | CREATE_NEW_CONSOLE;
- HMODULE hModule = LoadLibrary("Userenv.dll");
- if(hModule )
- {
-  LPFN_CreateEnvironmentBlock lpfnCreateEnvironmentBlock = (LPFN_CreateEnvironmentBlock)GetProcAddress( hModule, "CreateEnvironmentBlock" );
-  if( lpfnCreateEnvironmentBlock != NULL )
-  {
-   if(lpfnCreateEnvironmentBlock(&pEnv, hTokenDup, FALSE))
-   {
-    WriteToLog("CreateEnvironmentBlock Ok");
-    dwCreationFlag |= CREATE_UNICODE_ENVIRONMENT;    
-   }
-   else
-   {
-    pEnv = NULL;
-   }
-  }
- }
-  //
- ZeroMemory( &pi,sizeof(pi));
- 
- if ( !CreateProcessAsUser(
-  hTokenDup,
-  NULL,
-  ( char * )pszCmd,  
-  NULL,
-  NULL,
-  FALSE,
-  dwCreationFlag,
-  pEnv,
-  NULL,
-  &si,
-  &pi
-  ) )
- {
-  
-  goto RESTORE;
- } 
-
-
-
-*/

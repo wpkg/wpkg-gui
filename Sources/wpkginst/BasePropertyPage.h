@@ -1,5 +1,13 @@
 #pragma once
 
+void AFXAPI DDV_RangeValidate(
+   CDataExchange* pDX,
+   unsigned value,
+   unsigned minVal,
+   unsigned maxVal,
+   char* message 
+);
+
 
 // CBasePropertyPage dialog
 

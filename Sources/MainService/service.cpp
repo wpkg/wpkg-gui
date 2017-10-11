@@ -170,11 +170,17 @@ VOID WINAPI service_ctrlEx(DWORD dwCtrlCode, DWORD dwEventType,
 		// error.
 
 	case SERVICE_CONTROL_SHUTDOWN:
-	case SERVICE_CONTROL_STOP:
+		wpkgWorker.WakeUpProcesses();
 		ServiceStop();
-		CEventLog::AddMessageToLog("System send stop or shutdown signal");
+		CEventLog::AddMessageToLog("System send shutdown signal");
+		return;
+	case SERVICE_CONTROL_STOP:
+		wpkgWorker.TerminateProcesses();
+		ServiceStop();
+		CEventLog::AddMessageToLog("System send stop signal");
 		return;
 	case SERVICE_CONTROL_PRESHUTDOWN:
+		wpkgWorker.WakeUpProcesses();
 		ServiceStop();
 		CEventLog::AddMessageToLog("System send pre-shutdown signal");
 		return;
@@ -212,6 +218,7 @@ VOID WINAPI service_ctrlEx(DWORD dwCtrlCode, DWORD dwEventType,
 
 	CEventLog::AddMessageToLog("System query service status");
 	ReportStatusToSCMgr(ssStatus.dwCurrentState, NO_ERROR, 0);
+	//ReportStatusToSCMgr(ssStatus.dwCurrentState, NO_ERROR, 3000);
 }
 
 
@@ -603,6 +610,7 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 			return;
 		}
 
+		CEventLog::AddMessageToLog("ServiceStart->SERVICE_RUNNING");
 		//
 		// End of initialization
 		//
@@ -618,6 +626,7 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 			CEventLog::AddMessageToLog("Starting WPKG on startup");
 
 			wpkgWorker.WpkgClientAction();
+			
 			if(wpkgWorker.IsMustStop())
 				ServiceStop();
 
@@ -646,6 +655,9 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 	{
 		DWORD dwWait = WaitForMultipleObjects(3, hServerEvents, FALSE,  INFINITE );
 		if ( dwWait == WAIT_OBJECT_0 )       // not overlapped i/o event - error occurred,
+		{
+			CEventLog::AddMessageToLog("SetEvent STOP (WAIT_OBJECT_0)");
+		}
 			break;                           // or server stop signaled
 
 		if ( dwWait == WAIT_OBJECT_0+1 )     // manual start event
@@ -764,11 +776,8 @@ VOID ServiceStop()
 {
 	try
 	{
-
-		//ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 120 * 60 * 1000);
+		//ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 4 * 60 * 1000);
 		ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 3000);
-
-
 		if ( hServerEvents[0] )
 			SetEvent(hServerEvents[0]);
 

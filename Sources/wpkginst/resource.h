@@ -83,8 +83,9 @@
 #define IDC_SPIN_SHUTDOWN_DELAY         1060
 #define IDC_BUTTON_SAVE                 1061
 #define IDC_CHECK_NET_USE_MACHINE_ACCOUNT 1062
-#define IDC_EDIT1                       1065
 #define IDC_EDIT_RESULT                 1065
+#define IDC_EDIT_REPEAT_COUNT           1066
+#define IDC_SPIN_REPEAT_COUNT           1067
 
 // Next default values for new objects
 // 
@@ -92,7 +93,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        142
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1066
+#define _APS_NEXT_CONTROL_VALUE         1068
 #define _APS_NEXT_SYMED_VALUE           105
 #endif
 #endif

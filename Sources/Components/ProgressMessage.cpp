@@ -51,7 +51,6 @@ void CProgressMessage::EventHandler(CObject* pSender, CEventArgs& e)
 	case e.typeHandle:
 		{
 			e.m_hFile = m_hChildStdoutWr;
-
 		}
 		break;
 	case e.typeMessage:
@@ -72,6 +71,9 @@ void CProgressMessage::EventHandler(CObject* pSender, CEventArgs& e)
 
 			for (;;) 
 			{ 
+				if(*e.m_pbTerminate)
+					break;
+
 				ZeroMemory(chBuf,BUFSIZE);
 				if( !ReadFile( m_hChildStdoutRd, chBuf, BUFSIZE, &dwRead, 
 					NULL) || dwRead == 0) break; 
@@ -83,6 +85,8 @@ void CProgressMessage::EventHandler(CObject* pSender, CEventArgs& e)
 
 				while((endPos=FindEnd(InBuffer,m_sTerminationString)) != -1)
 				{
+					if(*e.m_pbTerminate)
+						break;
 					char data[4096];
 					ZeroMemory(data,4096);
 					memcpy(data,InBuffer.GetData(),__min(endPos,4096));

@@ -76,13 +76,13 @@
         "Entry"
         {
         "MsmKey" = "8:_91C40206CA7E4683F8D766265F27135A"
-        "OwnerKey" = "8:_77D768F0E11A4AABB3EF87BF5F3FAB8E"
+        "OwnerKey" = "8:_3F1406D3CD1E49A08374B435C7E48F09"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_91C40206CA7E4683F8D766265F27135A"
-        "OwnerKey" = "8:_3F1406D3CD1E49A08374B435C7E48F09"
+        "OwnerKey" = "8:_77D768F0E11A4AABB3EF87BF5F3FAB8E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -344,7 +344,7 @@
             "SourcePath" = "8:gdiplus.dll"
             "TargetName" = "8:gdiplus.dll"
             "Tag" = "8:"
-            "Folder" = "8:_4CBB5D7A74B549A1836315AD4E91F746"
+            "Folder" = "8:_469464F1068B49B9B28CA6BB672A2496"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -526,14 +526,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:WPKG"
-        "ProductCode" = "8:{9D07059A-EC99-4F03-9BF2-BE40FB007822}"
-        "PackageCode" = "8:{4A84005C-B81F-4156-8E89-1F1E09710591}"
+        "ProductCode" = "8:{5667CA35-F658-4D0D-97E1-84430DD8F94E}"
+        "PackageCode" = "8:{B6E2624A-629E-4143-83E8-839BF0C2208F}"
         "UpgradeCode" = "8:{A7C6ACCE-162E-466E-B745-F522AA7EB12C}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.3.9"
+        "ProductVersion" = "8:1.3.14"
         "Manufacturer" = "8:WPKG.ORG"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -682,6 +682,14 @@
                                                         }
                                                         "Values"
                                                         {
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_4F9D296983E244FF9DD696D97C84EC58"
+                                                            {
+                                                            "Name" = "8:SyncForegroundPolicy"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:3"
+                                                            "Value" = "3:1"
+                                                            }
                                                         }
                                                     }
                                                 }

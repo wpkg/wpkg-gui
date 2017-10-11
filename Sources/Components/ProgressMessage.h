@@ -23,14 +23,10 @@ protected:
 		
 		for(int i=0; i<InBuffer.GetSize(); i++)
 		{
-			
-			
 			b2 = InBuffer.GetAt(i);
-			//TRACE2("FindEnd. b1=%u, b2=%u\n",b1,b2);
 
 			if(b1==b2)
 			{
-				//TRACE1("FindEnd. End at position %i\n",i);
 				endPos = i;
 				break;
 			}

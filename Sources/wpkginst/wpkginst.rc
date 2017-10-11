@@ -130,7 +130,7 @@ CAPTION "About WPKG Client"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,5,5,20,20
-    LTEXT           "WPKG Client - Version 1.3.9",IDC_STATIC,47,11,194,8,SS_NOPREFIX
+    LTEXT           "WPKG Client - Version 1.3.14",IDC_STATIC,47,11,194,8,SS_NOPREFIX
     DEFPUSHBUTTON   "OK",IDOK,391,5,50,16,WS_GROUP
     CONTROL         "",IDC_RICHEDIT,"RichEdit20A",ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,5,28,436,197
 END
@@ -213,6 +213,10 @@ BEGIN
     GROUPBOX        "Debug",IDC_STATIC,7,62,349,44,WS_GROUP
     CONTROL         "Log to file",IDC_CHECK_LOG_TO_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,75,82,10
     PUSHBUTTON      "Open",IDC_BUTTON_OPEN_LOG_FILE,263,87,31,12
+    GROUPBOX        "WPKG execution on failure",IDC_STATIC,7,114,349,44,WS_GROUP
+    EDITTEXT        IDC_EDIT_REPEAT_COUNT,74,129,40,12,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_SPIN_REPEAT_COUNT,"msctls_updown32",UDS_SETBUDDYINT | UDS_ARROWKEYS,114,128,11,15
+    LTEXT           "Repeat count:",IDC_STATIC,18,132,47,8
 END
 
 IDD_DIALOG_TEST_SETTINGS DIALOGEX 0, 0, 453, 255
@@ -291,8 +295,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,18
- PRODUCTVERSION 1,0,0,18
+ FILEVERSION 1,0,0,22
+ PRODUCTVERSION 1,0,0,22
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -310,13 +314,13 @@ BEGIN
             VALUE "Comments", "This is an installer for WPKG, an automated software deployment, upgrade and removal program for Windows"
             VALUE "CompanyName", "wpkg.org"
             VALUE "FileDescription", "WPKG Client"
-            VALUE "FileVersion", "1, 0, 0, 18"
+            VALUE "FileVersion", "1, 0, 0, 22"
             VALUE "InternalName", "wpkginst"
             VALUE "LegalCopyright", "(c) Artur Majuch.  All rights reserved."
             VALUE "LegalTrademarks", "(c) Artur Majuch.  All rights reserved."
             VALUE "OriginalFilename", "wpkginst.exe"
             VALUE "ProductName", "WPKG Client"
-            VALUE "ProductVersion", "1, 0, 0, 18"
+            VALUE "ProductVersion", "1, 0, 0, 22"
         END
     END
     BLOCK "VarFileInfo"

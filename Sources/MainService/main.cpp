@@ -22,6 +22,8 @@ static char THIS_FILE[] = __FILE__;
 int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 {
 	int nRetCode = 0;
+	
+
 
 	SERVICE_TABLE_ENTRY dispatchTable[] =
     {
@@ -36,13 +38,6 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 		
 		// TODO: change error code to suit your needs
 		printf("Fatal Error: MFC initialization failed\n");
-		nRetCode = 1;
-		return nRetCode;
-	}
-
-	if(!AfxSocketInit())
-	{
-		printf("Could not initialize socket library\n");
 		nRetCode = 1;
 		return nRetCode;
 	}
@@ -73,6 +68,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 			exit(0);
         }
 		exit(0);
+
     
     }
 
@@ -84,10 +80,10 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
     printf( "\nStartServiceCtrlDispatcher being called.\n" );
     printf( "This may take several seconds.  Please wait.\n" );
 	CEventLog::m_strAppName = TEXT(SZSERVICENAME);
-
+	
     if (!StartServiceCtrlDispatcher(dispatchTable))
 		CEventLog::AddErrorMessageToLog(TEXT("StartServiceCtrlDispatcher failed."));
-	
+		
 	return nRetCode;
 }
 

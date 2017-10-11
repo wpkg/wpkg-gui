@@ -25,6 +25,7 @@ public:
 	void PriorityToCombo(DWORD priority);
 	DWORD ComboToPriority();
 
+	CSpinButtonCtrl m_spinRepeatCount;
 	
 	virtual BOOL OnInitDialog();
 private:

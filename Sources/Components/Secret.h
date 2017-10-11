@@ -166,6 +166,7 @@ public:
 	static CString m_strServerIP;
 	static CString m_ServerPingScriptFile;
 	static BOOL m_bLaptopMode;
+	static int m_iRepeatCountOnFailure;
 
 
 	static void ParsePriority(CString str);
