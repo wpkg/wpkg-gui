@@ -41,4 +41,5 @@ public:
 	CString m_strScriptVarValue1;
 	CString m_strScriptVarName1;
 	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedButtonSelectFile();
 };

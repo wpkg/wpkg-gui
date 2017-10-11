@@ -52,6 +52,7 @@ BEGIN_MESSAGE_MAP(CWpkgInstDlg, CDialog)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_BUTTON_HELP, OnBnClickedButtonHelp)
 	ON_BN_CLICKED(IDOK, OnBnClickedOk)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_FILE, OnBnClickedButtonSelectFile)
 END_MESSAGE_MAP()
 
 
@@ -135,4 +136,24 @@ void CWpkgInstDlg::OnBnClickedOk()
 		AfxMessageBox(IDS_FIELD_REQUIRED);
 	else
 		OnOK();
+}
+
+void CWpkgInstDlg::OnBnClickedButtonSelectFile()
+{
+	try
+	{
+		CFileDialog  fdlg( TRUE,NULL, NULL, 0, "Script files (*.js)|*.js||",  NULL );
+		if(fdlg.DoModal()==IDOK)
+		{
+			//m_strScriptFile = fdlg.GetPathName();
+			m_strScriptFile = fdlg.GetFileName();
+			UpdateData(FALSE);
+		}
+	}
+	catch(CException* e)
+	{
+		e->ReportError();
+		e->Delete();
+	}
+
 }

@@ -85,7 +85,7 @@ BOOL CWpkgInstApp::InitInstance()
 	}
 
 
-	if(s.LoadSecret())
+	if(CString("").CompareNoCase(m_lpCmdLine)!=0)
 	{
 		s.m_strScriptPath = param.GetParameter("path");
 		s.m_strScriptFile = param.GetParameter("file");
@@ -104,6 +104,8 @@ BOOL CWpkgInstApp::InitInstance()
 		s.m_strScriptVarValue1 = param.GetParameter("ScriptVarValue1");
 
 	}
+	else
+		s.LoadSecret();
 
 
 	CWpkgInstDlg dlg;
