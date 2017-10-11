@@ -11,6 +11,7 @@
 #define new DEBUG_NEW
 #endif
 
+#pragma warning(disable : 4996)
 
 // CWpkgInstDlg dialog
 

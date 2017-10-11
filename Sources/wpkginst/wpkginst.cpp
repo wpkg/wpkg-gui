@@ -67,6 +67,7 @@ BOOL CWpkgInstApp::InitInstance()
 
 	//TODO: kasowanie = usuñ
 	//s.DeleteSecret();
+	//AfxMessageBox(m_lpCmdLine);
 	/////////////////////////
 	
 	BOOL bSilent = FALSE;
@@ -84,29 +85,26 @@ BOOL CWpkgInstApp::InitInstance()
 	}
 
 
-	if(!bSilent)
+	if(s.LoadSecret())
 	{
-		if(s.LoadSecret())
-		{
-			s.m_strScriptPath = param.GetParameter("path");
-			s.m_strScriptFile = param.GetParameter("file");
-			if(s.m_strScriptFile.IsEmpty())
-				s.m_strScriptFile = "wpkg.js";
-			s.m_strScriptParameters = param.GetParameter("parameters");
-			if(s.m_strScriptParameters.IsEmpty())
-				s.m_strScriptParameters = " /synchronize /nonotify /quiet";
-			s.m_strScriptConnUser = param.GetParameter("PathUser");
-			s.m_strScriptConnPassword = param.GetParameter("PathPassword");
-			s.m_strScriptExecUser = param.GetParameter("ExecUser");
-			if(s.m_strScriptExecUser.IsEmpty())
-				s.m_strScriptExecUser = "SYSTEM";
-			s.m_strScriptExecPassword = param.GetParameter("execpassword");
-			s.m_strScriptVarName1 = param.GetParameter("ScriptVarName1");
-			s.m_strScriptVarValue1 = param.GetParameter("ScriptVarValue1");
+		s.m_strScriptPath = param.GetParameter("path");
+		s.m_strScriptFile = param.GetParameter("file");
+		if(s.m_strScriptFile.IsEmpty())
+			s.m_strScriptFile = "wpkg.js";
+		s.m_strScriptParameters = param.GetParameter("parameters");
+		if(s.m_strScriptParameters.IsEmpty())
+			s.m_strScriptParameters = " /synchronize /nonotify /quiet";
+		s.m_strScriptConnUser = param.GetParameter("PathUser");
+		s.m_strScriptConnPassword = param.GetParameter("PathPassword");
+		s.m_strScriptExecUser = param.GetParameter("ExecUser");
+		if(s.m_strScriptExecUser.IsEmpty())
+			s.m_strScriptExecUser = "SYSTEM";
+		s.m_strScriptExecPassword = param.GetParameter("execpassword");
+		s.m_strScriptVarName1 = param.GetParameter("ScriptVarName1");
+		s.m_strScriptVarValue1 = param.GetParameter("ScriptVarValue1");
 
-		}
 	}
-	
+
 
 	CWpkgInstDlg dlg;
 	dlg.m_strScriptPath = s.m_strScriptPath;
