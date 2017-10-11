@@ -190,6 +190,7 @@ void CSecret::Load(void)
 
 	ar>>m_strPreAction;
 	ar>>m_strPostAction;
+	ar>>m_bShowGUI;
 
 	ar.Close();
 	mf.Close();
@@ -217,6 +218,8 @@ void CSecret::Store(void)
 
 	ar<<m_strPreAction;
 	ar<<m_strPostAction;
+
+	ar<<m_bShowGUI;
 	
 	ar.Close();
 	m_dwSecretSize = (DWORD)mf.GetLength();

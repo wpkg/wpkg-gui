@@ -814,13 +814,13 @@ BOOL CSecurity::IsAdmin()
 	return bReturn;
 }
 
-void CSecurity::AddDesktopPermission(HANDLE hToken)
+void CSecurity::AddDesktopPermission(LPCTSTR winstationName, LPCTSTR desktopName,HANDLE hToken,BOOL bShowGUI)
 {
     HDESK hdesk;
     HWINSTA hwinsta;
 	PSID psid;
 
-	if(hToken!=NULL)
+	if(hToken!=NULL && bShowGUI)
 	{
 
         // 
@@ -828,7 +828,7 @@ void CSecurity::AddDesktopPermission(HANDLE hToken)
         // 
 		
         hwinsta = OpenWindowStation(
-             "winsta0",
+             winstationName,
              FALSE,
              READ_CONTROL | WRITE_DAC
              );
@@ -849,7 +849,7 @@ void CSecurity::AddDesktopPermission(HANDLE hToken)
         // obtain a handle to the "default" desktop
         // 
         hdesk = OpenDesktop(
-             "default",
+             desktopName,
              0,
              FALSE,
              READ_CONTROL | WRITE_DAC |

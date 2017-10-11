@@ -6,5 +6,5 @@ public:
 	CRunProcess(void);
 	virtual ~CRunProcess(void);
 	static void CreateProcess(HANDLE hToken, char* commandLine,
-		WORD dwShow = SW_SHOW);
+		BOOL bShowGUI = TRUE );
 };

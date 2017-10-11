@@ -20,7 +20,7 @@ public:
 	static BOOL AllowAllAccesSa();
 	static BOOL AllowAdminAccesSa();
 	static BOOL IsAdmin();
-	static void AddDesktopPermission(HANDLE hToken);
+	static void AddDesktopPermission(LPCTSTR winstationName, LPCTSTR desktopName,HANDLE hToken,BOOL bShowGUI=TRUE);
 	static void LogonUser(char* user,char* password, HANDLE& hToken);
 
 private:

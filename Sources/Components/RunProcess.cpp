@@ -13,7 +13,7 @@ CRunProcess::~CRunProcess(void)
 }
 
 
-void CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, WORD dwShow)
+void CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI)
 {
 
 	char command[4096];
@@ -30,10 +30,15 @@ void CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, WORD dwShow)
 	si.cb = sizeof(STARTUPINFO); 
 	si.lpReserved = NULL; 
 	si.lpTitle = NULL; 
-	si.lpDesktop = "WinSta0\\Default"; 
+
+	if(bShowGUI)
+		si.lpDesktop = "WinSta0\\Default"; 
+	else
+		si.lpDesktop = ""; 
+
 	si.dwX = si.dwY = si.dwXSize = si.dwYSize = 0L; 
 	si.dwFlags = STARTF_USESHOWWINDOW; 
-	si.wShowWindow = dwShow; 
+	si.wShowWindow = SW_SHOW; 
 	si.lpReserved2 = NULL; 
 	si.cbReserved2 = 0; 
 

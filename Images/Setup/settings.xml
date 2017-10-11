@@ -2,13 +2,14 @@
 <configuration>
 	<file>wpkg.js</file>
 	<path-user>path user</path-user>
-	<path-pasword>password</path-pasword>
+	<path-password>password</path-password>
 	<exec-user>exec user</exec-user>
 	<exec-password>password</exec-password>
 	<parameters>/quiet /nonotify /synchronize</parameters>
-	<silent>NO</silent>
+	<silent>YES</silent>
 	<pre-action>notepad.exe</pre-action>
 	<post-action>notepad.exe</post-action>
+	<show-GUI>NO</show-GUI>
 	<script-variable name="SCRIPTVARNAME1">SCRIPTVARVALUE1</script-variable>
 	<script-variable name="SCRIPTVARNAME2">SCRIPTVARVALUE2</script-variable>
 	<script-variable name="SCRIPTVARNAME3">SCRIPTVARVALUE3</script-variable>

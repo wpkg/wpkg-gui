@@ -138,6 +138,7 @@ public:
 	
 	CString m_strPreAction;
 	CString m_strPostAction;
+	BOOL m_bShowGUI;
 
 private:
 	void Load(void);

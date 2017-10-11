@@ -43,6 +43,8 @@ CWpkgInstApp theApp;
 BOOL CWpkgInstApp::InitInstance()
 {
 	CWinApp::InitInstance();
+
+	::CoInitialize(NULL);
 	
 	CParameters param;
 	CSecret s;
@@ -98,8 +100,6 @@ BOOL CWpkgInstApp::InitInstance()
 				CString name,value;
 				int count;
 
-				::CoInitialize(NULL);
-
 				st.CreateInstance();
 				st.Load(strFile);
 				
@@ -125,17 +125,25 @@ BOOL CWpkgInstApp::InitInstance()
 				
 				st.GetParameter("/configuration/path-user",value);
 				s.m_strScriptConnUser = value;
-				st.GetParameter("/configuration/path-pasword",value);
-				s.m_strScriptConnPassword = value;
+				st.GetParameter("/configuration/path-password",value);
+				s.m_strScriptConnPassword = st.Decrypt(value);
 				st.GetParameter("/configuration/exec-user",value);
 				s.m_strScriptExecUser = value;
 
 				st.GetParameter("/configuration/exec-password",value);
-				s.m_strScriptExecPassword = value;
+				s.m_strScriptExecPassword = st.Decrypt(value);
 				st.GetParameter("/configuration/pre-action",value);
 				s.m_strPreAction = value;
 				st.GetParameter("/configuration/post-action",value);
 				s.m_strPostAction = value;
+
+				st.GetParameter("/configuration/show-GUI",value);
+
+				if(value.CompareNoCase("YES")==0)
+					s.m_bShowGUI = TRUE;
+				else
+					s.m_bShowGUI = FALSE;
+				
 			
 			}
 			catch(_com_error e)
@@ -143,6 +151,10 @@ BOOL CWpkgInstApp::InitInstance()
 				CString str;
 				str.Format("Error occured while reading parameter from settings file:\n%s",e.ErrorMessage());
 				AfxMessageBox(str);
+			}
+			catch(...)
+			{
+				AfxMessageBox("Unknown error occured while reading parameter from settings file");
 			}
 		}
 	}
@@ -167,6 +179,7 @@ BOOL CWpkgInstApp::InitInstance()
 	dlg.AddScriptVarData(s.m_strVarArray);
 	dlg.m_strPreAction = s.m_strPreAction;
 	dlg.m_strPostAction = s.m_strPostAction;
+	dlg.m_bShowGUI = s.m_bShowGUI;
 	dlg.m_bPreAction = !dlg.m_strPreAction.IsEmpty();
 	dlg.m_bPostAction = !dlg.m_strPostAction.IsEmpty();
 
@@ -188,6 +201,7 @@ BOOL CWpkgInstApp::InitInstance()
 		dlg.GetScriptVarData(s.m_strVarArray);
 		s.m_strPreAction = dlg.m_strPreAction;
 		s.m_strPostAction = dlg.m_strPostAction;
+		s.m_bShowGUI = dlg.m_bShowGUI;
 
 	}
 	else
@@ -219,5 +233,6 @@ BOOL CWpkgInstApp::InitInstance()
 	CSecureFile::AddAdminsGroupAllAccess(value);
 	// Since the dialog has been closed, return FALSE so that we exit the
 	//  application, rather than start the application's message pump.
+	
 	return TRUE;
 }

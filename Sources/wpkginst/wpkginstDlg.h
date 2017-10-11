@@ -56,8 +56,12 @@ public:
 	CString m_strPostAction;
 	BOOL m_bPreAction;
 	BOOL m_bPostAction;
+	BOOL m_bShowGUI;
+
 	afx_msg void OnBnClickedCheck();
 	afx_msg void OnBnClickedButtonAdvanced();
 	afx_msg void OnBnClickedButtonSelectPrefile();
 	afx_msg void OnBnClickedButtonSelectPostfile();
+
+	afx_msg void OnBnClickedButtonExportSettings();
 };

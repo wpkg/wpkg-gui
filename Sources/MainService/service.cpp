@@ -424,10 +424,13 @@ void CmdInstallService(char* user, char* password)
             NULL,                       // no tag identifier
             TEXT(SZDEPENDENCIES),       // dependencies
             user,                       // LocalSystem account
-            password);                      // no password
+            password);                  // no password
 
         if ( schService )
         {
+			SERVICE_DESCRIPTION desc;
+			desc.lpDescription = SZSERVICEDESCRIPTION;
+			ChangeServiceConfig2(schService,SERVICE_CONFIG_DESCRIPTION,&desc);
             _tprintf(TEXT("%s installed.\n"), TEXT(SZSERVICEDISPLAYNAME) );
             CloseServiceHandle(schService);
         }
@@ -720,21 +723,21 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 
 		if(!secret.m_strPreAction.IsEmpty())
 		{
-			security.AddDesktopPermission(hToken);
-			process.CreateProcess(hToken, secret.m_strPreAction.GetBuffer());
+			security.AddDesktopPermission("winsta0","default",hToken,secret.m_bShowGUI);
+			process.CreateProcess(hToken, secret.m_strPreAction.GetBuffer(),secret.m_bShowGUI);
 			AddMessageToMessageLog("Script pre action execution: successfuly done");
 		}
 
 		// run cscript and wait for termination
-		process.CreateProcess(hToken, command.GetBuffer());
+		process.CreateProcess(hToken, command.GetBuffer(),secret.m_bShowGUI);
 		
 
 		AddMessageToMessageLog("Script execution: successfuly done"); 
 
 		if(!secret.m_strPostAction.IsEmpty())
 		{
-			security.AddDesktopPermission(hToken);
-			process.CreateProcess(hToken, secret.m_strPostAction.GetBuffer());
+			security.AddDesktopPermission("winsta0","default",hToken,secret.m_bShowGUI);
+			process.CreateProcess(hToken, secret.m_strPostAction.GetBuffer(),secret.m_bShowGUI);
 			AddMessageToMessageLog("Script post execution: successfuly done");
 		}
 

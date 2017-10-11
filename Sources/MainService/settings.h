@@ -17,8 +17,13 @@
 // displayed name of the service
 #define SZSERVICEDISPLAYNAME "WPKG Service"
 
+// displayed description of the service
+#define SZSERVICEDESCRIPTION       "Software deployment"
+
 // list of service dependencies - "dep1\0dep2\0\0"
 #define SZDEPENDENCIES       ""
+
+
 //////////////////////////////////////////////////////////////////////////////
 
 #endif

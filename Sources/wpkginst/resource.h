@@ -26,8 +26,11 @@
 #define IDC_BUTTON_SELECT_PREFILE       1021
 #define IDC_BUTTON_SELECT_POSTFILE      1022
 #define IDC_STATIC_GROUP_SCRIPTVARIABLES 1023
-#define IDC_STATIC_SCRIPTAVARIABLES     1024
 #define IDC_STATIC_SCRIPTVARIABLES      1024
+#define IDC_STATIC_ACTIONS2             1025
+#define IDC_STATIC_GUI                  1025
+#define IDC_BUTTON_EXPORT_SETTINGS      1026
+#define IDC_CHECK_SHOW_GUI              1027
 
 // Next default values for new objects
 // 
@@ -35,7 +38,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1025
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -5,6 +5,7 @@
 #include "wpkginst.h"
 #include "wpkginstDlg.h"
 #include ".\wpkginstdlg.h"
+#include "XmlSettings.h"
 
 
 
@@ -28,6 +29,7 @@ CWpkgInstDlg::CWpkgInstDlg(CWnd* pParent /*=NULL*/)
 	,m_strScriptExecPassword(_T(""))
 	,m_strPreAction(_T(""))
 	,m_strPostAction(_T(""))
+	, m_bShowGUI(FALSE)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -46,6 +48,7 @@ void CWpkgInstDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_SCRIPT_POSTACTION, m_strPostAction);
 	DDX_Check(pDX, IDC_CHECK_PRE, m_bPreAction);
 	DDX_Check(pDX, IDC_CHECK_POST, m_bPostAction);
+	DDX_Check(pDX, IDC_CHECK_SHOW_GUI, m_bShowGUI);
 }
 
 BEGIN_MESSAGE_MAP(CWpkgInstDlg, CDialog)
@@ -62,6 +65,7 @@ BEGIN_MESSAGE_MAP(CWpkgInstDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_ADVANCED, OnBnClickedButtonAdvanced)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_PREFILE, OnBnClickedButtonSelectPrefile)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_POSTFILE, OnBnClickedButtonSelectPostfile)
+	ON_BN_CLICKED(IDC_BUTTON_EXPORT_SETTINGS, OnBnClickedButtonExportSettings)
 END_MESSAGE_MAP()
 
 
@@ -219,7 +223,13 @@ void CWpkgInstDlg::ShowAdvanced()
 {
 	CRect rr;
 	static BOOL bAdvanced = FALSE;
-	int offset = bAdvanced ? 240 : -240;
+	int offset = bAdvanced ? 280 : -280;
+
+	GetDlgItem(IDC_STATIC_GUI)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_STATIC_GUI)->EnableWindow(bAdvanced);
+
+	GetDlgItem(IDC_CHECK_SHOW_GUI)->ShowWindow(bAdvanced);
+	GetDlgItem(IDC_CHECK_SHOW_GUI)->EnableWindow(bAdvanced);
 
 	GetDlgItem(IDC_LIST_SCRIPT_VARIABLES)->ShowWindow(bAdvanced);
 	GetDlgItem(IDC_LIST_SCRIPT_VARIABLES)->EnableWindow(bAdvanced);
@@ -271,6 +281,11 @@ void CWpkgInstDlg::ShowAdvanced()
 	ScreenToClient(&rr);
 	rr.OffsetRect(0,offset);
 	GetDlgItem(IDC_BUTTON_HELP)->MoveWindow(&rr);
+	
+	GetDlgItem(IDC_BUTTON_EXPORT_SETTINGS)->GetWindowRect(&rr);
+	ScreenToClient(&rr);
+	rr.OffsetRect(0,offset);
+	GetDlgItem(IDC_BUTTON_EXPORT_SETTINGS)->MoveWindow(&rr);
 
 	GetDlgItem(IDOK)->GetWindowRect(&rr);
 	ScreenToClient(&rr);
@@ -330,5 +345,57 @@ void CWpkgInstDlg::OnBnClickedButtonSelectPostfile()
 	{
 		m_strPostAction = fdlg.GetPathName();
 		UpdateData(FALSE);
+	}
+}
+
+void CWpkgInstDlg::OnBnClickedButtonExportSettings()
+{
+	UpdateData();
+	CString xmlFilePath;
+
+	CFileDialog  fdlg( FALSE,"xml", "settings", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+		"Settings files (*.xml)|*.xml||",  NULL );
+
+	if(fdlg.DoModal()!=IDOK)
+		return;
+	
+	xmlFilePath = fdlg.GetPathName();
+
+	try
+	{
+		CXmlSettings st;
+		
+
+		st.CreateInstance();
+		st.Init();
+		st.WriteParameter("file",m_strScriptFile);
+		st.WriteParameter("path-user",m_strScriptConnUser);
+		st.WriteParameter("path-password",st.Crypt(m_strScriptConnPassword));
+		st.WriteParameter("exec-user",m_strScriptExecUser);
+		st.WriteParameter("exec-password",st.Crypt(m_strScriptExecPassword));
+		st.WriteParameter("parameters",m_strScriptParameters);
+		st.WriteParameter("silent","YES");
+		st.WriteParameter("pre-action",m_strPreAction);
+		st.WriteParameter("post-action",m_strPostAction);
+		st.WriteParameter("show-GUI",m_bShowGUI?"YES":"NO");
+
+		for(int i=0; i<m_PathVariables.GetItemCount(); i++)
+		{
+			st.WriteParameterEx(m_PathVariables.GetItemText(i,0),
+				m_PathVariables.GetItemText(i,1));
+		}
+		
+		st.Save(xmlFilePath);
+		AfxMessageBox("Export successfully done.");
+	}
+	catch(_com_error e)
+	{
+		CString str;
+		str.Format("Error occured while writing parameter to settings file:\n%s",e.ErrorMessage());
+		AfxMessageBox(str);
+	}
+	catch(...)
+	{
+		AfxMessageBox("Unknown error occured while writing parameter to settings file");
 	}
 }
