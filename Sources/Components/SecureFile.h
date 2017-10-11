@@ -17,6 +17,13 @@ public:
 	CSecureFile();
 	static DWORD SetEmptyDACL(CString vFileName);
 	static DWORD AddAdminsGroupAllAccess(CString FileName );
+private:
+	static BOOL CSecureFile::SetPrivilege(
+	    HANDLE hToken,          // access token handle
+		LPCTSTR lpszPrivilege,  // name of privilege to enable/disable
+		BOOL bEnablePrivilege   // to enable or disable privilege
+		);
+
 
 	virtual ~CSecureFile();
 

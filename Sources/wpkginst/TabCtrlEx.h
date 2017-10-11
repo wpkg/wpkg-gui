@@ -2,6 +2,7 @@
 
 #include "TabGeneral.h"
 #include "TabLogonSettings.h"
+#include "PrioritySettings.h"
 
 
 // CTabCtrlEx
@@ -15,6 +16,7 @@ public:
 	virtual ~CTabCtrlEx();
 	CTabGeneral m_dlg1;
 	CTabLogonSettings m_dlg2;
+	CPrioritySettings m_dlg3;
 
 protected:
 	DECLARE_MESSAGE_MAP()
@@ -25,6 +27,9 @@ public:
 	void AddScriptVarData(CStringArray& data);
 	void GetScriptVarData(CStringArray& data);
 	CListCtrl* GetScriptVarCtrl();
+	DWORD GetPriority();
+	void SetPriority(DWORD priority);
+	CString GetXmlPriority();
 
 };
 

@@ -157,6 +157,9 @@ BOOL CWpkgInstApp::InitInstance()
 			dlg.m_strMessage1 = value;
 			st.GetParameter("/configuration/logon-message-2",value);
 			dlg.m_strMessage2 = value;
+
+			st.GetParameter("/configuration/priority",value);
+			s.SetPriority(value);
 			
 			
 		
@@ -199,6 +202,8 @@ BOOL CWpkgInstApp::InitInstance()
 	dlg.m_bPreAction = !dlg.m_strPreAction.IsEmpty();
 	dlg.m_bPostAction = !dlg.m_strPostAction.IsEmpty();
 
+	dlg.SetPriority(s.m_dwPriority);
+
 		
 	INT_PTR nResponse = IDCANCEL;
 
@@ -218,6 +223,7 @@ BOOL CWpkgInstApp::InitInstance()
 		s.m_strPreAction = dlg.m_strPreAction;
 		s.m_strPostAction = dlg.m_strPostAction;
 		s.m_bShowGUI = dlg.m_bShowGUI;
+		s.m_dwPriority = dlg.GetPriority();
 
 	}
 	else
@@ -247,6 +253,8 @@ BOOL CWpkgInstApp::InitInstance()
 	key.Close();
 	
 	CSecureFile::SetEmptyDACL(value);
+
+	
 	CSecureFile::AddAdminsGroupAllAccess(value);
 	// Since the dialog has been closed, return FALSE so that we exit the
 	//  application, rather than start the application's message pump.

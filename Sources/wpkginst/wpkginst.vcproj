@@ -140,6 +140,9 @@
 				RelativePath="..\Components\Parameters.cpp">
 			</File>
 			<File
+				RelativePath=".\PrioritySettings.cpp">
+			</File>
+			<File
 				RelativePath="..\Components\Secret.cpp">
 			</File>
 			<File
@@ -197,6 +200,9 @@
 			</File>
 			<File
 				RelativePath="..\Components\Parameters.h">
+			</File>
+			<File
+				RelativePath=".\PrioritySettings.h">
 			</File>
 			<File
 				RelativePath=".\Resource.h">

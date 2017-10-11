@@ -14,6 +14,14 @@
 // See WPKGMessage.cpp for the implementation of this class
 //
 
+extern BOOL bWorking;
+extern BOOL bConnected;
+extern BOOL IsWorking();
+extern BOOL IsWorkingDone();
+
+
+
+
 class CWPKGMessageApp : public CWinApp
 {
 public:

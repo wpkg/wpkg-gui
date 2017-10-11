@@ -5,10 +5,30 @@
 CSecret::CSecret(void)
 {
 	m_pSecretBuffer = NULL;
+
+	m_dwPriority = NORMAL_PRIORITY_CLASS;
 }
 
 CSecret::~CSecret(void)
 {
+}
+
+void CSecret::SetPriority(CString str)
+{
+	if(str.CompareNoCase("idle")==0)
+		m_dwPriority = IDLE_PRIORITY_CLASS;
+	if(str.CompareNoCase("below-normal")==0)
+		m_dwPriority = BELOW_NORMAL_PRIORITY_CLASS;
+	if(str.CompareNoCase("normal")==0)
+		m_dwPriority = NORMAL_PRIORITY_CLASS;
+	if(str.CompareNoCase("above-normal")==0)
+		m_dwPriority = ABOVE_NORMAL_PRIORITY_CLASS;
+	if(str.CompareNoCase("high")==0)
+		m_dwPriority = HIGH_PRIORITY_CLASS;
+	if(str.CompareNoCase("realtime")==0)
+		m_dwPriority = REALTIME_PRIORITY_CLASS;
+	
+
 }
 
 DWORD CSecret::LoadSecret()
@@ -191,6 +211,7 @@ void CSecret::Load(void)
 	ar>>m_strPreAction;
 	ar>>m_strPostAction;
 	ar>>m_bShowGUI;
+	ar>>m_dwPriority;
 
 	ar.Close();
 	mf.Close();
@@ -220,6 +241,7 @@ void CSecret::Store(void)
 	ar<<m_strPostAction;
 
 	ar<<m_bShowGUI;
+	ar<<m_dwPriority;
 	
 	ar.Close();
 	m_dwSecretSize = (DWORD)mf.GetLength();

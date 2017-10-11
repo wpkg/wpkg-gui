@@ -104,7 +104,7 @@
             "InstallAction" = "3:2"
             "Arguments" = "8:/install"
             "EntryPoint" = "8:"
-            "Sequence" = "3:2"
+            "Sequence" = "3:3"
             "Identifier" = "8:_291F1C47_413F_4C05_9273_CC1E4305BBD7"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
@@ -123,6 +123,20 @@
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
+            "{0C9D821E-95BB-411F-BE03-2864360EBF94}:_B08B1A4844554F09949D098C68EE1CDF"
+            {
+            "Name" = "8:WpkgDialog"
+            "Condition" = "8:"
+            "Object" = "8:_C904A7BE7A03434692BE700971124971"
+            "FileType" = "3:2"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:/remove"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_3148BE8A_9A5A_4EFF_BD30_7EBCA153F19B"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
             "{0C9D821E-95BB-411F-BE03-2864360EBF94}:_BE83A11FF02C4BBF88D004AEDAD74A6C"
             {
             "Name" = "8:WpkgDialog"
@@ -132,7 +146,7 @@
             "InstallAction" = "3:2"
             "Arguments" = "8:--SETTINGSFILE=[SETTINGSFILE]"
             "EntryPoint" = "8:"
-            "Sequence" = "3:1"
+            "Sequence" = "3:2"
             "Identifier" = "8:_C80DCABA_F908_47B9_8D19_F3F2F4C01E9C"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
@@ -375,13 +389,13 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:WPKG"
-        "ProductCode" = "8:{BD368683-C6EB-480A-B497-56CE35D59D28}"
-        "PackageCode" = "8:{D57BEA1D-42A4-457E-B890-F485BAE15356}"
+        "ProductCode" = "8:{27A985C1-80D2-4EB9-81F6-D8B2EABE0DE6}"
+        "PackageCode" = "8:{FEDC9962-7A3E-4697-86C0-CF1666051B9D}"
         "UpgradeCode" = "8:{A7C6ACCE-162E-466E-B745-F522AA7EB12C}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "ProductVersion" = "8:1.0.1"
+        "ProductVersion" = "8:1.0.2"
         "Manufacturer" = "8:WPKG.ORG"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -730,20 +744,6 @@
         }
         "Shortcut"
         {
-            "{478F747B-8505-45D1-9AAE-8C3B645C26E3}:_F72C8BDF3194425585D8D9DF0B3D6612"
-            {
-            "Name" = "8:WPKG Parameters"
-            "Arguments" = "8:"
-            "Description" = "8:WPKG Installer Parameters Setup"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:128"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_C904A7BE7A03434692BE700971124971"
-            "Folder" = "8:_37FB4C236B434344AAF54EA68B6CBC11"
-            "WorkingFolder" = "8:_4CBB5D7A74B549A1836315AD4E91F746"
-            "Icon" = "8:_C904A7BE7A03434692BE700971124971"
-            "Feature" = "8:"
-            }
         }
         "UserInterface"
         {

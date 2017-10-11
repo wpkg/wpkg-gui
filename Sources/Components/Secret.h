@@ -135,10 +135,11 @@ public:
 	CString m_strScriptExecUser;
 	CString m_strScriptExecPassword;
 	CStringArray m_strVarArray;
-	
 	CString m_strPreAction;
 	CString m_strPostAction;
 	BOOL m_bShowGUI;
+	DWORD m_dwPriority;
+	void SetPriority(CString str);
 
 private:
 	void Load(void);

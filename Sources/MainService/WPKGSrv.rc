@@ -67,7 +67,7 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
+ FILEVERSION 1,0,0,2
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -86,7 +86,7 @@ BEGIN
             VALUE "Comments", "This is an installer for WPKG, an automated software deployment, upgrade and removal program for Windows"
             VALUE "CompanyName", "wpkg.org"
             VALUE "FileDescription", "WPKG Srv"
-            VALUE "FileVersion", "1.0.0.1"
+            VALUE "FileVersion", "1.0.0.2"
             VALUE "InternalName", "WPKGSrv"
             VALUE "LegalCopyright", "Copyright © Artur Majuch.  All rights reserved."
             VALUE "LegalTrademarks", "Copyright © Artur Majuch.  All rights reserved."

@@ -13,7 +13,7 @@ CRunProcess::~CRunProcess(void)
 }
 
 
-void CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI)
+void CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI, DWORD dwCreationFlags)
 {
 
 	char command[4096];
@@ -53,7 +53,7 @@ void CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI)
 			NULL,					// Process handle not inheritable. 
 			NULL,					// Thread handle not inheritable. 
 			FALSE,					// Set handle inheritance to FALSE. 
-			NORMAL_PRIORITY_CLASS,	// No creation flags. 
+			dwCreationFlags,	    // Creation flags. 
 			NULL,					// Use parent’s environment block. 
 			NULL,
 			&si,					// Pointer to STARTUPINFO structure.
@@ -66,7 +66,7 @@ void CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI)
 			NULL,					// Process handle not inheritable. 
 			NULL,					// Thread handle not inheritable. 
 			FALSE,					// Set handle inheritance to FALSE. 
-			NORMAL_PRIORITY_CLASS,	// No creation flags. 
+			dwCreationFlags,	    // Creation flags. 
 			NULL,					// Use parent’s environment block. 
 			NULL,
 			&si,					// Pointer to STARTUPINFO structure.

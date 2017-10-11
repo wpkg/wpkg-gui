@@ -6,56 +6,11 @@
 #include "WPKGMessageDlg.h"
 #include ".\wpkgmessagedlg.h"
 
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
-
-static BOOL bWorking = TRUE;
-static DWORD dwTimeOut = 60; // in seconds
-
-UINT WaitForDone(LPVOID)
-{
-
-	HKEY phkResult;
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-		"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Notify\\WPKGLogon",
-		0,
-		KEY_READ,
-		&phkResult );
-
-	dwTimeOut = 60;
-	DWORD cbData = 4;
-	DWORD Type;
-	
-	DWORD OK = RegQueryValueEx( phkResult,
-		"MaxWait", 0, &Type, (BYTE*)&dwTimeOut, &cbData );
-
-	RegCloseKey(phkResult); 
-
-	dwTimeOut *= 1000;
-
-	
-	HANDLE hWorking = CreateEvent(
-        NULL,					// no security attributes
-        FALSE,					// manual reset event
-        FALSE,					// not-signalled
-        "WORKING_WPKG_SRVR");   // name
-
-	WaitForSingleObject(hWorking,dwTimeOut);
-
-	bWorking = FALSE;
-
-	return 0;
-}
-
-
-
-
-static BOOL IsWorking()
-{
-	return bWorking;
-}
 
 
 CWPKGMessageDlg::CWPKGMessageDlg(CWnd* pParent /*=NULL*/)
@@ -78,6 +33,7 @@ BEGIN_MESSAGE_MAP(CWPKGMessageDlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
 	ON_WM_TIMER()
+	ON_WM_CREATE()
 END_MESSAGE_MAP()
 
 
@@ -103,10 +59,7 @@ BOOL CWPKGMessageDlg::OnInitDialog()
 	m_Message.SetWindowText(m_strMessage1);
 
 	BringToFront();
-
-
-	AfxBeginThread(WaitForDone,NULL);
-
+	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -116,27 +69,7 @@ BOOL CWPKGMessageDlg::OnInitDialog()
 
 void CWPKGMessageDlg::OnPaint() 
 {
-	if (IsIconic())
-	{
-		CPaintDC dc(this); // device context for painting
-
-		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
-
-		// Center icon in client rectangle
-		int cxIcon = GetSystemMetrics(SM_CXICON);
-		int cyIcon = GetSystemMetrics(SM_CYICON);
-		CRect rect;
-		GetClientRect(&rect);
-		int x = (rect.Width() - cxIcon + 1) / 2;
-		int y = (rect.Height() - cyIcon + 1) / 2;
-
-		// Draw the icon
-		dc.DrawIcon(x, y, m_hIcon);
-	}
-	else
-	{
-		CDialog::OnPaint();
-	}
+	CDialog::OnPaint();
 }
 
 // The system calls this function to obtain the cursor to display while the user drags
@@ -235,4 +168,14 @@ void CWPKGMessageDlg::ReadLogonMessages(void)
 	m_strMessage1.ReleaseBuffer();
 	m_strMessage2.ReleaseBuffer();
 
+}
+
+int CWPKGMessageDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CDialog::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// TODO:  Add your specialized creation code here
+	
+	return 0;
 }

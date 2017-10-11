@@ -4,6 +4,7 @@
 #include "..\components\secret.h"
 #include "..\components\netconnection.h"
 #include "..\components\runprocess.h"
+#include "..\components\filemap.h"
 #include "..\components\exceptionex.h"
 
 
@@ -24,6 +25,7 @@ static CSecurity security;
 static CSecret secret;
 static CNetConnection connection;
 static CRunProcess process;
+static CFileMap startTimeInfo;
 
 
 static HANDLE  hServerEvents[3] = {NULL,NULL,NULL};
@@ -625,15 +627,12 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 	}
 
 	security.AllowAdminAccesSa();
-
-	// run exe only once
-	//hWorking = CreateMutex( &security.m_sa, TRUE, "WORKING_WPKG_SRVR");
-
+	
     hWorking = CreateEvent(
         NULL,					// no security attributes
-        FALSE,					// manual reset event
+        TRUE,					// manual reset event
         FALSE,					// not-signalled
-        "WORKING_WPKG_SRVR");   // name
+        "Global\\WORKING_WPKG_SRVR");   // name
 
   
     if ( hWorking == NULL)
@@ -699,6 +698,10 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 
 	try
 	{
+
+		startTimeInfo.AllowAdminAccesSa();
+		startTimeInfo.CreateSharedMem();
+		startTimeInfo.WriteStartDate(CTime::GetCurrentTime());
 		
 		
 		// Load secret data
@@ -739,12 +742,12 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 		if(!secret.m_strPreAction.IsEmpty())
 		{
 			security.AddDesktopPermission("winsta0","default",hToken,secret.m_bShowGUI);
-			process.CreateProcess(hToken, secret.m_strPreAction.GetBuffer(),secret.m_bShowGUI);
+			process.CreateProcess(hToken, secret.m_strPreAction.GetBuffer(),secret.m_bShowGUI, secret.m_dwPriority);
 			AddMessageToMessageLog("Script pre action execution: successfuly done");
 		}
 
 		// run cscript and wait for termination
-		process.CreateProcess(hToken, command.GetBuffer(),secret.m_bShowGUI);
+		process.CreateProcess(hToken, command.GetBuffer(),secret.m_bShowGUI, secret.m_dwPriority);
 		
 
 		AddMessageToMessageLog("Script execution: successfuly done"); 
@@ -752,7 +755,7 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 		if(!secret.m_strPostAction.IsEmpty())
 		{
 			security.AddDesktopPermission("winsta0","default",hToken,secret.m_bShowGUI);
-			process.CreateProcess(hToken, secret.m_strPostAction.GetBuffer(),secret.m_bShowGUI);
+			process.CreateProcess(hToken, secret.m_strPostAction.GetBuffer(),secret.m_bShowGUI,secret.m_dwPriority);
 			AddMessageToMessageLog("Script post execution: successfuly done");
 		}
 
@@ -776,6 +779,7 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 
 
 	// working done
+	startTimeInfo.WriteStartDate(CTime(0));
 	if(hWorking)
 	{
 		SetEvent(hWorking);
@@ -817,6 +821,7 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 cleanup:
 
 	// working done
+	startTimeInfo.WriteStartDate(CTime(0));
 	if(hWorking)
 	{
 		SetEvent(hWorking);

@@ -51,7 +51,7 @@ DWORD CSecureFile::SetEmptyDACL(CString vFileName)
 
 	// attach the emtpy ACL as the object's DACL
 	dwRes = SetNamedSecurityInfo(vFileName.GetBuffer(1024), SE_FILE_OBJECT, 
-      0x80000004L/*DACL_SECURITY_INFORMATION*/,  
+      0x80000004L /*DACL_SECURITY_INFORMATION*/,  
       NULL, NULL, pDacl, NULL);
 	vFileName.ReleaseBuffer(1024);
 
@@ -87,7 +87,7 @@ DWORD CSecureFile::AddAdminsGroupAllAccess(CString vFileName)
             &pSIDAliasAdmins)) 
 	{ 
 
-        return -1; 
+        return GetLastError(); 
     } 
 
 	ZeroMemory( ea, sizeof( EXPLICIT_ACCESS ) * 2 );
@@ -113,9 +113,72 @@ DWORD CSecureFile::AddAdminsGroupAllAccess(CString vFileName)
 		goto Cleanup;
 
 
-	dwRes = SetNamedSecurityInfo(vFileName.GetBuffer(1024), SE_FILE_OBJECT, 
+	dwRes = SetNamedSecurityInfo(vFileName.GetBuffer(), SE_FILE_OBJECT, 
       DACL_SECURITY_INFORMATION,  
       NULL, NULL, pNewDACL, NULL);
+
+
+    if (dwRes == ERROR_ACCESS_DENIED)
+    {
+		// If the preceding call failed because access was denied, 
+		// enable the SE_TAKE_OWNERSHIP_NAME privilege, create a SID for 
+		// the Administrators group, take ownership of the object, and 
+		// disable the privilege. Then try again to set the object's DACL.
+		HANDLE hToken = NULL; 
+
+
+		// Open a handle to the access token for the calling process.
+		if (!OpenProcessToken(GetCurrentProcess(), 
+							TOKEN_ADJUST_PRIVILEGES, 
+							&hToken)) 
+		{
+			dwRes = GetLastError(); 
+			goto Cleanup; 
+		} 
+
+		// Enable the SE_TAKE_OWNERSHIP_NAME privilege.
+		if (!SetPrivilege(hToken, SE_TAKE_OWNERSHIP_NAME, TRUE)) 
+		{
+			dwRes = GetLastError(); 
+			goto Cleanup; 
+		}
+
+		// Set the owner in the object's security descriptor.
+		dwRes = SetNamedSecurityInfo(
+			vFileName.GetBuffer(),       // name of the object
+			SE_FILE_OBJECT,              // type of object
+			OWNER_SECURITY_INFORMATION,  // change only the object's owner
+			pSIDAliasAdmins,             // SID of Administrator group
+			NULL,
+			NULL,
+			NULL); 
+
+		if (dwRes != ERROR_SUCCESS) 
+		{
+			dwRes = GetLastError(); 
+			goto Cleanup;
+		}
+	        
+		// Disable the SE_TAKE_OWNERSHIP_NAME privilege.
+		if (!SetPrivilege(hToken, SE_TAKE_OWNERSHIP_NAME, FALSE)) 
+		{
+			dwRes = GetLastError(); 
+			goto Cleanup;
+		}
+
+		// Try again to modify the object's DACL, now that we are the owner.
+		dwRes = SetNamedSecurityInfo(
+			vFileName.GetBuffer(),       // name of the object
+			SE_FILE_OBJECT,              // type of object
+			DACL_SECURITY_INFORMATION,   // change only the object's DACL
+			NULL, NULL,                  // do not change owner or group
+			pNewDACL,                    // DACL specified
+			NULL);                       // do not change SACL
+
+
+	}
+
+
 	vFileName.ReleaseBuffer(1024);
 
 Cleanup: 
@@ -129,5 +192,47 @@ Cleanup:
 
 	return dwRes;
 
+}
+
+BOOL CSecureFile::SetPrivilege(
+    HANDLE hToken,          // access token handle
+    LPCTSTR lpszPrivilege,  // name of privilege to enable/disable
+    BOOL bEnablePrivilege   // to enable or disable privilege
+    ) 
+{
+	TOKEN_PRIVILEGES tp;
+	LUID luid;
+
+	if ( !LookupPrivilegeValue( 
+			NULL,            // lookup privilege on local system
+			lpszPrivilege,   // privilege to lookup 
+			&luid ) )        // receives LUID of privilege
+	{
+		
+		return FALSE; 
+	}
+
+	tp.PrivilegeCount = 1;
+	tp.Privileges[0].Luid = luid;
+	if (bEnablePrivilege)
+		tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+	else
+		tp.Privileges[0].Attributes = 0;
+
+	// Enable the privilege or disable all privileges.
+
+	if ( !AdjustTokenPrivileges(
+		hToken, 
+		FALSE, 
+		&tp, 
+		sizeof(TOKEN_PRIVILEGES), 
+		(PTOKEN_PRIVILEGES) NULL, 
+		(PDWORD) NULL) )
+	{ 
+		
+		return FALSE; 
+	} 
+
+	return TRUE;
 }
 

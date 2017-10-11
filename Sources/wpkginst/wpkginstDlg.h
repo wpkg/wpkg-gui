@@ -37,6 +37,8 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
+	void SetPriority(DWORD priority);
+	DWORD GetPriority();
 	
 	
 	CString m_strScriptFile;

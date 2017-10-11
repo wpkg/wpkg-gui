@@ -373,62 +373,64 @@ void CWpkgInstDlg::OnBnClickedButtonAdvanced()
 
 void CWpkgInstDlg::OnBnClickedButtonExportSettings()
 {
-	UpdateData();
-	m_TabSettings.UpdateData();
-
-	CString xmlFilePath;
-
-	CFileDialog  fdlg( FALSE,"xml", "settings", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-		"Settings files (*.xml)|*.xml||",  NULL );
-
-	if(fdlg.DoModal()!=IDOK)
-		return;
-	
-	xmlFilePath = fdlg.GetPathName();
-
-	try
+	if(UpdateData() &&	m_TabSettings.UpdateData())
 	{
-		CXmlSettings st;
+
+		CString xmlFilePath;
+
+		CFileDialog  fdlg( FALSE,"xml", "settings", OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+			"Settings files (*.xml)|*.xml||",  NULL );
+
+		if(fdlg.DoModal()!=IDOK)
+			return;
 		
+		xmlFilePath = fdlg.GetPathName();
 
-		st.CreateInstance();
-		st.Init();
-		st.WriteParameter("file",m_strScriptFile);
-		st.WriteParameter("path-user",m_strScriptConnUser);
-		st.WriteParameter("path-password",st.Crypt(m_strScriptConnPassword));
-		st.WriteParameter("exec-user",m_strScriptExecUser);
-		st.WriteParameter("exec-password",st.Crypt(m_strScriptExecPassword));
-		st.WriteParameter("parameters",m_strScriptParameters);
-		st.WriteParameter("silent","YES");
-		st.WriteParameter("pre-action",m_strPreAction);
-		st.WriteParameter("post-action",m_strPostAction);
-		st.WriteParameter("show-GUI",m_bShowGUI?"YES":"NO");
-
-		CString tempStr;
-		tempStr.Format("%u",m_dwLogonDelay);
-		st.WriteParameter("logon-delay",tempStr);
-		st.WriteParameter("logon-message-1",m_strMessage1);
-		st.WriteParameter("logon-message-2",m_strMessage2);
-
-		CListCtrl* pPathVariables = m_TabSettings.GetScriptVarCtrl();
-		for(int i=0; i<pPathVariables->GetItemCount(); i++)
+		try
 		{
-			st.WriteParameterEx(pPathVariables->GetItemText(i,0),
-				pPathVariables->GetItemText(i,1));
+			CXmlSettings st;
+			
+
+			st.CreateInstance();
+			st.Init();
+			st.WriteParameter("file",m_strScriptFile);
+			st.WriteParameter("path-user",m_strScriptConnUser);
+			st.WriteParameter("path-password",st.Crypt(m_strScriptConnPassword));
+			st.WriteParameter("exec-user",m_strScriptExecUser);
+			st.WriteParameter("exec-password",st.Crypt(m_strScriptExecPassword));
+			st.WriteParameter("parameters",m_strScriptParameters);
+			st.WriteParameter("silent","YES");
+			st.WriteParameter("pre-action",m_strPreAction);
+			st.WriteParameter("post-action",m_strPostAction);
+			st.WriteParameter("show-GUI",m_bShowGUI?"YES":"NO");
+
+			CString tempStr;
+			tempStr.Format("%u",m_dwLogonDelay);
+			st.WriteParameter("logon-delay",tempStr);
+			st.WriteParameter("logon-message-1",m_strMessage1);
+			st.WriteParameter("logon-message-2",m_strMessage2);
+
+			CListCtrl* pPathVariables = m_TabSettings.GetScriptVarCtrl();
+			for(int i=0; i<pPathVariables->GetItemCount(); i++)
+			{
+				st.WriteParameterEx(pPathVariables->GetItemText(i,0),
+					pPathVariables->GetItemText(i,1));
+			}
+			
+			st.WriteParameter("priority",m_TabSettings.GetXmlPriority());
+			st.Save(xmlFilePath);
+			AfxMessageBox("Export successfully done.");
 		}
-		
-		st.Save(xmlFilePath);
-		AfxMessageBox("Export successfully done.");
-	}
-	catch(_com_error e)
-	{
-		CString str;
-		str.Format("Error occured while writing parameter to settings file:\n%s",e.ErrorMessage());
-		AfxMessageBox(str);
-	}
-	catch(...)
-	{
-		AfxMessageBox("Unknown error occured while writing parameter to settings file");
+		catch(_com_error e)
+		{
+			CString str;
+			str.Format("Error occured while writing parameter to settings file:\n%s",e.ErrorMessage());
+			AfxMessageBox(str);
+		}
+		catch(...)
+		{
+			AfxMessageBox("Unknown error occured while writing parameter to settings file");
+		}
 	}
 }
 
@@ -451,6 +453,10 @@ void CWpkgInstDlg::ReadLogonDelay(void)
 
 	RegCloseKey(phkResult); 
 
+	// logon delay must be longer then wpkgmessage wait
+	if(m_dwLogonDelay>30)
+		if(m_dwLogonDelay-=30)
+
 	m_dwLogonDelay /= 60;
 
 
@@ -462,6 +468,10 @@ void CWpkgInstDlg::SaveLogonDelay(void)
 	DWORD lpdwDisposition = REG_CREATED_NEW_KEY;
 
 	m_dwLogonDelay *= 60;
+
+	// logon delay must be longer then wpkgmessage wait
+	if(m_dwLogonDelay>0)
+		m_dwLogonDelay += 30; // in seconds
 
 	RegCreateKeyEx(HKEY_LOCAL_MACHINE,
 		"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Notify\\WPKGLogon",
@@ -549,4 +559,15 @@ void CWpkgInstDlg::OnBnClickedButtonAbout()
 	CAboutDlg dlgAbout;
 	dlgAbout.DoModal();
 }
+
+void CWpkgInstDlg::SetPriority(DWORD priority)
+{
+	m_TabSettings.SetPriority(priority);
+}
+
+DWORD CWpkgInstDlg::GetPriority()
+{
+	return m_TabSettings.GetPriority();
+}
+
 

@@ -144,6 +144,9 @@
 				RelativePath="..\Components\ExceptionEx.cpp">
 			</File>
 			<File
+				RelativePath="..\Components\FileMap.cpp">
+			</File>
+			<File
 				RelativePath="main.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -225,6 +228,9 @@
 				RelativePath="..\Components\ExceptionEx.h">
 			</File>
 			<File
+				RelativePath="..\Components\FileMap.h">
+			</File>
+			<File
 				RelativePath="..\Components\NetConnection.h">
 			</File>
 			<File
@@ -251,6 +257,9 @@
 		</Filter>
 		<File
 			RelativePath=".\message.txt">
+		</File>
+		<File
+			RelativePath=".\msg00001.bin">
 		</File>
 	</Files>
 	<Globals>

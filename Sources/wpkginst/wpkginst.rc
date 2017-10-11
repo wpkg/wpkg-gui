@@ -203,6 +203,25 @@ BEGIN
                     UDS_SETBUDDYINT | UDS_ARROWKEYS,53,17,10,15
 END
 
+IDD_DIALOG_PRIORITY_SETTINGS DIALOGEX 0, 0, 363, 179
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Idle",IDC_RADIO_IDLE_PRIORITY_CLASS,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,22,24,111,10
+    CONTROL         "Below normal",IDC_RADIO_BELOW_NORMAL_PRIORITY_CLASS,
+                    "Button",BS_AUTORADIOBUTTON,22,43,111,10
+    CONTROL         "Normal",IDC_RADIO_NORMAL_PRIORITY_CLASS,"Button",
+                    BS_AUTORADIOBUTTON,22,62,111,10
+    CONTROL         "Above normal",IDC_RADIO_ABOVE_NORMAL_PRIORITY_CLASS,
+                    "Button",BS_AUTORADIOBUTTON,22,81,111,10
+    CONTROL         "High",IDC_RADIO_HIGH_PRIORITY_CLASS,"Button",
+                    BS_AUTORADIOBUTTON,22,100,111,10
+    CONTROL         "Realtime",IDC_RADIO_REALTIME_PRIORITY_CLASS,"Button",
+                    BS_AUTORADIOBUTTON,22,119,111,10
+    GROUPBOX        "Execution priority settings",-1,7,7,349,133,WS_GROUP
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -210,7 +229,7 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
+ FILEVERSION 1,0,0,2
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -229,7 +248,7 @@ BEGIN
             VALUE "Comments", "This is an installer for WPKG, an automated software deployment, upgrade and removal program for Windows"
             VALUE "CompanyName", "wpkg.org"
             VALUE "FileDescription", "WPKG Installer Parameters"
-            VALUE "FileVersion", "1.0.0.1"
+            VALUE "FileVersion", "1.0.0.2"
             VALUE "InternalName", "wpkginst"
             VALUE "LegalCopyright", "(c) Artur Majuch.  All rights reserved."
             VALUE "LegalTrademarks", "(c) Artur Majuch.  All rights reserved."
@@ -278,6 +297,14 @@ BEGIN
     END
 
     IDD_DIALOG_LOGON_SETTINGS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 356
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 172
+    END
+
+    IDD_DIALOG_PRIORITY_SETTINGS, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 356

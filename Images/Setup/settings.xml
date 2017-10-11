@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<file>wpkg.js</file>
-	<path-user>path user</path-user>
-	<path-password>password</path-password>
-	<exec-user>exec user</exec-user>
-	<exec-password>password</exec-password>
+	<file>f:\test\wpkg.js</file>
+	<path-user></path-user>
+	<path-password></path-password>
+	<exec-user>SYSTEM</exec-user>
+	<exec-password></exec-password>
 	<parameters>/quiet /nonotify /synchronize</parameters>
-	<silent>NO</silent>
+	<silent>YES</silent>
 	<pre-action>notepad.exe</pre-action>
 	<post-action>notepad.exe</post-action>
-	<show-GUI>YES</show-GUI>
+	<show-GUI>NO</show-GUI>
 	<logon-delay>1</logon-delay>
 	<logon-message-1>TODO: insert logon message 1</logon-message-1>
 	<logon-message-2>TODO: insert logon message 2</logon-message-2>
@@ -22,4 +22,5 @@
 	<script-variable name="SCRIPTVARNAME7">SCRIPTVARVALUE7</script-variable>
 	<script-variable name="SCRIPTVARNAME8">SCRIPTVARVALUE8</script-variable>
 	<script-variable name="SCRIPTVARNAME9">SCRIPTVARVALUE9</script-variable>
+	<priority>normal</priority>
 </configuration>

@@ -102,7 +102,7 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
+ FILEVERSION 1,0,0,2
  PRODUCTVERSION 1,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -118,13 +118,15 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "TODO: <Company name>"
-            VALUE "FileDescription", "TODO: <File description>"
-            VALUE "FileVersion", "1.0.0.1"
-            VALUE "InternalName", "WPKGMessage.exe"
-            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
+            VALUE "Comments", "This is an installer for WPKG, an automated software deployment, upgrade and removal program for Windows"
+            VALUE "CompanyName", "wpkg.org"
+            VALUE "FileDescription", "WPKG Logon control"
+            VALUE "FileVersion", "1.0.0.2"
+            VALUE "InternalName", "WPKGMessage"
+            VALUE "LegalCopyright", "(c) Artur Majuch.  All rights reserved."
+            VALUE "LegalTrademarks", "(c) Artur Majuch.  All rights reserved."
             VALUE "OriginalFilename", "WPKGMessage.exe"
-            VALUE "ProductName", "TODO: <Product name>"
+            VALUE "ProductName", "WPKG"
             VALUE "ProductVersion", "1.0.0.1"
         END
     END
