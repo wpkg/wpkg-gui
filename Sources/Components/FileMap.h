@@ -7,6 +7,10 @@ class CFileMap
 {
 
 protected:
+	CTime m_tStartTime;
+	CEvent* m_pSyncEvent;
+	CMutex* m_pSyncMutex;
+	CEvent* m_pLogonDelayWorkingEvent;
 	void ReleaseSharedMem();
 
 	static SID_IDENTIFIER_AUTHORITY 
@@ -26,7 +30,7 @@ public:
 	HANDLE m_hMapFile;
 	CString m_szMapName;
 	DWORD m_uiDataSize;
-	LPVOID m_lpMapAddress;
+	LPBYTE m_lpMapAddress;
 	CFileMap(void);
 	~CFileMap(void);
 
@@ -34,6 +38,12 @@ public:
 	BOOL OpenSharedMem();
 	void WriteStartDate(CTime date);
 	CTime ReadStartDate();
+	void WriteMessage(CString str);
+	BOOL IsWorking(CString& str, DWORD dwMaxTick);
+	void AbortWorkingMonitor();
+	void LogonDelayWorking();
+	void WaitForLogonDelay();
+	
 	static BOOL AllowAllAccesSa();
 	static BOOL AllowAdminAccesSa();
 };

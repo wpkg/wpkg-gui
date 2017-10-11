@@ -33,6 +33,14 @@ BOOL CServerPing::WaitForConnect(CString ip, DWORD timeout)
 {
 	BOOL OK = Create(0,SOCK_STREAM,FD_CONNECT);
 	OK = Connect(ip,139);
+	DWORD err = -1;
+	if(!OK)
+	{
+		err = CAsyncSocket::GetLastError();
+		if(err==WSAEWOULDBLOCK)
+			err = 0;
+	}
+
 
 	m_bResult = FALSE;
 	m_iErrorCode = -1;

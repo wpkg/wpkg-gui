@@ -109,6 +109,8 @@ BOOL CWpkgInstApp::InitInstance()
 			{
 				s.Import(str);
 				s.StoreSecret();
+				dlg.SaveLogonDelay();
+				//dlg.SaveLogonMessages();
 				m_iCodeReturned = 0;
 				return FALSE;
 			}
@@ -202,31 +204,16 @@ BOOL CWpkgInstApp::InitInstance()
 	}
 
 
-	INT_PTR nResponse = IDCANCEL;
-
 	if(!bSilent)
 	{
 		m_pMainWnd = &dlg;
-		nResponse = dlg.DoModal();
+		dlg.DoModal();
 	}
 	else
-		nResponse = IDOK;
-
-	if (nResponse == IDOK)
 	{
-		// TODO: Place code here to handle when the dialog is
-		//  dismissed with OK
 		s.StoreSecret();
 		dlg.SaveLogonDelay();
-		dlg.SaveLogonMessages();
-
-	}
-	else if (nResponse == IDCANCEL)
-	{
-		// TODO: Place code here to handle when the dialog is
-		//  dismissed with Cancel
-		m_iCodeReturned = 2;
-		return FALSE;
+		//dlg.SaveLogonMessages();
 	}
 
 

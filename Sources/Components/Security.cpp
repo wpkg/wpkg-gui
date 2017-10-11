@@ -845,6 +845,7 @@ void CSecurity::AddDesktopPermission(LPCTSTR winstationName, LPCTSTR desktopName
         if (!SetProcessWindowStation(hwinsta))
              CExceptionEx::ThrowError("SetProcessWindowStation",GetLastError());
 
+
         // 
         // obtain a handle to the "default" desktop
         // 

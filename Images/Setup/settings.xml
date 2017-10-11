@@ -1,26 +1,2 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-	<file>f:\test\wpkg.js</file>
-	<path-user></path-user>
-	<path-password></path-password>
-	<exec-user>SYSTEM</exec-user>
-	<exec-password></exec-password>
-	<parameters>/quiet /nonotify /synchronize</parameters>
-	<silent>NO</silent>
-	<pre-action>notepad.exe</pre-action>
-	<post-action>notepad.exe</post-action>
-	<show-GUI>NO</show-GUI>
-	<logon-delay>1</logon-delay>
-	<logon-message-1>TODO: insert logon message 1</logon-message-1>
-	<logon-message-2>TODO: insert logon message 2</logon-message-2>
-	<script-variable name="SCRIPTVARNAME1">SCRIPTVARVALUE1</script-variable>
-	<script-variable name="SCRIPTVARNAME2">SCRIPTVARVALUE2</script-variable>
-	<script-variable name="SCRIPTVARNAME3">SCRIPTVARVALUE3</script-variable>
-	<script-variable name="SCRIPTVARNAME4">SCRIPTVARVALUE4</script-variable>
-	<script-variable name="SCRIPTVARNAME5">SCRIPTVARVALUE5</script-variable>
-	<script-variable name="SCRIPTVARNAME6">SCRIPTVARVALUE6</script-variable>
-	<script-variable name="SCRIPTVARNAME7">SCRIPTVARVALUE7</script-variable>
-	<script-variable name="SCRIPTVARNAME8">SCRIPTVARVALUE8</script-variable>
-	<script-variable name="SCRIPTVARNAME9">SCRIPTVARVALUE9</script-variable>
-	<priority>normal</priority>
-</configuration>
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration><file>\\arti2013\wpkg\wpkg.js</file><path-user>arti</path-user><path-password>YcWyDZNatFcA3VLjs6Y=</path-password><exec-user>arti</exec-user><exec-password>YcWyDZNatFcA3VLjs6Y=</exec-password><parameters>/synchronize /nonotify /quiet</parameters><silent>YES</silent><pre-action></pre-action><post-action></post-action><show-GUI>NO</show-GUI><logon-delay>5</logon-delay><logon-message-title>WPKG Software Deployment - Powered by e-MSoft</logon-message-title><logon-message-1>WPKG is installing applications and applying settings...</logon-message-1><logon-message-2>Please wait, don't restart or power off your computer...</logon-message-2><priority>normal</priority><stop-service-after-done>YES</stop-service-after-done><laptop-mode>NO</laptop-mode><server-connecting-method>standard</server-connecting-method><server-connecting-ip></server-connecting-ip><server-connecting-timeout>10</server-connecting-timeout><server-connecting-script-timeout>3</server-connecting-script-timeout><server-connecting-script-file></server-connecting-script-file><log-file>c:\wpkg.txt</log-file><run-on-shutdown>YES</run-on-shutdown><shutdown-delay>0</shutdown-delay></configuration>

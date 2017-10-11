@@ -5,16 +5,19 @@
 CNetConnection::CNetConnection(void)
 {
 	m_bSilent = TRUE;
+	strNetPath.Empty();
 }
 
 CNetConnection::~CNetConnection(void)
 {
+	if(!strNetPath.IsEmpty())
+		DisconnectFromServer(strNetPath);
 }
 
 DWORD CNetConnection::DisconnectFromServer(CString RemotePath)
 {
 	HANDLE hEnum;
-	DWORD counter=0xFFFFFFFF;
+	DWORD counter=0;
 	BYTE buffer[1024*16];
 	DWORD size=1024*16;
 
@@ -128,6 +131,7 @@ void CNetConnection::AddConnection(CString RemotePath, CString user,
 	nr.lpRemoteName = strRemotePath.GetBuffer();
 	nr.lpProvider = NULL;
 
+	strNetPath.Empty();
 	
 	Error = WNetAddConnection2( &nr,
 		password,
@@ -137,6 +141,10 @@ void CNetConnection::AddConnection(CString RemotePath, CString user,
 
 	if( Error != 0 && Error != ERROR_ALREADY_ASSIGNED )
 		CExceptionEx::ThrowError("WNetAddConnection2",Error);
+
+	strRemotePath.ReleaseBuffer();
+
+	strNetPath = strRemotePath;
 	
 }
 

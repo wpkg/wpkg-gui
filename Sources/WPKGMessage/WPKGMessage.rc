@@ -64,7 +64,43 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "wpkginst.ico"
+IDR_MAINFRAME           ICON                    "res\\wpkgmessage.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_INTERRUPT DIALOGEX 0, 0, 135, 50
+STYLE DS_SYSMODAL | DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Logon delay interrupt"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT_PWD,47,7,80,14,ES_PASSWORD | ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,23,30,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,78,30,50,14
+    LTEXT           "Password:",IDC_STATIC,7,10,34,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_DIALOG_INTERRUPT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 128
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 43
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
 #endif    // Polish resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -83,16 +119,15 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Dialog
 //
 
-IDD_WPKGMESSAGE_DIALOG DIALOGEX 0, 0, 389, 79
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | 
-    WS_CAPTION
+IDD_WPKGMESSAGE_DIALOG DIALOGEX 0, 0, 389, 92
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION
 EXSTYLE WS_EX_APPWINDOW
 CAPTION "WPKG Software Deployment"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    CTEXT           "",IDC_STATIC_MESSAGE,7,14,375,31
-    CONTROL         "",IDC_PROGRESS,"msctls_progress32",WS_BORDER,7,58,375,
-                    14
+    CTEXT           "",IDC_STATIC_MESSAGE,7,7,375,14,0,WS_EX_TRANSPARENT
+    CONTROL         "",IDC_PROGRESS,"msctls_progress32",WS_BORDER,7,71,375,14
+    CTEXT           "",IDC_STATIC_PROGRESS,7,20,375,46,0,WS_EX_TRANSPARENT
 END
 
 
@@ -102,8 +137,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,4
- PRODUCTVERSION 1,0,0,4
+ FILEVERSION 1,0,0,12
+ PRODUCTVERSION 1,0,0,12
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -121,13 +156,13 @@ BEGIN
             VALUE "Comments", "This is an installer for WPKG, an automated software deployment, upgrade and removal program for Windows"
             VALUE "CompanyName", "wpkg.org"
             VALUE "FileDescription", "WPKG Logon control"
-            VALUE "FileVersion", "1.0.0.4"
+            VALUE "FileVersion", "1, 0, 0, 12"
             VALUE "InternalName", "WPKGMessage"
             VALUE "LegalCopyright", "(c) Artur Majuch.  All rights reserved."
             VALUE "LegalTrademarks", "(c) Artur Majuch.  All rights reserved."
             VALUE "OriginalFilename", "WPKGMessage.exe"
-            VALUE "ProductName", "WPKG"
-            VALUE "ProductVersion", "1.0.0.4"
+            VALUE "ProductName", "WPKG Client"
+            VALUE "ProductVersion", "1, 0, 0, 12"
         END
     END
     BLOCK "VarFileInfo"
@@ -150,7 +185,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 382
         TOPMARGIN, 7
-        BOTTOMMARGIN, 72
+        BOTTOMMARGIN, 85
     END
 END
 #endif    // APSTUDIO_INVOKED

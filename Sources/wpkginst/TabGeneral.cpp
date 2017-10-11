@@ -13,7 +13,7 @@
 
 IMPLEMENT_DYNAMIC(CTabGeneral, CPropertyPage)
 CTabGeneral::CTabGeneral()
-	: CPropertyPage(CTabGeneral::IDD)
+	: CBasePropertyPage(CTabGeneral::IDD)
 {
 	m_bPreAction = FALSE;
 	m_bPostAction = FALSE;
@@ -115,6 +115,8 @@ BOOL CTabGeneral::OnInitDialog()
 	UpdateCheck();
 
 	OnBnClickedCheck();
+
+	DataLoaded();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

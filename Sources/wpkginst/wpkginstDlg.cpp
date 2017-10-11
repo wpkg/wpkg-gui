@@ -7,6 +7,7 @@
 #include ".\wpkginstdlg.h"
 #include "..\components\XmlSettings.h"
 #include "..\components\secret.h"
+#include "..\components\ServiceControl.h"
 #include "afxcmn.h"
 #include "TestSettings.h"
 
@@ -23,14 +24,14 @@
 static DWORD dwStreamOffset = 0;
 
 static DWORD CALLBACK 
-LicenseStreamInCallback(DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb)
+LicenseStreamInCallback(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb)
 {
 
 	HRSRC h = FindResource(NULL,"IDR_RTF","RTF");
 	DWORD size = SizeofResource(NULL,h);
 	HGLOBAL hGlobal = LoadResource(NULL,h);
 	LPBYTE buffer = (LPBYTE)LockResource(hGlobal);
-	
+
 	DWORD copied = min((DWORD)cb,size-dwStreamOffset);
 	memcpy(pbBuff,buffer+dwStreamOffset,copied);
 	dwStreamOffset += copied;
@@ -46,13 +47,13 @@ class CAboutDlg : public CDialog
 public:
 	CAboutDlg();
 
-// Dialog Data
+	// Dialog Data
 	enum { IDD = IDD_ABOUTBOX };
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-// Implementation
+	// Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
@@ -80,13 +81,13 @@ BOOL CAboutDlg::OnInitDialog()
 	m_rEdit.GetRect(&rr);
 	rr.DeflateRect(10,10,10,10);
 	m_rEdit.SetRect(&rr);
-	
+
 	m_rEdit.SetOptions(ECOOP_OR, ECO_AUTOWORDSELECTION);
-	
+
 	EDITSTREAM es;
 
 	dwStreamOffset = 0;
-	es.dwCookie = (DWORD)0;
+	es.dwCookie = (DWORD_PTR)0;
 	es.pfnCallback = LicenseStreamInCallback; 
 	m_rEdit.StreamIn(SF_RTF, es);
 
@@ -100,58 +101,25 @@ END_MESSAGE_MAP()
 
 
 
-
-
-
-
 // CWpkgInstDlg dialog
-
-void AFXAPI DDV_EmptyScriptFile(
-                            CDataExchange* pDX,
-							CString value)
-   
-{
-	if(pDX->m_bSaveAndValidate)
-	{
-		if(value.IsEmpty())
-		{
-			CString str;
-			str.LoadString(IDS_FIELD_REQUIRED);
-			MessageBox(pDX->m_pDlgWnd->GetSafeHwnd(),
-				str,
-				"Warning",
-				MB_ICONWARNING);
-			pDX->Fail();
-		}
-	}
-}
-
-
 
 
 
 CWpkgInstDlg::CWpkgInstDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CWpkgInstDlg::IDD, pParent)
-	
+: CDialog(CWpkgInstDlg::IDD, pParent)
+
 {
-	m_bAdvanced = FALSE;
+	//m_bAdvanced = FALSE;
 
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
-	ReadLogonDelay();
-	ReadLogonMessages();
+	//ReadLogonDelay();
+	//ReadLogonMessages();
 }
 
 void CWpkgInstDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT_FILE, CSecret::m_strScriptFile);
-	DDV_EmptyScriptFile(pDX,CSecret::m_strScriptFile);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT_PARAMATERS, CSecret::m_strScriptParameters);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT_PATH_USER, CSecret::m_strScriptConnUser);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT_PATH_PASSWORD, CSecret::m_strScriptConnPassword);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT_EXEC_USER, CSecret::m_strScriptExecUser);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT_EXEC_PASSWORD, CSecret::m_strScriptExecPassword);
 	DDX_Control(pDX, IDC_TAB_ADVANCED, m_TabSettings);
 }
 
@@ -161,13 +129,15 @@ BEGIN_MESSAGE_MAP(CWpkgInstDlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_BUTTON_HELP, OnBnClickedButtonHelp)
-	ON_BN_CLICKED(IDOK, OnBnClickedOk)
-	ON_BN_CLICKED(IDC_BUTTON_SELECT_FILE, OnBnClickedButtonSelectFile)
-	ON_BN_CLICKED(IDC_BUTTON_ADVANCED, OnBnClickedButtonAdvanced)
 	ON_BN_CLICKED(IDC_BUTTON_EXPORT_SETTINGS, OnBnClickedButtonExportSettings)
 	ON_BN_CLICKED(IDC_BUTTON_ABOUT, OnBnClickedButtonAbout)
 	ON_BN_CLICKED(IDC_BUTTON_IMPORT_SETTINGS, OnBnClickedButtonImportSettings)
 	ON_BN_CLICKED(IDC_BUTTON_TEST_SETTINGS, OnBnClickedButtonTestSettings)
+	ON_WM_HELPINFO()
+	ON_BN_CLICKED(IDC_BUTTON_SAVE, &CWpkgInstDlg::OnBnClickedButtonSave)
+	ON_BN_CLICKED(IDC_BUTTON_DONATE, &CWpkgInstDlg::OnBnClickedButtonDonate)
+	ON_BN_CLICKED(IDOK, &CWpkgInstDlg::OnBnClickedOk)
+	ON_BN_CLICKED(IDCANCEL, &CWpkgInstDlg::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
 
@@ -205,8 +175,8 @@ BOOL CWpkgInstDlg::OnInitDialog()
 	// TODO: Add extra initialization here
 
 	m_TabSettings.InitTabs();
-	ShowAdvanced();
-	
+
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -274,10 +244,10 @@ void CWpkgInstDlg::OnBnClickedButtonHelp()
 
 	CString str(value);
 	if(str.Right(1)!='\\')
-		str+='\\';
+	str+='\\';
 
 	str += "help.txt";
-	
+
 	ShellExecute(NULL, _T("open"), str, NULL,NULL, SW_SHOW);
 	*/
 	HINSTANCE result = ShellExecute(NULL, _T("open"),
@@ -285,100 +255,7 @@ void CWpkgInstDlg::OnBnClickedButtonHelp()
 
 }
 
-void CWpkgInstDlg::OnBnClickedOk()
-{
-	BOOL bResult = FALSE;
-	bResult = UpdateData() && m_TabSettings.UpdateData();
-	if(bResult)
-	{
-		OnOK();
-	}
 
-}
-
-void CWpkgInstDlg::OnBnClickedButtonSelectFile()
-{
-	UpdateData();
-
-	CFileDialog  fdlg( TRUE,NULL, NULL, 0, "Script files (*.js)|*.js||",  NULL );
-
-	if(fdlg.DoModal()==IDOK)
-	{
-		CSecret::m_strScriptFile = fdlg.GetPathName();
-		UpdateData(FALSE);
-	}
-
-}
-
-
-void CWpkgInstDlg::ShowAdvanced()
-{
-	CRect rr;
-	
-	int offset = m_bAdvanced ? 315 : -315;
-
-
-	GetDlgItem(IDC_TAB_ADVANCED)->ShowWindow(m_bAdvanced);
-	GetDlgItem(IDC_TAB_ADVANCED)->EnableWindow(m_bAdvanced);
-
-
-	if(m_bAdvanced)
-		GetDlgItem(IDC_BUTTON_ADVANCED)->SetWindowText("<< General");
-	else
-		GetDlgItem(IDC_BUTTON_ADVANCED)->SetWindowText("Advanced >>");
-
-	GetDlgItem(IDC_BUTTON_ADVANCED)->GetWindowRect(&rr);
-	ScreenToClient(&rr);
-	rr.OffsetRect(0,offset);
-	GetDlgItem(IDC_BUTTON_ADVANCED)->MoveWindow(&rr);
-
-	GetDlgItem(IDC_BUTTON_ABOUT)->GetWindowRect(&rr);
-	ScreenToClient(&rr);
-	rr.OffsetRect(0,offset);
-	GetDlgItem(IDC_BUTTON_ABOUT)->MoveWindow(&rr);
-
-	GetDlgItem(IDC_BUTTON_HELP)->GetWindowRect(&rr);
-	ScreenToClient(&rr);
-	rr.OffsetRect(0,offset);
-	GetDlgItem(IDC_BUTTON_HELP)->MoveWindow(&rr);
-	
-	GetDlgItem(IDC_BUTTON_EXPORT_SETTINGS)->GetWindowRect(&rr);
-	ScreenToClient(&rr);
-	rr.OffsetRect(0,offset);
-	GetDlgItem(IDC_BUTTON_EXPORT_SETTINGS)->MoveWindow(&rr);
-
-	GetDlgItem(IDC_BUTTON_IMPORT_SETTINGS)->GetWindowRect(&rr);
-	ScreenToClient(&rr);
-	rr.OffsetRect(0,offset);
-	GetDlgItem(IDC_BUTTON_IMPORT_SETTINGS)->MoveWindow(&rr);
-
-	GetDlgItem(IDC_BUTTON_TEST_SETTINGS)->GetWindowRect(&rr);
-	ScreenToClient(&rr);
-	rr.OffsetRect(0,offset);
-	GetDlgItem(IDC_BUTTON_TEST_SETTINGS)->MoveWindow(&rr);
-
-
-
-	GetDlgItem(IDOK)->GetWindowRect(&rr);
-	ScreenToClient(&rr);
-	rr.OffsetRect(0,offset);
-	GetDlgItem(IDOK)->MoveWindow(&rr);
-	
-	GetWindowRect(&rr);
-	rr.bottom += offset;
-	MoveWindow(&rr);
-
-	CenterWindow();
-
-	m_bAdvanced = !m_bAdvanced;
-
-}
-
-
-void CWpkgInstDlg::OnBnClickedButtonAdvanced()
-{
-	ShowAdvanced();
-}
 
 void CWpkgInstDlg::OnBnClickedButtonImportSettings()
 {
@@ -389,7 +266,7 @@ void CWpkgInstDlg::OnBnClickedButtonImportSettings()
 
 	if(fdlg.DoModal()!=IDOK)
 		return;
-	
+
 	xmlFilePath = fdlg.GetPathName();
 
 	try
@@ -434,7 +311,7 @@ void CWpkgInstDlg::OnBnClickedButtonExportSettings()
 
 		if(fdlg.DoModal()!=IDOK)
 			return;
-		
+
 		xmlFilePath = fdlg.GetPathName();
 
 		try
@@ -456,44 +333,46 @@ void CWpkgInstDlg::OnBnClickedButtonExportSettings()
 	}
 }
 
+/*
 void CWpkgInstDlg::ReadLogonDelay(void)
 {
-	CSecret::m_dwLogonDelay = 0;
+CSecret::m_dwLogonDelay = 0;
 
-	HKEY phkResult;
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-		"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Notify\\WPKGLogon",
-		0,
-		KEY_READ,
-		&phkResult );
+HKEY phkResult;
+RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Notify\\WPKGLogon",
+0,
+KEY_READ,
+&phkResult );
 
-	DWORD cbData = 4;
-	DWORD Type;
-	
-	RegQueryValueEx( phkResult,
-		"MaxWait", 0, &Type, (BYTE*)&CSecret::m_dwLogonDelay, &cbData );
+DWORD cbData = 4;
+DWORD Type;
 
-	RegCloseKey(phkResult); 
+RegQueryValueEx( phkResult,
+"MaxWait", 0, &Type, (BYTE*)&CSecret::m_dwLogonDelay, &cbData );
 
-	// logon delay must be longer then wpkgmessage wait
-	if(CSecret::m_dwLogonDelay>30)
-		if(CSecret::m_dwLogonDelay-=30)
+RegCloseKey(phkResult); 
 
-	CSecret::m_dwLogonDelay /= 60;
+// logon delay must be longer then wpkgmessage wait
+if(CSecret::m_dwLogonDelay>30)
+if(CSecret::m_dwLogonDelay-=30)
+
+CSecret::m_dwLogonDelay /= 60;
 
 
 }
+*/
 
 void CWpkgInstDlg::SaveLogonDelay(void)
 {
 	HKEY phkResult;
 	DWORD lpdwDisposition = REG_CREATED_NEW_KEY;
 
-	CSecret::m_dwLogonDelay *= 60;
+	DWORD logonDelay = CSecret::m_dwLogonDelay * 60;
 
 	// logon delay must be longer then wpkgmessage wait
-	if(CSecret::m_dwLogonDelay>0)
-		CSecret::m_dwLogonDelay += 30; // in seconds
+	if(logonDelay>0)
+		logonDelay += 30; // in seconds
 
 	RegCreateKeyEx(HKEY_LOCAL_MACHINE,
 		"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\Notify\\WPKGLogon",
@@ -504,75 +383,121 @@ void CWpkgInstDlg::SaveLogonDelay(void)
 		&lpdwDisposition);
 
 
-	RegSetValueEx( phkResult,
-		"MaxWait", 0, REG_DWORD, (BYTE*)&CSecret::m_dwLogonDelay, 4 );
+	OSVERSIONINFO osi;
+	osi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+	GetVersionEx( &osi );
 
-	RegCloseKey(phkResult); 
+	DWORD shDelay = 0;
+	shDelay = CSecret::m_dwShutdownDelay * 60 * 1000;
+	if(shDelay==0)
+		shDelay = 20000;
 
+	if(CSecret::m_bRunOnShutdown)
+	{
+		
+		if(osi.dwMajorVersion>5)
+		{
+			
+			CServiceControl::SetPreShutdownTimeout(shDelay);
 
+		}
+		else
+		{
+			shDelay = CSecret::m_dwShutdownDelay * 60;
+
+			RegSetValueEx( phkResult,
+				"MaxWait", 0, REG_DWORD, (BYTE*)&shDelay, sizeof(DWORD) );
+		}
+
+	}
+	else
+	{
+		RegSetValueEx( phkResult,
+			"MaxWait", 0, REG_DWORD, (BYTE*)&logonDelay, sizeof(DWORD) );
+	}
+
+	RegCloseKey(phkResult);
+
+	if(osi.dwMajorVersion<=5)
+	{
+
+		RegCreateKeyEx(HKEY_LOCAL_MACHINE,"SYSTEM\\CurrentControlSet\\Control",
+			0, NULL, REG_OPTION_NON_VOLATILE,
+			KEY_ALL_ACCESS,
+			NULL,
+			&phkResult,
+			&lpdwDisposition);
+
+		RegSetValueEx( phkResult,
+			"WaitToKillServiceTimeout", 0, REG_DWORD, (BYTE*)&shDelay, sizeof(DWORD) );
+
+		RegCloseKey(phkResult);
+	}
 }
 
+/*
 void CWpkgInstDlg::SaveLogonMessages(void)
 {
-	HKEY phkResult;
-	DWORD lpdwDisposition = REG_CREATED_NEW_KEY;
+HKEY phkResult;
+DWORD lpdwDisposition = REG_CREATED_NEW_KEY;
 
-	char* buffer1 = CSecret::m_strMessage1.GetBuffer();
-	char* buffer2 = CSecret::m_strMessage2.GetBuffer();
-
-	
-
-	RegCreateKeyEx(HKEY_LOCAL_MACHINE,
-		"SOFTWARE\\WPKG.ORG\\Logon Settings",
-		0, NULL, REG_OPTION_NON_VOLATILE,
-		KEY_ALL_ACCESS,
-		NULL,
-		&phkResult,
-		&lpdwDisposition);
+char* buffer1 = CSecret::m_strMessage1.GetBuffer();
+char* buffer2 = CSecret::m_strMessage2.GetBuffer();
 
 
-	RegSetValueEx( phkResult,
-		"Logon message 1", 0, REG_SZ, (BYTE*)buffer1, CSecret::m_strMessage1.GetLength()+1 );
 
-	RegSetValueEx( phkResult,
-		"Logon message 2", 0, REG_SZ, (BYTE*)buffer2, CSecret::m_strMessage2.GetLength()+1 );
+RegCreateKeyEx(HKEY_LOCAL_MACHINE,
+"SOFTWARE\\WPKG.ORG\\Logon Settings",
+0, NULL, REG_OPTION_NON_VOLATILE,
+KEY_ALL_ACCESS,
+NULL,
+&phkResult,
+&lpdwDisposition);
 
-	RegCloseKey(phkResult); 
 
-	CSecret::m_strMessage1.ReleaseBuffer();
-	CSecret::m_strMessage2.ReleaseBuffer();
+RegSetValueEx( phkResult,
+"Logon message 1", 0, REG_SZ, (BYTE*)buffer1, CSecret::m_strMessage1.GetLength()+1 );
+
+RegSetValueEx( phkResult,
+"Logon message 2", 0, REG_SZ, (BYTE*)buffer2, CSecret::m_strMessage2.GetLength()+1 );
+
+RegCloseKey(phkResult); 
+
+CSecret::m_strMessage1.ReleaseBuffer();
+CSecret::m_strMessage2.ReleaseBuffer();
 
 }
 
 void CWpkgInstDlg::ReadLogonMessages(void)
 {
 
-	HKEY phkResult;
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-		"SOFTWARE\\WPKG.ORG\\Logon Settings",
-		0,
-		KEY_READ,
-		&phkResult );
+HKEY phkResult;
+RegOpenKeyEx(HKEY_LOCAL_MACHINE,
+"SOFTWARE\\WPKG.ORG\\Logon Settings",
+0,
+KEY_READ,
+&phkResult );
 
-	char* buffer1 = CSecret::m_strMessage1.GetBufferSetLength(1024);
-	char* buffer2 = CSecret::m_strMessage2.GetBufferSetLength(1024);
-	DWORD cbData = 1024;
-	DWORD Type;
-	
-	RegQueryValueEx( phkResult,
-		"Logon message 1", 0, &Type, (BYTE*)buffer1, &cbData );
+char* buffer1 = CSecret::m_strMessage1.GetBufferSetLength(1024);
+char* buffer2 = CSecret::m_strMessage2.GetBufferSetLength(1024);
+DWORD cbData = 1024;
+DWORD Type;
 
-	cbData = 1024;
-	RegQueryValueEx( phkResult,
-		"Logon message 2", 0, &Type, (BYTE*)buffer2, &cbData );
+RegQueryValueEx( phkResult,
+"Logon message 1", 0, &Type, (BYTE*)buffer1, &cbData );
+
+cbData = 1024;
+RegQueryValueEx( phkResult,
+"Logon message 2", 0, &Type, (BYTE*)buffer2, &cbData );
 
 
-	RegCloseKey(phkResult); 
+RegCloseKey(phkResult); 
 
-	CSecret::m_strMessage1.ReleaseBuffer();
-	CSecret::m_strMessage2.ReleaseBuffer();
+CSecret::m_strMessage1.ReleaseBuffer();
+CSecret::m_strMessage2.ReleaseBuffer();
 
 }
+*/
 
 void CWpkgInstDlg::OnBnClickedButtonAbout()
 {
@@ -592,17 +517,73 @@ void CWpkgInstDlg::OnBnClickedButtonTestSettings()
 
 }
 
+
+BOOL CWpkgInstDlg::OnHelpInfo(HELPINFO* pHelpInfo)
+{
+	OnBnClickedButtonHelp();
+	return TRUE;
+}
+
+
 LRESULT CWpkgInstDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 {
+	// TODO: Add your specialized code here and/or call the base class
 	switch(message)
 	{
-	case WMU_SHOW_ADVANCED:
-		{
-			if(m_bAdvanced)
-				ShowAdvanced();
-		}
+	case PSM_CHANGED:
+		GetDlgItem(IDC_BUTTON_SAVE)->EnableWindow();
 		break;
+	case PSM_UNCHANGED:
+		GetDlgItem(IDC_BUTTON_SAVE)->EnableWindow(FALSE);
+		break;
+		
 	}
 
 	return CDialog::WindowProc(message, wParam, lParam);
+}
+
+void CWpkgInstDlg::OnBnClickedButtonSave()
+{
+	BOOL bResult = FALSE;
+	bResult = UpdateData() && m_TabSettings.UpdateData();
+	if(bResult)
+	{
+		GetDlgItem(IDC_BUTTON_SAVE)->EnableWindow(FALSE);
+		CSecret::StoreSecret();
+		SaveLogonDelay();
+		m_TabSettings.m_dlg5.SaveMachines();
+	}
+}
+
+void CWpkgInstDlg::OnBnClickedButtonDonate()
+{
+	HINSTANCE result = ShellExecute(NULL, _T("open"),
+		"http://wpkg.org/Donate", NULL,NULL, SW_SHOW);
+
+}
+
+
+void CWpkgInstDlg::OnBnClickedOk()
+{
+	if(!PromptToSave())
+		OnOK();
+}
+
+void CWpkgInstDlg::OnBnClickedCancel()
+{
+	if(!PromptToSave())
+		OnCancel();
+}
+
+
+BOOL CWpkgInstDlg::PromptToSave(void)
+{
+	BOOL bResult = GetDlgItem(IDC_BUTTON_SAVE)->IsWindowEnabled();
+	if(bResult)
+	{
+		if(AfxMessageBox("You make changes and not save them. Exit without saving?",MB_YESNO|MB_DEFBUTTON2)==IDYES)
+			bResult = FALSE;
+
+	}
+	return bResult;
 }

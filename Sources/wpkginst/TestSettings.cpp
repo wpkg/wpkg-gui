@@ -13,6 +13,7 @@
 #include "..\components\runprocess.h"
 
 
+
 // CTestSettings dialog
 
 IMPLEMENT_DYNAMIC(CTestSettings, CDialog)
@@ -274,7 +275,7 @@ void CTestSettings::TryUserContext(void)
 		s.LogonUser(CSecret::m_strScriptExecUser.GetBuffer(),CSecret::m_strScriptExecPassword.GetBuffer(),token);
 		strResult = "[OK]";
 		m_iCountOK++;
-		RevertToSelf();
+		
 	}
 	catch(CException* e)
 	{
@@ -299,23 +300,31 @@ void CTestSettings::OnDestroy()
 	// TODO: Add your message handler code here
 }
 
-void CTestSettings::OnTimer(UINT nIDEvent)
+void CTestSettings::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
 	switch(nIDEvent)
 	{
 	case 1:
 		{
+			CString netPath = CSecret::m_strScriptFile;
+			netPath.Remove('\"');
+			CString actionPath = CSecret::m_strScriptFile;
+			actionPath.Remove('\"');
+			
+
 			KillTimer(1);
 			TryPing();
+
+			TryUserContext();
 			TryConnect(CSecret::m_ServerPingScriptFile);
 			TryRead(CSecret::m_ServerPingScriptFile);
 
-			TryUserContext();
-			TryConnect(CSecret::m_strScriptFile);
+			
+			TryConnect(netPath);
 
 			TryExecute(CSecret::m_strPreAction);
-			TryRead(CSecret::m_strScriptFile);
+			TryRead(actionPath);
 			TryExecute(CSecret::m_strPostAction);
 	
 			
@@ -323,6 +332,7 @@ void CTestSettings::OnTimer(UINT nIDEvent)
 			PrepareLog();
 			GetDlgItem(IDC_BUTTON_SAVE_LOG)->EnableWindow();
 			GetDlgItem(IDC_BUTTON_SAVE_CLIPBOARD)->EnableWindow();
+			RevertToSelf();
 
 			
 

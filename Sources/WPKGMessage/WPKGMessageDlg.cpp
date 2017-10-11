@@ -5,27 +5,53 @@
 #include "WPKGMessage.h"
 #include "WPKGMessageDlg.h"
 #include ".\wpkgmessagedlg.h"
+#include "..\components\secret.h"
+#include "..\components\Settings.h"
+#include "InterruptDlg.h"
 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+static const TCHAR szAfxOldWndProc[] = _T("AfxOldWndProc423");
+
+
+
+BOOL CALLBACK EnumProc( HWND hWnd, LPARAM lParam)
+{
+	//check for property and unsubclass if necessary
+	WNDPROC oldWndProc = (WNDPROC)::GetProp(hWnd, szAfxOldWndProc);
+	if (oldWndProc!=NULL)
+	{
+		SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)oldWndProc);
+		RemoveProp(hWnd, szAfxOldWndProc);
+	}
+	return TRUE;
+}
+
 
 
 CWPKGMessageDlg::CWPKGMessageDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CWPKGMessageDlg::IDD, pParent)
+: CDialog(CWPKGMessageDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-
-	ReadLogonMessages();
+	m_bBringToFront = TRUE;
 }
+
+CWPKGMessageDlg::~CWPKGMessageDlg()
+{
+	WorkingDone();
+}
+
+
 
 void CWPKGMessageDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_STATIC_MESSAGE, m_Message);
 	DDX_Control(pDX, IDC_PROGRESS, m_Progress);
+	DDX_Control(pDX, IDC_STATIC_PROGRESS, m_ProgressMessage);
 }
 
 BEGIN_MESSAGE_MAP(CWPKGMessageDlg, CDialog)
@@ -33,6 +59,9 @@ BEGIN_MESSAGE_MAP(CWPKGMessageDlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
 	ON_WM_TIMER()
+	ON_WM_ENDSESSION()
+	ON_WM_KEYDOWN()
+	ON_WM_GETDLGCODE()
 END_MESSAGE_MAP()
 
 
@@ -41,6 +70,8 @@ END_MESSAGE_MAP()
 BOOL CWPKGMessageDlg::OnInitDialog()
 {
 	CDialog::OnInitDialog();
+
+	ReadLogonMessages();
 
 	// Set the icon for this dialog.  The framework does this automatically
 	//  when the application's main window is not a dialog
@@ -55,10 +86,8 @@ BOOL CWPKGMessageDlg::OnInitDialog()
 	m_Progress.SetRange(0,10);
 	m_Progress.SetStep(1);
 
-	m_Message.SetWindowText(m_strMessage1);
-
 	BringToFront();
-	
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -69,6 +98,13 @@ BOOL CWPKGMessageDlg::OnInitDialog()
 void CWPKGMessageDlg::OnPaint() 
 {
 	CDialog::OnPaint();
+
+	CClientDC dc(this);
+	if(!m_logoImage.IsNull())
+	{
+		m_logoImage.TransparentBlt(dc.m_hDC,10,10,100,100,RGB(255, 0, 255));
+		//m_logoImage.Draw(dc.m_hDC,10,10,100,100);
+	}
 }
 
 // The system calls this function to obtain the cursor to display while the user drags
@@ -78,7 +114,7 @@ HCURSOR CWPKGMessageDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-void CWPKGMessageDlg::OnTimer(UINT nIDEvent)
+void CWPKGMessageDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
 	static BOOL bMsg = FALSE;
@@ -92,7 +128,7 @@ void CWPKGMessageDlg::OnTimer(UINT nIDEvent)
 			m_Message.SetWindowText(m_strMessage2);
 
 		bMsg = !bMsg;
-		
+
 		break;
 	case 2:
 		{
@@ -130,10 +166,13 @@ void CWPKGMessageDlg::OnCancel()
 
 void CWPKGMessageDlg::BringToFront(void)
 {
-	CRect rr;
-	GetWindowRect(&rr);
-	SetWindowPos(&wndTopMost ,rr.left,rr.top,rr.Width(),rr.Height(),SWP_SHOWWINDOW);
-	CenterWindow();
+	if(m_bBringToFront)
+	{
+		CRect rr;
+		GetWindowRect(&rr);
+		SetWindowPos(&wndTopMost ,rr.left,rr.top,rr.Width(),rr.Height(),SWP_SHOWWINDOW);
+		CenterWindow();
+	}
 }
 
 
@@ -142,29 +181,135 @@ void CWPKGMessageDlg::ReadLogonMessages(void)
 	m_strMessage1 = "WPKG is installing applications and applying settings...";
 	m_strMessage2 = "Please wait, don't restart or power off your computer...";
 
+
+	CSecret secret;
+	try
+	{
+		::CoInitialize(NULL);
+		secret.LoadSecret();
+		m_strMessage1 = secret.m_strMessage1;
+		m_strMessage2 = secret.m_strMessage2;
+
+		m_logoImage.Destroy();
+		m_logoImage.Load(CSettings::GetLogoPath());
+		MoveCtrl();
+		
+		SetWindowText(secret.m_strMessageTitle);
+	}
+	catch(CException* e)
+	{
+		e->Delete();
+	}
+
+	::CoUninitialize();
+
+
+	/*
 	HKEY phkResult;
 	RegOpenKeyEx(HKEY_LOCAL_MACHINE,
-		"SOFTWARE\\WPKG.ORG\\Logon Settings",
-		0,
-		KEY_READ,
-		&phkResult );
+	"SOFTWARE\\WPKG.ORG\\Logon Settings",
+	0,
+	KEY_READ,
+	&phkResult );
 
 	char* buffer1 = m_strMessage1.GetBufferSetLength(1024);
 	char* buffer2 = m_strMessage2.GetBufferSetLength(1024);
 	DWORD cbData = 1024;
 	DWORD Type;
-	
+
 	RegQueryValueEx( phkResult,
-		"Logon message 1", 0, &Type, (BYTE*)buffer1, &cbData );
+	"Logon message 1", 0, &Type, (BYTE*)buffer1, &cbData );
 
 	cbData = 1024;
 	RegQueryValueEx( phkResult,
-		"Logon message 2", 0, &Type, (BYTE*)buffer2, &cbData );
+	"Logon message 2", 0, &Type, (BYTE*)buffer2, &cbData );
 
 
 	RegCloseKey(phkResult); 
 
 	m_strMessage1.ReleaseBuffer();
 	m_strMessage2.ReleaseBuffer();
+	*/
 
+}
+LRESULT CWPKGMessageDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{				 
+	case WM_USER+101:
+		{
+
+			char* buffer = (char*)lParam;
+			m_ProgressMessage.SetWindowTextA(buffer);
+			return 1;
+		}
+		break;
+	case WM_USER+102:
+		{
+			CInterruptDlg dlg;
+			INT_PTR iResult = dlg.DoModal();
+
+			if(iResult == IDOK)
+			{
+				if(CSecret::m_strInterruptPwd.Compare(dlg.m_strPwd)==0)
+				{
+
+					EndDialog(IDOK);
+					break;
+				}
+				else
+					AfxMessageBox("Invalid password");
+
+			}
+			m_bBringToFront = TRUE;
+		}
+		break;
+	}
+	return CDialog::WindowProc(message, wParam, lParam);
+}
+
+
+void CWPKGMessageDlg::OnEndSession(BOOL bEnding)
+{
+	DWORD dwProcessId;
+	DWORD dwThreadId= GetWindowThreadProcessId(m_hWnd,&dwProcessId);
+	EnumThreadWindows(dwThreadId, EnumProc,(LPARAM) dwThreadId);
+}
+
+
+BOOL CWPKGMessageDlg::PreTranslateMessage(MSG* pMsg)
+{
+	switch(pMsg->message)
+	{
+	case WM_KEYDOWN:
+		// Ctrl+Q
+		if(pMsg->wParam == 81 && (GetKeyState(VK_CONTROL) & 0x80000000))
+		{
+			m_bBringToFront = FALSE;
+			PostMessage(WM_USER+102);
+		}
+
+		break;
+	}
+	// TODO: Add your specialized code here and/or call the base class
+
+	return CDialog::PreTranslateMessage(pMsg);
+}
+
+
+void CWPKGMessageDlg::MoveCtrl()
+{
+	CRect rr;
+	if(!m_logoImage.IsNull())
+	{
+		GetDlgItem(IDC_STATIC_MESSAGE)->GetWindowRect(&rr);
+		ScreenToClient(&rr);
+		rr.left = 110;
+		GetDlgItem(IDC_STATIC_MESSAGE)->MoveWindow(&rr);
+
+		GetDlgItem(IDC_STATIC_PROGRESS)->GetWindowRect(&rr);
+		ScreenToClient(&rr);
+		rr.left = 110;
+		GetDlgItem(IDC_STATIC_PROGRESS)->MoveWindow(&rr);
+	}
 }

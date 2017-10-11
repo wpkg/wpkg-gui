@@ -18,6 +18,7 @@ extern BOOL bWorking;
 extern BOOL bConnected;
 extern BOOL IsWorking();
 extern BOOL IsWorkingDone();
+extern void WorkingDone();
 
 
 

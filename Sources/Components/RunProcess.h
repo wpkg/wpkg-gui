@@ -1,17 +1,20 @@
 #pragma once
+#include "EventHandler.h"
 
 class CRunProcess
 {
 public:
 	CRunProcess(void);
-	static DWORD m_dwStartMode;
-	static DWORD m_dwRestartCount;
+	DWORD m_dwStartMode;
+	DWORD m_dwRestartCount;
+	CEventSender m_eventSender;
 
 	virtual ~CRunProcess(void);
-	static void ReadRestartInfo();
-	static void WriteRestartInfo(void);
-	static void RestartSystem(char* message, int coutOfLoggedUsers);
-	static DWORD CreateProcess(HANDLE hToken, char* commandLine,
-		BOOL bShowGUI = TRUE, DWORD dwCreationFlags = NORMAL_PRIORITY_CLASS, DWORD dwWait = INFINITE );
+	void ReadRestartInfo();
+	void WriteRestartInfo(void);
+	BOOL PreventSystemShutdown();
+	void RestartSystem(char* message, int coutOfLoggedUsers);
+	DWORD CreateProcess(HANDLE hToken, char* commandLine,
+		BOOL bShowGUI = TRUE, DWORD dwCreationFlags = NORMAL_PRIORITY_CLASS, DWORD dwWait = INFINITE);
 
 };

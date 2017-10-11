@@ -1,7 +1,15 @@
 #include "StdAfx.h"
 #include ".\secret.h"
+#include "Settings.h"
+
+BOOL CSecret::m_bNetUseMachineAccount;
+CString CSecret::m_strMessageLogo;
+CString CSecret::m_strInterruptPwd;
 
 
+DWORD CSecret::m_dwShutdownDelay;
+BOOL CSecret::m_bRunOnShutdown;
+CString CSecret::m_strLogFile;
 CString CSecret::m_strScriptFile;
 CStringArray CSecret::m_strVarArray;
 DWORD CSecret::m_dwPriority;
@@ -14,8 +22,11 @@ CString CSecret::m_strPreAction;
 CString CSecret::m_strPostAction;
 BOOL CSecret::m_bShowGUI;
 DWORD CSecret::m_dwLogonDelay;
+
+CString CSecret::m_strMessageTitle;
 CString CSecret::m_strMessage1;
 CString CSecret::m_strMessage2;
+
 BOOL CSecret::m_bSilent;
 BOOL CSecret::m_bStopServiceAfterDone;
 
@@ -171,6 +182,8 @@ void CSecret::FormatXml(CXmlSettings& st)
 {
 	
 	st.WriteParameter("file",m_strScriptFile);
+	st.WriteParameter("net-use-machine-account",m_bNetUseMachineAccount?"YES":"NO");
+	
 	st.WriteParameter("path-user",m_strScriptConnUser);
 	st.WriteParameter("path-password",st.Crypt(m_strScriptConnPassword));
 	st.WriteParameter("exec-user",m_strScriptExecUser);
@@ -184,6 +197,12 @@ void CSecret::FormatXml(CXmlSettings& st)
 	CString tempStr;
 	tempStr.Format("%u",m_dwLogonDelay);
 	st.WriteParameter("logon-delay",tempStr);
+	st.WriteParameter("logon-message-title",m_strMessageTitle);
+	st.WriteParameter("logon-message-logo-picture",m_strMessageLogo);
+
+	// copy file to local app folder with normalized name
+	CSettings::SaveLogo(m_strMessageLogo);
+	
 	st.WriteParameter("logon-message-1",m_strMessage1);
 	st.WriteParameter("logon-message-2",m_strMessage2);
 
@@ -207,6 +226,17 @@ void CSecret::FormatXml(CXmlSettings& st)
 	tempStr.Format("%u",m_dwServerPingScriptTimeout);
 	st.WriteParameter("server-connecting-script-timeout",tempStr);
 	st.WriteParameter("server-connecting-script-file",m_ServerPingScriptFile);
+	st.WriteParameter("log-file",m_strLogFile);
+
+	st.WriteParameter("run-on-shutdown",m_bRunOnShutdown?"YES":"NO");
+	tempStr.Format("%u",m_dwShutdownDelay);
+	st.WriteParameter("shutdown-delay",tempStr);
+
+
+	st.WriteParameter("logon-interrupt-password",st.Crypt(m_strInterruptPwd));
+	
+	
+	
 	
 }
 
@@ -229,6 +259,7 @@ void CSecret::Import(CString fileName)
 
 void CSecret::ParseXml(CXmlSettings& st)
 {
+	// in this place insert default values
 
 	// note:
 	// the XML parameters are case sensitive
@@ -239,7 +270,15 @@ void CSecret::ParseXml(CXmlSettings& st)
 	st.GetParameter("/configuration/file",value);
 	m_strScriptFile = value;
 
-				
+	value = "NO";
+	st.GetParameter("/configuration/net-use-machine-account",value);
+
+	if(value.CompareNoCase("YES")==0)
+		m_bNetUseMachineAccount = TRUE;
+	else
+		m_bNetUseMachineAccount = FALSE;
+
+					
 	st.GetParameterList("/configuration/script-variable",count);
 
 	m_strVarArray.RemoveAll();
@@ -290,6 +329,17 @@ void CSecret::ParseXml(CXmlSettings& st)
 	value.Empty();
 	st.GetParameter("/configuration/logon-delay",value);
 	m_dwLogonDelay = atol(value);
+
+	
+	value = "WPKG Software Deployment";
+	st.GetParameter("/configuration/logon-message-title",value);
+	m_strMessageTitle = value;
+
+	value.Empty();
+	st.GetParameter("/configuration/logon-message-logo-picture",value);
+	m_strMessageLogo = value;
+
+
 
 	value = "WPKG is installing applications and applying settings...";
 	st.GetParameter("/configuration/logon-message-1",value);
@@ -348,6 +398,27 @@ void CSecret::ParseXml(CXmlSettings& st)
 	value.Empty();
 	st.GetParameter("/configuration/server-connecting-script-file",value);
 	m_ServerPingScriptFile = value;
+
+	value.Empty();
+	st.GetParameter("/configuration/log-file",value);
+	m_strLogFile = value;
+	
+	value = "NO";
+	st.GetParameter("/configuration/run-on-shutdown",value);
+	if(value.CompareNoCase("YES")==0)
+		m_bRunOnShutdown = TRUE;
+	else
+		m_bRunOnShutdown = FALSE;
+
+	value = "10";
+	st.GetParameter("/configuration/shutdown-delay",value);
+	m_dwShutdownDelay = atol(value);
+
+
+	value.Empty();
+	st.GetParameter("/configuration/logon-interrupt-password",value);
+	m_strInterruptPwd = st.Decrypt(value);
+	
 
 }
 

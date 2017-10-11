@@ -1,10 +1,11 @@
 #pragma once
 #include "afxwin.h"
+#include "BasePropertyPage.h"
 
 
 // CPrioritySettings dialog
 
-class CPrioritySettings : public CPropertyPage
+class CPrioritySettings : public CBasePropertyPage
 {
 	DECLARE_DYNAMIC(CPrioritySettings)
 
@@ -28,8 +29,16 @@ public:
 	virtual BOOL OnInitDialog();
 private:
 	CComboBox m_cbPriority;
-	
+
 
 public:
+
+	BOOL m_bLogToFile;
+	afx_msg void OnBnClickedButtonSelectLogFile();
+	afx_msg void OnBnClickedButtonOpenLogFile();
+	void EnableEditLog(void);
+	afx_msg void OnBnClickedCheckLogToFile();
+	void UpdateCheck(void);
+	
 
 };

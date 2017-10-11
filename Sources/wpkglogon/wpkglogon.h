@@ -1,25 +1,27 @@
-
-
-// The following ifdef block is the standard way of creating macros which make exporting 
-// from a DLL simpler. All files within this DLL are compiled with the WPKGLOGON_EXPORTS
-// symbol defined on the command line. this symbol should not be defined on any project
-// that uses this DLL. This way any other project whose source files include this file see 
-// WPKGLOGON_API functions as being imported from a DLL, whereas this DLL sees symbols
-// defined with this macro as being exported.
-//#ifdef WPKGLOGON_EXPORTS
-//#define WPKGLOGON_API __declspec(dllexport)
-//#else
-//#define WPKGLOGON_API __declspec(dllimport)
-//#endif
-
-//// This class is exported from the wpkglogon.dll
-//class WPKGLOGON_API Cwpkglogon {
-//public:
-//	Cwpkglogon(void);
-//	// TODO: add your methods here.
-//};
+// wpkglogon.h : main header file for the wpkglogon DLL
 //
-//extern WPKGLOGON_API int nwpkglogon;
+
+#pragma once
+
+#ifndef __AFXWIN_H__
+	#error "include 'stdafx.h' before including this file for PCH"
+#endif
+
+#include "resource.h"		// main symbols
+
+
+// CwpkglogonApp
+// See wpkglogon.cpp for the implementation of this class
 //
-//WPKGLOGON_API int fnwpkglogon(void);
-//WPKGLOGON_API VOID WLEventLogon (PWLX_NOTIFICATION_INFO pInfo);
+
+class CwpkglogonApp : public CWinApp
+{
+public:
+	CwpkglogonApp();
+
+// Overrides
+public:
+	virtual BOOL InitInstance();
+
+	DECLARE_MESSAGE_MAP()
+};

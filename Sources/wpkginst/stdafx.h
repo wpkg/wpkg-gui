@@ -42,3 +42,4 @@
 #include <afxdlgs.h>
 #include <afxsock.h>
 
+#include <atlimage.h>

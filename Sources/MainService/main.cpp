@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "service.h"
+#include "..\components\EventLog.h"
 
 
 #ifdef _DEBUG
@@ -82,9 +83,10 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
     printf( "\nStartServiceCtrlDispatcher being called.\n" );
     printf( "This may take several seconds.  Please wait.\n" );
+	CEventLog::m_strAppName = TEXT(SZSERVICENAME);
 
     if (!StartServiceCtrlDispatcher(dispatchTable))
-		AddToMessageLog(TEXT("StartServiceCtrlDispatcher failed."));
+		CEventLog::AddErrorMessageToLog(TEXT("StartServiceCtrlDispatcher failed."));
 	
 	return nRetCode;
 }

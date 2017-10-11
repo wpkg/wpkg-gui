@@ -1,8 +1,8 @@
 ; wpkglogon.def : Declares the module parameters for the DLL.
 
 LIBRARY      "wpkglogon"
-DESCRIPTION  'WPKG Windows Dynamic Link Library'
 
 EXPORTS
     ; Explicit exports can go here
 WLEventStartup		@1
+WLEventShutdown		@2

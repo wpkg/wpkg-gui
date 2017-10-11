@@ -21,6 +21,7 @@
 #include <afxmt.h>
 #include <afxsock.h>
 #include <atlbase.h>        
+#include <atlimage.h>
 
 
 //{{AFX_INSERT_LOCATION}}

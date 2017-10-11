@@ -7,3 +7,11 @@ SCC_Project_Name = "$/WPKG/WPKGSetup", INAAAAAA
 [WPKGSetup.vdproj]
 SCC_Aux_Path = "F:\VSSProjects"
 SCC_Project_Name = "$/WPKG/WPKGSetup", INAAAAAA
+
+[WPKG32Setup.vdproj]
+SCC_Aux_Path = "F:\VSSProjects"
+SCC_Project_Name = "$/WPKG/WPKGSetup", INAAAAAA
+
+[WPKG64Setup.vdproj]
+SCC_Aux_Path = "F:\VSSProjects"
+SCC_Project_Name = "$/WPKG/WPKGSetup", INAAAAAA

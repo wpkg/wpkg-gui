@@ -29,8 +29,7 @@ private:
 
 
 protected:
-	BOOL m_bAdvanced;
-	void ShowAdvanced();
+	
 	
 	HICON m_hIcon;
 
@@ -42,20 +41,30 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButtonHelp();
-	afx_msg void OnBnClickedOk();
-	afx_msg void OnBnClickedButtonSelectFile();
+	//afx_msg void OnBnClickedButtonSelectFile();
 
-	afx_msg void OnBnClickedButtonAdvanced();
+	//afx_msg void OnBnClickedButtonAdvanced();
 
 	afx_msg void OnBnClickedButtonExportSettings();
 	CTabCtrlEx m_TabSettings;
-	void ReadLogonDelay(void);
+	//void ReadLogonDelay(void);
 	void SaveLogonDelay(void);
-	void SaveLogonMessages(void);
-	void ReadLogonMessages(void);
+	//void SaveLogonMessages(void);
+	//void ReadLogonMessages(void);
 	afx_msg void OnBnClickedButtonAbout();
 	afx_msg void OnBnClickedButtonImportSettings();
 	afx_msg void OnBnClickedButtonTestSettings();
 protected:
+	
+public:
+	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
+	
+protected:
 	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
+public:
+	afx_msg void OnBnClickedButtonSave();
+	afx_msg void OnBnClickedButtonDonate();
+	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedCancel();
+	BOOL PromptToSave(void);
 };

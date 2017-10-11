@@ -1,10 +1,11 @@
 #pragma once
 
 #include "listctrlEx.h"
+#include "BasePropertyPage.h"
 
 // CTabGeneral dialog
 
-class CTabGeneral : public CPropertyPage
+class CTabGeneral : public CBasePropertyPage
 {
 	DECLARE_DYNAMIC(CTabGeneral)
 

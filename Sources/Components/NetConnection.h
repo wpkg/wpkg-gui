@@ -4,6 +4,7 @@ class CNetConnection
 {
 public:
 	BOOL m_bSilent;
+	CString strNetPath;
 	CNetConnection(void);
 	virtual ~CNetConnection(void);
 	DWORD DisconnectFromServer(CString RemotePath);

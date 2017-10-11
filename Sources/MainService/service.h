@@ -1,37 +1,4 @@
 
-//  Libraries
-//  ---------
-//  There should be no need to modify the code in service.c.  The libraries you should
-//  need for this service are outlined below, although they are already included with the project file
-//
-//  libcmt.lib kernel32.lib advapi.lib shell32.lib
-//
-//  UNICODE
-//  -------
-//  This code also supports unicode.  Be sure to compile both service.c and
-//  and code #include "service.h" with the same Unicode setting.
-//
-//
-//  Other notes
-//  -----------
-//  Note: This code also implements Ctrl+C and Ctrl+Break handlers
-//        when using the debug option.  These console events cause
-//        your ServiceStop routine to be called
-//
-//        Also, this code only handles the OWN_SERVICE service type
-//        running in the LOCAL_SYSTEM security context.
-//
-//        To control your service ( start, stop, etc ) you may use the
-//        Services control panel applet or the NET.EXE program.
-//
-//        To aid in writing/debugging service, the
-//        SDK contains a utility (MSTOOLS\BIN\SC.EXE) that
-//        can be used to control, configure, or obtain service status.
-//        SC displays complete status for any service/driver
-//        in the service database, and allows any of the configuration
-//        parameters to be easily changed at the command line.
-//        For more information on SC.EXE, type SC at the command line.
-//
 
 #include "settings.h"
 
@@ -48,11 +15,7 @@ extern "C" {
 
 extern BOOL bDebug;
 
-VOID AddErrorToMessageLog(DWORD dwErr);
-VOID AddMessageToMessageLog(LPCTSTR lpszMsg);
-VOID AddErrMsgToMessageLog(LPCTSTR lpszMsg);
-VOID AddToMessageLog(LPTSTR lpszMsg);
-VOID WINAPI service_ctrl(DWORD dwCtrlCode);
+
 VOID WINAPI service_ctrlEx(DWORD dwCtrlCode, DWORD dwEventType,
   LPVOID lpEventData,
   LPVOID lpContext);
@@ -63,6 +26,8 @@ VOID CmdRemoveService();
 VOID CmdDebugService(int argc, char **argv);
 BOOL WINAPI ControlHandler ( DWORD dwCtrlType );
 LPTSTR GetLastErrorText( LPTSTR lpszBuf, DWORD dwSize );
+
+void WpkgClientAction();
 
 //////////////////////////////////////////////////////////////////////////////
 //// todo: ServiceStart()must be defined by in your code.
@@ -110,18 +75,7 @@ VOID ServiceStop();
 BOOL ReportStatusToSCMgr(DWORD dwCurrentState, DWORD dwWin32ExitCode, DWORD dwWaitHint);
 
 
-//
-//  FUNCTION: AddToMessageLog(LPTSTR lpszMsg)
-//
-//  PURPOSE: Allows any thread to log an error message
-//
-//  PARAMETERS:
-//    lpszMsg - text for message
-//
-//  RETURN VALUE:
-//    none
-//
-void AddToMessageLog(LPTSTR lpszMsg);
+
 //////////////////////////////////////////////////////////////////////////////
 
 

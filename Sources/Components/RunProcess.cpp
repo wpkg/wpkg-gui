@@ -3,8 +3,9 @@
 #include "exceptionex.h"
 
 
-DWORD CRunProcess::m_dwStartMode;
-DWORD CRunProcess::m_dwRestartCount;
+//DWORD CRunProcess::m_dwStartMode;
+//DWORD CRunProcess::m_dwRestartCount;
+//CEventSender CRunProcess::m_eventSender;
 
 
 
@@ -14,6 +15,48 @@ CRunProcess::CRunProcess(void)
 
 CRunProcess::~CRunProcess(void)
 {
+}
+
+BOOL CRunProcess::PreventSystemShutdown()
+{
+   HANDLE hToken;              // handle to process token 
+   TOKEN_PRIVILEGES tkp;       // pointer to token structure 
+ 
+   // Get the current process token handle  so we can get shutdown 
+   // privilege. 
+ 
+   if (!OpenProcessToken(GetCurrentProcess(), 
+         TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) 
+      return FALSE; 
+ 
+   // Get the LUID for shutdown privilege. 
+ 
+   LookupPrivilegeValue(NULL, SE_SHUTDOWN_NAME, 
+         &tkp.Privileges[0].Luid); 
+ 
+   tkp.PrivilegeCount = 1;  // one privilege to set    
+   tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED; 
+ 
+   // Get shutdown privilege for this process. 
+ 
+   AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, 
+        (PTOKEN_PRIVILEGES)NULL, 0); 
+ 
+   if (GetLastError() != ERROR_SUCCESS) 
+      return FALSE; 
+ 
+   // Prevent the system from shutting down. 
+ 
+   if ( !AbortSystemShutdown(NULL) ) 
+      return FALSE; 
+ 
+   // Disable shutdown privilege. 
+ 
+   tkp.Privileges[0].Attributes = 0; 
+   AdjustTokenPrivileges(hToken, FALSE, &tkp, 0, 
+       (PTOKEN_PRIVILEGES) NULL, 0); 
+ 
+   return TRUE;
 }
 
 void CRunProcess::ReadRestartInfo(void)
@@ -38,7 +81,7 @@ void CRunProcess::ReadRestartInfo(void)
 
 	cbData = 4;
 	RegQueryValueEx( phkResult,
-		"Count", 0, &Type, (BYTE*)&CRunProcess::m_dwRestartCount, &cbData );
+		"Count", 0, &Type, (BYTE*)&m_dwRestartCount, &cbData );
 
 	RegCloseKey(phkResult); 
 
@@ -64,7 +107,7 @@ void CRunProcess::WriteRestartInfo(void)
 	//	"Mode", 0, REG_DWORD, (BYTE*)&CRunProcess::m_dwStartMode, 4 );
 
 	RegSetValueEx( phkResult,
-		"Count", 0, REG_DWORD, (BYTE*)&CRunProcess::m_dwRestartCount, 4 );
+		"Count", 0, REG_DWORD, (BYTE*)&m_dwRestartCount, 4 );
 
 
 	RegCloseKey(phkResult); 
@@ -73,7 +116,7 @@ void CRunProcess::WriteRestartInfo(void)
 }
 
 
-void CRunProcess::RestartSystem(char* message, int coutOfLoggedUsers)
+void CRunProcess::RestartSystem(char* message, int countOfLoggedUsers)
 {
 	RevertToSelf();
 
@@ -134,7 +177,7 @@ void CRunProcess::RestartSystem(char* message, int coutOfLoggedUsers)
 	SetLastError(0);
 
 	DWORD dwTimeOut = 3;
-	if(coutOfLoggedUsers>0)
+	if(countOfLoggedUsers>0)
 		dwTimeOut = 120;
 
 	OSVERSIONINFO osi;
@@ -187,15 +230,34 @@ DWORD CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI
 	si.lpTitle = NULL; 
 
 	if(bShowGUI)
+	{
+		si.wShowWindow = SW_SHOW;
 		si.lpDesktop = "WinSta0\\Default"; 
+	}
 	else
+	{
+		si.wShowWindow = SW_HIDE; 
 		si.lpDesktop = ""; 
+	}
 
 	si.dwX = si.dwY = si.dwXSize = si.dwYSize = 0L; 
 	si.dwFlags = STARTF_USESHOWWINDOW; 
-	si.wShowWindow = SW_SHOW; 
+
+	
+	//si.wShowWindow = SW_SHOW; 
 	si.lpReserved2 = NULL; 
 	si.cbReserved2 = 0; 
+
+
+	CEventArgs e;
+	e.m_EventType = e.typeHandle;
+	m_eventSender.FireEvent(NULL,e);
+
+	si.hStdOutput = e.m_hFile;
+	si.hStdError = e.m_hFile;
+	if(si.hStdOutput)
+		si.dwFlags |= STARTF_USESTDHANDLES; 
+
 
 	BOOL OK=FALSE;
 
@@ -206,7 +268,7 @@ DWORD CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI
 			command,			    // Command line. 
 			NULL,					// Process handle not inheritable. 
 			NULL,					// Thread handle not inheritable. 
-			FALSE,					// Set handle inheritance to FALSE. 
+			TRUE,					// Set handle inheritance to FALSE. 
 			dwCreationFlags,	    // Creation flags. 
 			NULL,					// Use parent’s environment block. 
 			NULL,
@@ -219,7 +281,7 @@ DWORD CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI
 			command,				// Command line. 
 			NULL,					// Process handle not inheritable. 
 			NULL,					// Thread handle not inheritable. 
-			FALSE,					// Set handle inheritance to FALSE. 
+			TRUE,					// Set handle inheritance to FALSE. 
 			dwCreationFlags,	    // Creation flags. 
 			NULL,					// Use parent’s environment block. 
 			NULL,
@@ -233,6 +295,11 @@ DWORD CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI
 		Error = GetLastError();
 		CExceptionEx::ThrowError("CreateProcess",Error);
 	}
+
+
+	
+	e.m_EventType = e.typeMessage;
+	m_eventSender.FireEvent(NULL,e);
     
 
     // Close process and thread handles. 
@@ -251,9 +318,64 @@ DWORD CRunProcess::CreateProcess(HANDLE hToken, char* commandLine, BOOL bShowGUI
 	Sleep(100);
 
 	
-
-	
 	return exitCode;
 
 }
 
+/*
+HANDLE hTokenNew = NULL, hTokenDup = NULL;
+ HMODULE  hmod = LoadLibrary("kernel32.dll");
+ WTSGETACTIVECONSOLESESSIONID lpfnWTSGetActiveConsoleSessionId = (WTSGETACTIVECONSOLESESSIONID)GetProcAddress(hmod,"WTSGetActiveConsoleSessionId"); 
+ DWORD dwSessionId = lpfnWTSGetActiveConsoleSessionId();
+ WTSQueryUserToken(dwSessionId, &hToken);
+ DuplicateTokenEx(hTokenNew,MAXIMUM_ALLOWED,NULL,SecurityIdentification,TokenPrimary,&hTokenDup);
+ //
+ WriteToLog("Calling lpfnCreateEnvironmentBlock");
+ ZeroMemory( &si, sizeof( STARTUPINFO ) );
+ si.cb = sizeof( STARTUPINFO );
+ si.lpDesktop = "winsta0\\default";
+
+
+ LPVOID  pEnv = NULL;
+ DWORD dwCreationFlag = NORMAL_PRIORITY_CLASS | CREATE_NEW_CONSOLE;
+ HMODULE hModule = LoadLibrary("Userenv.dll");
+ if(hModule )
+ {
+  LPFN_CreateEnvironmentBlock lpfnCreateEnvironmentBlock = (LPFN_CreateEnvironmentBlock)GetProcAddress( hModule, "CreateEnvironmentBlock" );
+  if( lpfnCreateEnvironmentBlock != NULL )
+  {
+   if(lpfnCreateEnvironmentBlock(&pEnv, hTokenDup, FALSE))
+   {
+    WriteToLog("CreateEnvironmentBlock Ok");
+    dwCreationFlag |= CREATE_UNICODE_ENVIRONMENT;    
+   }
+   else
+   {
+    pEnv = NULL;
+   }
+  }
+ }
+  //
+ ZeroMemory( &pi,sizeof(pi));
+ 
+ if ( !CreateProcessAsUser(
+  hTokenDup,
+  NULL,
+  ( char * )pszCmd,  
+  NULL,
+  NULL,
+  FALSE,
+  dwCreationFlag,
+  pEnv,
+  NULL,
+  &si,
+  &pi
+  ) )
+ {
+  
+  goto RESTORE;
+ } 
+
+
+
+*/

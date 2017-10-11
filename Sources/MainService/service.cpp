@@ -1,18 +1,12 @@
 #include "stdafx.h"
 #include "service.h"
 #include "..\components\security.h"
-#include "..\components\secret.h"
-#include "..\components\netconnection.h"
-#include "..\components\runprocess.h"
-#include "..\components\filemap.h"
-#include "..\components\exceptionex.h"
-#include "..\components\serverping.h"
+#include "..\components\EventLog.h"
+#include "..\components\WpkgWorker.h"
+
 
 /// test sens
 #include "WTSAPI32.H"
-
-
-
 
 
 
@@ -24,19 +18,11 @@ TCHAR                   szErr[256];
 
 BOOL bDebug = FALSE;
 
-// main classes for logon, connect and execution cscript.exe
-static CSecurity security;
-static CSecret secret;
-static CNetConnection connection;
-static CRunProcess process;
-static CFileMap startTimeInfo;
+static CWpkgWorker wpkgWorker;
+
 static int iUserLoggedCount = 0;
 
-
 static HANDLE  hServerEvents[3] = {NULL,NULL,NULL};
-static HANDLE  hWorking = NULL;
-
-
 
 
 //
@@ -58,23 +44,23 @@ static HANDLE  hWorking = NULL;
 //
 void WINAPI service_main(DWORD dwArgc, LPTSTR *lpszArgv)
 {
-	AddMessageToMessageLog("WPKG Service trying start...");
+	CEventLog::m_strAppName = TEXT(SZSERVICENAME);
+
+	CEventLog::AddMessageToLog("WPKG Service trying start...");
+
+
 	// register our service control handler:
-	//
-	// if < 2000 PRO
-	//sshStatusHandle = RegisterServiceCtrlHandler( TEXT(SZSERVICENAME), service_ctrl);
-	// else
 	sshStatusHandle = RegisterServiceCtrlHandlerEx( TEXT(SZSERVICENAME), (LPHANDLER_FUNCTION_EX)service_ctrlEx, NULL);
 
 
 	if (!sshStatusHandle)
 	{
 		DWORD err = GetLastError();
-		AddErrorToMessageLog(err);
+		CEventLog::AddErrorMessageToLog("RegisterServiceCtrlHandlerEx: FAILED");
 		goto cleanup;
 	}
 
-	AddMessageToMessageLog("WPKG Service->RegisterServiceCtrlHandler: successfuly done");
+	CEventLog::AddMessageToLog("WPKG Service->RegisterServiceCtrlHandler: successfuly done");
 
 	// SERVICE_STATUS members that don't change in example
 	//
@@ -90,7 +76,7 @@ void WINAPI service_main(DWORD dwArgc, LPTSTR *lpszArgv)
 		goto cleanup;
 
 
-	AddMessageToMessageLog("WPKG Service->SERVICE_START_PENDING: successfuly done");
+	CEventLog::AddMessageToLog("WPKG Service->SERVICE_START_PENDING: successfuly done");
 	ServiceStart( dwArgc, lpszArgv );
 
 cleanup:
@@ -145,155 +131,12 @@ void CmdDebugService(int argc, char ** argv)
 	ServiceStart( dwArgc, lpszArgv );
 }
 
-//
-//  FUNCTION: AddErrorToMessageLog(DWORD dwErr)
-//
-//  PURPOSE: Allows any thread to log an error message
-//
-//  PARAMETERS:
-//    dwErr - error code
-//
-//  RETURN VALUE:
-//    none
-//
-//  COMMENTS:
-//
-VOID AddErrorToMessageLog(DWORD dwErr)
-{
-	HANDLE  hEventSource;
-
-	if ( !bDebug )
-	{
-		dwErr = GetLastError();
-
-		// Use event logging to log the error.
-		//
-		hEventSource = RegisterEventSource(NULL, TEXT(SZSERVICENAME));
-
-		if (hEventSource != NULL) {
-			ReportEvent(hEventSource, // handle of event source
-				EVENTLOG_ERROR_TYPE,  // event type
-				0,                    // event category
-				dwErr,                // event ID
-				NULL,                 // current user's SID
-				0,                    // strings in lpszStrings
-				0,                    // no bytes of raw data
-				NULL,                 // array of error strings
-				NULL);                // no raw data
-
-			(VOID) DeregisterEventSource(hEventSource);
-		}
-	}
-}
 
 
 
 
 //
-//  FUNCTION: AddToMessageLog(LPTSTR lpszMsg)
-//
-//  PURPOSE: Allows any thread to log an error message
-//
-//  PARAMETERS:
-//    lpszMsg - text for message
-//
-//  RETURN VALUE:
-//    none
-//
-//  COMMENTS:
-//
-VOID AddToMessageLog(LPTSTR lpszMsg)
-{
-	TCHAR   szMsg[256];
-	HANDLE  hEventSource;
-	LPTSTR  lpszStrings[2];
-
-
-	if ( !bDebug )
-	{
-		dwErr = GetLastError();
-
-		// Use event logging to log the error.
-		//
-		hEventSource = RegisterEventSource(NULL, TEXT(SZSERVICENAME));
-
-		_stprintf(szMsg, TEXT("%s error: %d"), TEXT(SZSERVICENAME), dwErr);
-		lpszStrings[0] = szMsg;
-		lpszStrings[1] = lpszMsg;
-
-		if (hEventSource != NULL) {
-			ReportEvent(hEventSource, // handle of event source
-				EVENTLOG_ERROR_TYPE,  // event type
-				0,                    // event category
-				0,                    // event ID
-				NULL,                 // current user's SID
-				2,                    // strings in lpszStrings
-				0,                    // no bytes of raw data
-				(LPCTSTR*)lpszStrings,// array of error strings
-				NULL);                // no raw data
-
-			(VOID) DeregisterEventSource(hEventSource);
-		}
-	}
-}
-
-
-VOID AddMessageToMessageLog(LPCTSTR lpszMsg)
-{
-	HANDLE  hEventSource;
-	if ( !bDebug )
-	{
-		// Use event logging to log the error.
-		//
-		hEventSource = RegisterEventSource(NULL, TEXT(SZSERVICENAME));
-
-		if (hEventSource != NULL) {
-			ReportEvent(hEventSource, // handle of event source
-				EVENTLOG_INFORMATION_TYPE,     // event type
-				0,                    // event category
-				1,                    // event ID
-				NULL,                 // current user's SID
-				1,                    // strings in lpszStrings
-				0,                    // no bytes of raw data
-				&lpszMsg,// array of error strings
-				NULL);                // no raw data
-
-			(VOID) DeregisterEventSource(hEventSource);
-		}
-	}
-}
-
-VOID AddErrMsgToMessageLog(LPCTSTR lpszMsg)
-{
-	HANDLE  hEventSource;
-	if ( !bDebug )
-	{
-		// Use event logging to log the error.
-		//
-		hEventSource = RegisterEventSource(NULL, TEXT(SZSERVICENAME));
-
-		if (hEventSource != NULL) {
-			ReportEvent(hEventSource, // handle of event source
-				EVENTLOG_ERROR_TYPE,  // event type
-				0,                    // event category
-				1,                    // event ID
-				NULL,                 // current user's SID
-				1,                    // strings in lpszStrings
-				0,                    // no bytes of raw data
-				&lpszMsg,// array of error strings
-				NULL);                // no raw data
-
-			(VOID) DeregisterEventSource(hEventSource);
-		}
-	}
-}
-
-
-
-
-
-//
-//  FUNCTION: service_ctrl
+//  FUNCTION: service_ctrlEx
 //
 //  PURPOSE: This function is called by the SCM whenever
 //           ControlService() is called on this service.
@@ -306,40 +149,6 @@ VOID AddErrMsgToMessageLog(LPCTSTR lpszMsg)
 //
 //  COMMENTS:
 //
-VOID WINAPI service_ctrl(DWORD dwCtrlCode)
-{
-	AddMessageToMessageLog("WPKG Service->service_ctrl: successfuly done");
-	// Handle the requested control code.
-	//
-	switch(dwCtrlCode)
-	{
-		// Stop the service.
-		//
-		// SERVICE_STOP_PENDING should be reported before
-		// setting the Stop Event - hServerEvents[0] - in
-		// ServiceStop().  This avoids a race condition
-		// which may result in a 1053 - The Service did not respond...
-		// error.
-
-	case SERVICE_CONTROL_SHUTDOWN:
-	case SERVICE_CONTROL_STOP:
-		ServiceStop();
-		return;
-
-		// Update the service status.
-		//
-	case SERVICE_CONTROL_INTERROGATE:
-		break;
-
-		// invalid control code
-	default:
-		break;
-
-	}
-
-	ReportStatusToSCMgr(ssStatus.dwCurrentState, NO_ERROR, 0);
-}
-
 
 
 VOID WINAPI service_ctrlEx(DWORD dwCtrlCode, DWORD dwEventType,
@@ -347,7 +156,7 @@ VOID WINAPI service_ctrlEx(DWORD dwCtrlCode, DWORD dwEventType,
 						   LPVOID lpContext
 						   )
 {
-	AddMessageToMessageLog("WPKG Service->service_ctrlEx");
+
 	// Handle the requested control code.
 	//
 	switch(dwCtrlCode)
@@ -363,53 +172,24 @@ VOID WINAPI service_ctrlEx(DWORD dwCtrlCode, DWORD dwEventType,
 	case SERVICE_CONTROL_SHUTDOWN:
 	case SERVICE_CONTROL_STOP:
 		ServiceStop();
+		CEventLog::AddMessageToLog("System send stop or shutdown signal");
+		return;
+	case SERVICE_CONTROL_PRESHUTDOWN:
+		ServiceStop();
+		CEventLog::AddMessageToLog("System send pre-shutdown signal");
 		return;
 
 		// Update the service status.
 		//
+
 	case SERVICE_CONTROL_INTERROGATE:
 		break;
 
-		// test only 2000 PRO and higer
+		// only 2000 PRO and higer
 		//
 		// 0x0000000E
 	case SERVICE_CONTROL_SESSIONCHANGE:
 		{
-
-			//CString str;
-			//CTime t = CTime::GetCurrentTime();
-			//WTSSESSION_NOTIFICATION* wn = (WTSSESSION_NOTIFICATION*)lpEventData;
-
-			//INT* state = 0;
-			//WTS_CONNECTSTATE_CLASS
-
-
-			//wn.cbSize = sizeof(WTSSESSION_NOTIFICATION);
-
-			//LPTSTR ppBuffer;
-			DWORD pBytesReturned=0;
-
-			/*
-			WTSQuerySessionInformation(NULL,wn->dwSessionId,(WTS_INFO_CLASS)8,&ppBuffer,
-			&pBytesReturned);
-			*/
-
-			//WTSQuerySessionInformation(NULL,wn->dwSessionId,(WTS_INFO_CLASS)8,(LPSTR*)&state,
-			//	&pBytesReturned);
-
-
-
-			////str.Format("%s -> dwEventType: %u, user: %s, sessionId: %u\n",t.Format("%H:%M:%S"),dwEventType, ppBuffer,wn->dwSessionId);
-			//str.Format("%s -> dwEventType: %u, sessionState: %u, sessionId: %u\n",t.Format("%H:%M:%S"),dwEventType, *state,wn->dwSessionId);
-
-			//CStdioFile f;
-			//f.Open("c:\\sens.txt",CFile::modeCreate|CFile::modeWrite|CFile::modeNoTruncate|CFile::typeText);
-			//f.SeekToEnd();
-			//f.WriteString(str);
-			//f.Close();
-			////WTSFreeMemory(ppBuffer);
-			//WTSFreeMemory(state);
-
 
 			switch(dwEventType)
 			{
@@ -430,6 +210,7 @@ VOID WINAPI service_ctrlEx(DWORD dwCtrlCode, DWORD dwEventType,
 
 	}
 
+	CEventLog::AddMessageToLog("System query service status");
 	ReportStatusToSCMgr(ssStatus.dwCurrentState, NO_ERROR, 0);
 }
 
@@ -475,13 +256,16 @@ BOOL ReportStatusToSCMgr(DWORD dwCurrentState,
 			{
 				if(osi.dwMajorVersion<5)
 					flag = 0;
-				if(osi.dwMajorVersion=5 && osi.dwMinorVersion<1)
+				if(osi.dwMajorVersion==5 && osi.dwMinorVersion<1)
 					flag = 0;
+		
+				if(osi.dwMajorVersion>5)
+					flag|=SERVICE_ACCEPT_PRESHUTDOWN;
 			}
 			else
 				flag = 0;
 
-		
+
 			ssStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP|SERVICE_ACCEPT_SHUTDOWN|flag;
 		}
 
@@ -681,10 +465,10 @@ BOOL WINAPI ControlHandler ( DWORD dwCtrlType )
 	switch( dwCtrlType )
 	{
 	case CTRL_BREAK_EVENT:  // use Ctrl+C or Ctrl+Break to simulate
-		//ServiceStop();
-		return TRUE;
 	case CTRL_C_EVENT:      // SERVICE_CONTROL_STOP in debug mode
-		//ServiceStop();
+		//TODO: block in release version
+		ServiceStop();
+
 		return TRUE;
 	}
 	return FALSE;
@@ -734,23 +518,19 @@ LPTSTR GetLastErrorText( LPTSTR lpszBuf, DWORD dwSize )
 
 
 
-
 VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 {
 	try
 	{
-		AddMessageToMessageLog("ServiceStart"); 
+		// initialization
+		wpkgWorker.Initialize();
+
 
 		///////////////////////////////////////////////////
 		//
 		// Service initialization
 		//
 
-		BOOL bRestartSystem = FALSE;
-
-
-		HANDLE hToken = NULL;
-		::CoInitialize(NULL);
 
 		// report the status to the service control manager.
 		//
@@ -759,24 +539,11 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 			NO_ERROR,              // exit code
 			3000))                 // wait hint
 		{
-			AddErrMsgToMessageLog("ServiceStart->ReportStatusToSCMgr failed");
+			CEventLog::AddErrorMessageToLog("ServiceStart->ReportStatusToSCMgr failed");
 			return;
 		}
 
-		security.AllowAdminAccesSa();
-
-		hWorking = CreateEvent(
-			NULL,					// no security attributes
-			TRUE,					// manual reset event
-			FALSE,					// not-signalled
-			"Global\\WORKING_WPKG_SRVR");   // name
-
-
-		if ( hWorking == NULL)
-		{
-			AddErrMsgToMessageLog("ServiceStart->hWorking == NULL");
-			return;
-		}
+		CSecurity::AllowAdminAccesSa();
 
 
 		// create the event object. The control handler function signals
@@ -790,34 +557,34 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 
 		if ( hServerEvents[0] == NULL)
 		{
-			AddErrMsgToMessageLog("ServiceStart->hServerEvents[0] == NULL");
+			CEventLog::AddErrorMessageToLog("ServiceStart->hServerEvents[0] == NULL");
 			return;
 		}
 
 
 		// manual start event
 		hServerEvents[1] = CreateEvent(
-			&security.m_sa,     // access for Admins & system
+			&CSecurity::m_sa,     // access for Admins & system
 			FALSE,				// manual reset event
 			FALSE,				// not-signalled
-			"START_WPKG_SRVR");   
+			"Global\\START_WPKG_SRVR");   
 
 		if ( hServerEvents[1] == NULL)
 		{
-			AddErrMsgToMessageLog("ServiceStart->hServerEvents[1] == NULL");
+			CEventLog::AddErrorMessageToLog("ServiceStart->hServerEvents[1] == NULL");
 			return;
 		}
 
 		// viewer stop event
 		hServerEvents[2] = CreateEvent(
-			&security.m_sa,     // access for Admins &  system
+			&CSecurity::m_sa,     // access for Admins &  system
 			FALSE,				// manual reset event
 			FALSE,				// not-signalled
-			"STOP_WPKG_SRVR");   
+			"Global\\STOP_WPKG_SRVR");   
 
 		if ( hServerEvents[2] == NULL)
 		{
-			AddErrMsgToMessageLog("ServiceStart->hServerEvents[2] == NULL");
+			CEventLog::AddErrorMessageToLog("ServiceStart->hServerEvents[2] == NULL");
 			return;
 		}
 
@@ -832,7 +599,7 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 			NO_ERROR,              // exit code
 			0))                    // wait hint
 		{
-			AddErrMsgToMessageLog("ServiceStart->SERVICE_RUNNING: failed");
+			CEventLog::AddErrorMessageToLog("ServiceStart->SERVICE_RUNNING: failed");
 			return;
 		}
 
@@ -844,195 +611,17 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 		////////////////////////////////////////////////////////
 		//
 		// Service is now running, perform work until shutdown
-		//
+		////////////////////////////////////////////////////////
 
-
-
-		startTimeInfo.AllowAdminAccesSa();
-		startTimeInfo.CreateSharedMem();
-		startTimeInfo.WriteStartDate(CTime::GetCurrentTime());
-
-		// Load secret data
-		secret.LoadSecret();
-
-		// new feature laptop mode added
-		if(secret.m_bLaptopMode)
+		if(!wpkgWorker.IsRunOnShutdown())
 		{
-			AddMessageToMessageLog("Offline mode enabled: successfuly done."); 
-			switch(secret.m_iServerTestingMethod)
-			{
-			case 0:
-				{
-					CServerPing serverPing;
-					AddMessageToMessageLog("Offline mode: server connecting method selected."); 
+			CEventLog::AddMessageToLog("Starting WPKG on startup");
 
-					BOOL serverConnected = serverPing.WaitForConnect(secret.m_strServerIP,secret.m_dwServerPingTimeout);
+			wpkgWorker.WpkgClientAction();
+			if(wpkgWorker.IsMustStop())
+				ServiceStop();
 
-					if(!serverConnected)
-						CExceptionEx::ThrowError("Server connecting: failed.");
-					else
-						AddMessageToMessageLog("Server connecting: successfuly done."); 
-				}
-				break;
-			case 1:
-				{
-					AddMessageToMessageLog("Offline mode: custom connecting script method selected."); 
-					if(PathIsNetworkPath(secret.m_strScriptFile))
-					{
-						connection.AddConnection(secret.m_ServerPingScriptFile,
-							secret.m_strScriptConnUser,secret.m_strScriptConnPassword);
-						AddMessageToMessageLog("Network resource for custom script required: successfuly connected"); 
-					}
-
-					DWORD exitCode = process.CreateProcess(hToken, secret.m_ServerPingScriptFile.GetBuffer(),secret.m_bShowGUI, secret.m_dwPriority, secret.m_dwServerPingScriptTimeout*1000);
-					connection.Disconnect(secret.m_ServerPingScriptFile);
-					AddMessageToMessageLog("Network resource for custom script was required: successfuly disconnected"); 
-
-					if(exitCode==0)
-						AddMessageToMessageLog("Custom connecting script: successfuly done."); 
-					else
-						CExceptionEx::ThrowError("Custom connecting script: failed."); 
-
-
-				}
-				break;
-			}
-
-		}
-
-
-		// Switch to required security context
-		security.LogonUser(secret.m_strScriptExecUser.GetBuffer(),
-			secret.m_strScriptExecPassword.GetBuffer(),hToken);
-
-
-		// add message to event log
-		AddMessageToMessageLog("Set script security context: successfuly done."); 
-
-		// connect to the remote resource if required
-
-		if(PathIsNetworkPath(secret.m_strScriptFile))
-		{
-			connection.AddConnection(secret.m_strScriptFile,
-				secret.m_strScriptConnUser,secret.m_strScriptConnPassword);
-
-			AddMessageToMessageLog("Network resource: successfuly connected"); 
-		}
-
-
-
-		CString command("cscript.exe ");
-
-		command += secret.m_strScriptFile;
-		command += " ";
-		command += secret.m_strScriptParameters;
-
-		BOOL OK;
-		DWORD exitCode = 0;
-
-		for(int i=0; i<secret.m_strVarArray.GetCount(); i+=2)
-		{
-			OK = SetEnvironmentVariable(secret.m_strVarArray.GetAt(i), secret.m_strVarArray.GetAt(i+1));
-		}
-
-		if(!secret.m_strPreAction.IsEmpty())
-		{
-			security.AddDesktopPermission("winsta0","default",hToken,secret.m_bShowGUI);
-			exitCode = process.CreateProcess(hToken, secret.m_strPreAction.GetBuffer(),secret.m_bShowGUI, secret.m_dwPriority);
-			CString str;
-			str.Format("Script pre action execution: failure. Exit code: %u",exitCode);
-			if(exitCode==0)
-				AddMessageToMessageLog("Script pre action execution: successfuly done");
-			else
-				CExceptionEx::ThrowError(str);
-		}
-
-		// run cscript and wait for termination
-		exitCode = process.CreateProcess(hToken, command.GetBuffer(),secret.m_bShowGUI, secret.m_dwPriority);
-		switch(exitCode)
-		{
-		case 0:
-			CRunProcess::m_dwRestartCount = 0;
-			CRunProcess::WriteRestartInfo();
-
-			AddMessageToMessageLog("Script execution: successfuly done"); 
-			break;
-		case 3010:
-			{
-
-				CRunProcess::ReadRestartInfo();
-				//CRunProcess::m_dwRestartCount++; - przeniesione ni¿ej
-				//CRunProcess::WriteRestartInfo();
-
-				if(CRunProcess::m_dwRestartCount <=5)
-				{
-					bRestartSystem = TRUE;
-					//CRunProcess::RestartSystem("WPKG Service initiated system reboot");
-					//AddMessageToMessageLog("Script execution required restart: successfuly done"); 
-				}
-				else
-				{
-					CExceptionEx::ThrowError("Script execution required restart but restart count exceed 5 times one after the other. Restart canceled.");
-
-				}
-
-			}
-			break;
-		default:
-			CRunProcess::m_dwRestartCount = 0;
-			CRunProcess::WriteRestartInfo();
-			CString str;
-			str.Format("Script execution: failure. Exit code: %u",exitCode);
-
-			CExceptionEx::ThrowError(str);
-
-		}
-
-
-
-
-
-
-		if(!secret.m_strPostAction.IsEmpty())
-		{
-			security.AddDesktopPermission("winsta0","default",hToken,secret.m_bShowGUI);
-			exitCode = process.CreateProcess(hToken, secret.m_strPostAction.GetBuffer(),secret.m_bShowGUI,secret.m_dwPriority);
-			CString str;
-			str.Format("Script post action execution: failure. Exit code: %u",exitCode);
-			if(exitCode==0)
-				AddMessageToMessageLog("Script post action execution: successfuly done");
-			else
-				CExceptionEx::ThrowError(str);
-
-		}
-
-		// disconnect from network resource
-		if(PathIsNetworkPath(secret.m_strScriptFile))
-		{
-			connection.Disconnect(secret.m_strScriptFile);
-			AddMessageToMessageLog("Network resource: successfuly disconnected"); 
-		}
-
-
-
-		// working done
-		startTimeInfo.WriteStartDate(CTime(0));
-		if(hWorking)
-		{
-			SetEvent(hWorking);
-		}
-
-		if(secret.m_bStopServiceAfterDone)
-			ServiceStop();
-
-		Sleep(3000);
-
-		if(bRestartSystem)
-		{
-			CRunProcess::RestartSystem("WPKG Service initiated system reboot",iUserLoggedCount);
-			CRunProcess::m_dwRestartCount++;
-			CRunProcess::WriteRestartInfo();
-			AddMessageToMessageLog("Script execution required restart: successfuly done"); 
+			wpkgWorker.PerformRestart(iUserLoggedCount);
 		}
 
 	}
@@ -1040,18 +629,17 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 	{
 		char message[1024];
 		exc->GetErrorMessage(message,1024);
-		AddErrMsgToMessageLog(message);
+		CEventLog::AddErrorMessageToLog(message);
 		exc->Delete();
 		ServiceStop();
 		goto cleanup;
 	}
 	catch(...)
 	{
-		AddErrMsgToMessageLog("Unknown error occured");
+		CEventLog::AddErrorMessageToLog("Unknown error occured");
 		ServiceStop();
 		goto cleanup;
 	}
-
 
 
 	while(TRUE)
@@ -1064,12 +652,27 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 		{
 			try
 			{
-				//... feature for manual start signal
+				
+				CEventLog::AddMessageToLog("Starting WPKG on shutdown");
+				ServiceStop();
+
 			}
-			catch(CException* e)
+			catch(CException* exc)
 			{
-				e->Delete();
+				char message[1024];
+				exc->GetErrorMessage(message,1024);
+				CEventLog::AddErrorMessageToLog(message);
+				exc->Delete();
+				ServiceStop();
+				goto cleanup;
 			}
+			catch(...)
+			{
+				CEventLog::AddErrorMessageToLog("Unknown error occured");
+				ServiceStop();
+				goto cleanup;
+			}	
+
 		}
 
 		if ( dwWait == WAIT_OBJECT_0+2 )     // manual stop event
@@ -1087,17 +690,39 @@ VOID ServiceStart (DWORD dwArgc, LPTSTR *lpszArgv)
 
 	}
 
-	AddMessageToMessageLog("WPKG Service: successfuly done");
+	// action after shutdown signal
+	// not possible on VERSION_NT < 0x600 !
+	try
+	{
+		if(wpkgWorker.IsRunOnShutdown())
+			wpkgWorker.WpkgClientAction();
+
+	}
+	catch(CException* exc)
+	{
+		char message[1024];
+		exc->GetErrorMessage(message,1024);
+		CEventLog::AddErrorMessageToLog(message);
+		exc->Delete();
+		ServiceStop();
+		goto cleanup;
+	}
+	catch(...)
+	{
+		CEventLog::AddErrorMessageToLog("Unknown error occured");
+		ServiceStop();
+		goto cleanup;
+	}	
+
+
+
+	CEventLog::AddMessageToLog("WPKG Service: successfuly done");
+
 
 cleanup:
 
 	// working done
-	startTimeInfo.WriteStartDate(CTime(0));
-	if(hWorking)
-	{
-		SetEvent(hWorking);
-		CloseHandle(hWorking);
-	}
+	wpkgWorker.Cleanup();
 
 
 	if (hServerEvents[0])
@@ -1108,7 +733,6 @@ cleanup:
 
 	if (hServerEvents[2])
 		CloseHandle(hServerEvents[2]);
-
 
 }
 
@@ -1135,13 +759,15 @@ cleanup:
 //    ServiceControlManager will believe that
 //    the service has stopped responding.
 //    
+
 VOID ServiceStop()
 {
 	try
 	{
+
+		//ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 120 * 60 * 1000);
 		ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 3000);
 
-		//...
 
 		if ( hServerEvents[0] )
 			SetEvent(hServerEvents[0]);

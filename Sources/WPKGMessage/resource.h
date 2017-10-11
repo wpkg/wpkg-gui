@@ -5,8 +5,12 @@
 #define IDR_MAINFRAME                   1
 #define IDD_WPKGMESSAGE_DIALOG          102
 #define IDI_ICON1                       129
+#define IDD_DIALOG_INTERRUPT            140
 #define IDC_PROGRESS                    1002
 #define IDC_STATIC_MESSAGE              1003
+#define IDC_STATIC_MESSAGE2             1004
+#define IDC_STATIC_PROGRESS             1004
+#define IDC_EDIT_PWD                    1063
 
 // Next default values for new objects
 // 

@@ -39,16 +39,22 @@ void CTabCtrlEx::OnTcnSelchange(NMHDR *pNMHDR, LRESULT *pResult)
 	switch(dlgId)
 	{
 	case 0:
-		m_dlg1.ShowWindow(SW_SHOW);
+		m_dlg0.ShowWindow(SW_SHOW);
 		break;
 	case 1:
-		m_dlg2.ShowWindow(SW_SHOW);
+		m_dlg1.ShowWindow(SW_SHOW);
 		break;
 	case 2:
-		m_dlg3.ShowWindow(SW_SHOW);
+		m_dlg2.ShowWindow(SW_SHOW);
 		break;
 	case 3:
+		m_dlg3.ShowWindow(SW_SHOW);
+		break;
+	case 4:
 		m_dlg4.ShowWindow(SW_SHOW);
+		break;
+	case 5:
+		m_dlg5.ShowWindow(SW_SHOW);
 		break;
 
 	}
@@ -60,15 +66,19 @@ void CTabCtrlEx::OnTcnSelchange(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CTabCtrlEx::InitTabs(void)
 {
-	InsertItem(0,"General");
-	InsertItem(1,"Logon settings");
-	InsertItem(2,"Misc settings");
-	InsertItem(3,"Offline mode settings");
+	InsertItem(0,"Path, users");
+	InsertItem(1,"Variables, actions");
+	InsertItem(2,"Logon settings");
+	InsertItem(3,"Misc settings");
+	InsertItem(4,"Offline mode settings");
+	InsertItem(5,"Tools");
 
+	m_dlg0.Create(IDD_DIALOG_GENERAL_MAIN,this);
 	m_dlg1.Create(IDD_DIALOG_GENERAL,this);
 	m_dlg2.Create(IDD_DIALOG_LOGON_SETTINGS,this);
 	m_dlg3.Create(IDD_DIALOG_PRIORITY_SETTINGS,this);
 	m_dlg4.Create(IDD_DIALOG_LAPTOP_MODE,this);
+	m_dlg5.Create(IDD_DIALOG_TOOLS,this);
 
 	CRect tabRect, itemRect;
 
@@ -81,14 +91,16 @@ void CTabCtrlEx::InitTabs(void)
 	nXc=tabRect.Width() - itemRect.left*2;
 	nYc=tabRect.Height() - nY - itemRect.top*2;
 
+	m_dlg0.SetWindowPos(&wndTop, nX, nY, nXc, nYc, SWP_SHOWWINDOW);
 	m_dlg1.SetWindowPos(&wndTop, nX, nY, nXc, nYc, SWP_SHOWWINDOW);
 	m_dlg2.SetWindowPos(&wndTop, nX, nY, nXc, nYc, SWP_SHOWWINDOW);
 	m_dlg3.SetWindowPos(&wndTop, nX, nY, nXc, nYc, SWP_SHOWWINDOW);
 	m_dlg4.SetWindowPos(&wndTop, nX, nY, nXc, nYc, SWP_SHOWWINDOW);
+	m_dlg5.SetWindowPos(&wndTop, nX, nY, nXc, nYc, SWP_SHOWWINDOW);
 
 	HidePages();
 
-	m_dlg1.ShowWindow(SW_SHOW);
+	m_dlg0.ShowWindow(SW_SHOW);
 
 }
 
@@ -99,49 +111,68 @@ BOOL CTabCtrlEx::UpdateData(BOOL bUpdate)
 
 	if(bUpdate)
 	{
-
+		if(!m_dlg0.UpdateData(bUpdate))
+		{
+			HidePages();
+			m_dlg0.ShowWindow(SW_SHOW);
+			SetCurSel(0);
+			return bResult;
+		}
 
 		if(!m_dlg1.UpdateData(bUpdate))
 		{
-			ShowAdvanced();
+			HidePages();
 			m_dlg1.ShowWindow(SW_SHOW);
-			SetCurSel(0);
+			SetCurSel(1);
 			return bResult;
 		}
 		if(!m_dlg2.UpdateData(bUpdate))
 		{
-			ShowAdvanced();
+			HidePages();
 			m_dlg2.ShowWindow(SW_SHOW);
-			SetCurSel(1);
+			SetCurSel(2);
 			return bResult;
 		}
 		if(!m_dlg3.UpdateData(bUpdate))
 		{
-			ShowAdvanced();
+			HidePages();
 			m_dlg3.ShowWindow(SW_SHOW);
-			SetCurSel(2);
+			SetCurSel(3);
 			return bResult;
 		}
 		if(!m_dlg4.UpdateData(bUpdate))
 		{
-			ShowAdvanced();
+			HidePages();
 			m_dlg4.ShowWindow(SW_SHOW);
-			SetCurSel(3);
+			SetCurSel(4);
+			return bResult;
+		}
+		if(!m_dlg5.UpdateData(bUpdate))
+		{
+			HidePages();
+			m_dlg5.ShowWindow(SW_SHOW);
+			SetCurSel(5);
 			return bResult;
 		}
 
 		bResult = TRUE;
 		CSecret::m_dwPriority = m_dlg3.ComboToPriority();
+		CSecret::m_bRunOnShutdown = m_dlg2.ComboToShutdownMode();
 		m_dlg1.GetScriptVarData();
 	}
 	else
 	{
-		bResult = m_dlg1.UpdateData(bUpdate) && m_dlg2.UpdateData(bUpdate) && m_dlg3.UpdateData(bUpdate) &&
-			m_dlg4.UpdateData(bUpdate);
+		bResult = m_dlg0.UpdateData(bUpdate) && m_dlg1.UpdateData(bUpdate) &&
+			m_dlg2.UpdateData(bUpdate) && m_dlg3.UpdateData(bUpdate) &&
+			m_dlg4.UpdateData(bUpdate) && m_dlg5.UpdateData(bUpdate);
 
 		m_dlg3.PriorityToCombo(CSecret::m_dwPriority);
+		m_dlg2.ShutdownModeToCombo(CSecret::m_bRunOnShutdown);
+		m_dlg2.OnCbnSelchangeComboExecutionMode();
+		m_dlg3.UpdateCheck();
 		m_dlg1.SetScriptVarData();
 		m_dlg1.UpdateCheck();
+		m_dlg0.OnBnClickedCheckNetUseMachineAccount();
 		m_dlg4.CheckControls();
 	}
 
@@ -159,18 +190,40 @@ void CTabCtrlEx::OnTcnSelchanging(NMHDR *pNMHDR, LRESULT *pResult)
 
 void CTabCtrlEx::HidePages(void)
 {
+	m_dlg0.ShowWindow(SW_HIDE);
 	m_dlg1.ShowWindow(SW_HIDE);
 	m_dlg2.ShowWindow(SW_HIDE);
 	m_dlg3.ShowWindow(SW_HIDE);
 	m_dlg4.ShowWindow(SW_HIDE);
+	m_dlg5.ShowWindow(SW_HIDE);
 
 }
 
-void CTabCtrlEx::ShowAdvanced(void)
-{
-	HidePages();
-	CWnd* pParent = GetParent();
-	if(pParent)
-		::SendMessage(pParent->GetSafeHwnd(),WMU_SHOW_ADVANCED,0,0);
 
+
+LRESULT CTabCtrlEx::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch(message)
+	{
+	case PSM_CHANGED:
+		{
+			ASSERT(::IsWindow(m_hWnd));
+			ASSERT(GetParent() != NULL);
+			CWnd* pParentWnd = GetParent();
+			pParentWnd->SendMessage(PSM_CHANGED, (WPARAM)m_hWnd);
+		}
+		break;
+	case PSM_UNCHANGED:
+		{
+			ASSERT(::IsWindow(m_hWnd));
+			ASSERT(GetParent() != NULL);
+			CWnd* pParentWnd = GetParent();
+			pParentWnd->SendMessage(PSM_UNCHANGED, (WPARAM)m_hWnd);
+		}
+		break;
+
+	}
+
+
+	return CTabCtrl::WindowProc(message, wParam, lParam);
 }

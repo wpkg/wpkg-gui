@@ -59,15 +59,6 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\wpkginst.ico"
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // RTF
 //
 
@@ -75,19 +66,36 @@ IDR_RTF                 RTF                     "res\\license.rtf"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// String Table
+// Dialog
 //
 
-STRINGTABLE 
+IDD_DIALOG_SERVICE_CONTROL_RESULT DIALOGEX 0, 0, 316, 140
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Services control status"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    IDS_ABOUTBOX            "&About WPKG Installer Parameters..."
+    DEFPUSHBUTTON   "OK",IDOK,259,118,50,14
+    EDITTEXT        IDC_EDIT_RESULT,7,7,302,106,ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | WS_VSCROLL | WS_HSCROLL
 END
 
-STRINGTABLE 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
 BEGIN
-    IDS_IS_NOT_ADMIN        "You must have an administrative privilege to run this tool."
-    IDS_FIELD_REQUIRED      "Please fill required field(s)."
+    IDD_DIALOG_SERVICE_CONTROL_RESULT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 133
+    END
 END
+#endif    // APSTUDIO_INVOKED
 
 #endif    // Polish resources
 /////////////////////////////////////////////////////////////////////////////
@@ -104,6 +112,15 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\wpkginst.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // Dialog
 //
 
@@ -113,40 +130,25 @@ CAPTION "About WPKG Client"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,5,5,20,20
-    LTEXT           "WPKG Client - Version 1.2.1",IDC_STATIC,47,11,194,8,SS_NOPREFIX
+    LTEXT           "WPKG Client - Version 1.3.9",IDC_STATIC,47,11,194,8,SS_NOPREFIX
     DEFPUSHBUTTON   "OK",IDOK,391,5,50,16,WS_GROUP
     CONTROL         "",IDC_RICHEDIT,"RichEdit20A",ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,5,28,436,197
 END
 
-IDD_WPKGINST_DIALOG DIALOGEX 0, 0, 458, 354
+IDD_WPKGINST_DIALOG DIALOGEX 0, 0, 382, 223
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
 CAPTION "WPKG Client"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    EDITTEXT        IDC_EDIT_SCRIPT_FILE,110,13,305,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_BUTTON_SELECT_FILE,423,13,20,12
-    EDITTEXT        IDC_EDIT_SCRIPT_PARAMATERS,110,31,333,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_SCRIPT_PATH_USER,110,49,333,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_SCRIPT_PATH_PASSWORD,110,67,333,12,ES_PASSWORD | ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_SCRIPT_EXEC_USER,110,99,333,12,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_SCRIPT_EXEC_PASSWORD,110,117,333,12,ES_PASSWORD | ES_AUTOHSCROLL
-    PUSHBUTTON      "<< General",IDC_BUTTON_ADVANCED,7,334,55,13
-    PUSHBUTTON      "&Help...",IDC_BUTTON_HELP,156,334,42,13
-    PUSHBUTTON      "&Save",IDOK,408,334,42,13
-    GROUPBOX        "WPKG source",IDC_STATIC,7,3,443,83
-    GROUPBOX        "WPKG execution context",IDC_STATIC,7,89,443,46
-    LTEXT           "User:",IDC_STATIC,15,99,81,12
-    LTEXT           "Password:",IDC_STATIC,15,117,81,12
-    LTEXT           "WPKG file path (required):",IDC_STATIC,15,16,93,12
-    LTEXT           "WPKG parameters:",IDC_STATIC,15,34,81,12
-    LTEXT           "WPKG path user:",IDC_STATIC,15,52,81,12
-    LTEXT           "WPKG path password:",IDC_STATIC,15,70,81,12
-    PUSHBUTTON      "&Export settings...",IDC_BUTTON_EXPORT_SETTINGS,270,334,66,13
-    CONTROL         "",IDC_TAB_ADVANCED,"SysTabControl32",0x0,7,137,443,194
-    PUSHBUTTON      "&About...",IDC_BUTTON_ABOUT,111,334,42,13
-    PUSHBUTTON      "&Import settings...",IDC_BUTTON_IMPORT_SETTINGS,201,334,66,13
-    PUSHBUTTON      "&Test settings...",IDC_BUTTON_TEST_SETTINGS,339,334,66,13
+    PUSHBUTTON      "&Help",IDC_BUTTON_HELP,135,204,26,13
+    PUSHBUTTON      "&Save",IDC_BUTTON_SAVE,331,204,42,13,WS_DISABLED
+    PUSHBUTTON      "&Export settings",IDC_BUTTON_EXPORT_SETTINGS,222,204,56,13
+    CONTROL         "",IDC_TAB_ADVANCED,"SysTabControl32",0x0,7,7,367,194
+    PUSHBUTTON      "&About",IDC_BUTTON_ABOUT,65,204,31,13
+    PUSHBUTTON      "&Import settings",IDC_BUTTON_IMPORT_SETTINGS,163,204,57,13
+    PUSHBUTTON      "&Test settings",IDC_BUTTON_TEST_SETTINGS,280,204,49,13
+    PUSHBUTTON      "&Donate",IDC_BUTTON_DONATE,98,204,35,13
 END
 
 IDD_DIALOG_GENERAL DIALOGEX 0, 0, 363, 179
@@ -173,25 +175,44 @@ IDD_DIALOG_LOGON_SETTINGS DIALOGEX 0, 0, 363, 179
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Maximum logon delay",IDC_STATIC,7,7,349,31
-    LTEXT           "minutes",IDC_STATIC,72,20,26,8
-    EDITTEXT        IDC_EDIT_LOGON_DELAY,14,18,40,14,ES_AUTOHSCROLL | ES_NUMBER
-    EDITTEXT        IDC_EDIT_LOGON_MESSAGE1,14,50,335,15,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_LOGON_MESSAGE2,14,87,335,15,ES_AUTOHSCROLL
-    GROUPBOX        "First message",IDC_STATIC,7,40,349,31
-    GROUPBOX        "Second message",IDC_STATIC,7,76,349,31
-    CONTROL         "",IDC_SPIN_LOGON_DELAY,"msctls_updown32",UDS_SETBUDDYINT | UDS_ARROWKEYS,53,17,10,15
-    LTEXT           "Due to restrictive security features in Vista, delaying logon is not possible.",IDC_STATIC_VISTA_PROMPT,7,118,349,12,NOT WS_VISIBLE | WS_DISABLED
+    LTEXT           "minutes",IDC_STATIC,209,19,26,8
+    EDITTEXT        IDC_EDIT_LOGON_DELAY,154,17,40,12,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_EDIT_LOGON_MESSAGE1,14,119,335,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_LOGON_MESSAGE2,14,145,335,12,ES_AUTOHSCROLL
+    GROUPBOX        "First message",IDC_STATIC,7,108,349,27
+    GROUPBOX        "Second message",IDC_STATIC,7,135,349,27
+    CONTROL         "",IDC_SPIN_LOGON_DELAY,"msctls_updown32",UDS_SETBUDDYINT | UDS_ARROWKEYS,194,16,11,15
+    LTEXT           "Due to restrictive security features in Vista, delaying logon is not possible.",IDC_STATIC_VISTA_PROMPT,7,162,349,10,NOT WS_VISIBLE | WS_DISABLED
+    EDITTEXT        IDC_EDIT_LOGON_MESSAGE_TITLE,14,64,335,12,ES_AUTOHSCROLL
+    GROUPBOX        "Message window title",IDC_STATIC,7,54,349,27
+    EDITTEXT        IDC_EDIT_LOGON_MESSAGE_LOGO,14,91,305,12,ES_AUTOHSCROLL
+    GROUPBOX        "Message window logo (100 x 100 pix.)",IDC_STATIC,7,81,349,27
+    GROUPBOX        "Execution mode",IDC_STATIC,7,6,230,46
+    LTEXT           "minutes",IDC_STATIC,209,35,26,8
+    EDITTEXT        IDC_EDIT_SHUTDOWN_DELAY,154,33,40,12,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_SPIN_SHUTDOWN_DELAY,"msctls_updown32",UDS_SETBUDDYINT | UDS_ARROWKEYS,194,32,11,15
+    LTEXT           "Shutdown delay:",IDC_STATIC,98,35,55,8
+    COMBOBOX        IDC_COMBO_EXECUTION_MODE,13,24,82,112,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Logon delay:",IDC_STATIC,98,20,42,8
+    GROUPBOX        "Interrupt password",IDC_STATIC,242,6,114,46
+    EDITTEXT        IDC_EDIT_INTERRUPT_PWD,247,33,102,12,ES_PASSWORD | ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BUTTON_SELECT_FILE,329,91,20,12
+    LTEXT           "(Ctrl+Q)",IDC_STATIC,247,17,28,8
 END
 
 IDD_DIALOG_PRIORITY_SETTINGS DIALOGEX 0, 0, 363, 179
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Execution priority settings",-1,7,7,349,38,WS_GROUP
+    GROUPBOX        "Execution priority settings",IDC_STATIC,7,7,349,38,WS_GROUP
     COMBOBOX        IDC_COMBO_PRIORITY,17,21,163,112,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Stop the service when all actions are done",IDC_CHECK_STOP_SERVICE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,60,151,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,50,151,10
+    EDITTEXT        IDC_EDIT_LOG_FILE,14,87,226,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BUTTON_SELECT_LOG_FILE,241,87,20,12
+    GROUPBOX        "Debug",IDC_STATIC,7,62,349,44,WS_GROUP
+    CONTROL         "Log to file",IDC_CHECK_LOG_TO_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,75,82,10
+    PUSHBUTTON      "Open",IDC_BUTTON_OPEN_LOG_FILE,263,87,31,12
 END
 
 IDD_DIALOG_TEST_SETTINGS DIALOGEX 0, 0, 453, 255
@@ -228,6 +249,41 @@ BEGIN
     CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME,7,97,349,57
 END
 
+IDD_DIALOG_GENERAL_MAIN DIALOGEX 0, 0, 363, 179
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT_SCRIPT_FILE,97,13,226,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BUTTON_SELECT_FILE,329,13,20,12
+    EDITTEXT        IDC_EDIT_SCRIPT_PARAMATERS,97,31,252,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_PATH_USER,97,49,252,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_PATH_PASSWORD,97,67,252,12,ES_PASSWORD | ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_EXEC_USER,97,127,252,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SCRIPT_EXEC_PASSWORD,97,145,252,12,ES_PASSWORD | ES_AUTOHSCROLL
+    GROUPBOX        "WPKG source",IDC_STATIC,7,3,349,110
+    GROUPBOX        "WPKG execution context",IDC_STATIC,7,117,349,46
+    LTEXT           "User:",IDC_STATIC,11,128,84,12
+    LTEXT           "Password:",IDC_STATIC,11,145,84,12
+    LTEXT           "WPKG file path (required):",IDC_STATIC,11,16,84,12
+    LTEXT           "WPKG parameters:",IDC_STATIC,11,34,84,12
+    LTEXT           "WPKG path user:",IDC_STATIC,11,52,84,12
+    LTEXT           "WPKG path password:",IDC_STATIC,11,70,84,12
+    CONTROL         "Use computer account and password:",IDC_CHECK_NET_USE_MACHINE_ACCOUNT,
+                    "Button",BS_AUTOCHECKBOX | BS_LEFTTEXT | BS_MULTILINE | WS_TABSTOP,11,84,122,23
+END
+
+IDD_DIALOG_TOOLS DIALOGEX 0, 0, 363, 179
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT_SERVER_NAME,47,18,111,86,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
+    GROUPBOX        "Service state",-1,7,7,349,119,WS_GROUP
+    LTEXT           "Machines:",-1,14,20,33,8
+    PUSHBUTTON      "Stop",IDC_BUTTON_SERVICE_STOP,161,18,34,12
+    PUSHBUTTON      "Start",IDC_BUTTON_SERVICE_START,198,18,34,12
+    EDITTEXT        IDC_EDIT_SERVICE_STATE,14,108,334,12,ES_AUTOHSCROLL | ES_READONLY
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -235,8 +291,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,8
- PRODUCTVERSION 1,0,0,8
+ FILEVERSION 1,0,0,18
+ PRODUCTVERSION 1,0,0,18
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -254,13 +310,13 @@ BEGIN
             VALUE "Comments", "This is an installer for WPKG, an automated software deployment, upgrade and removal program for Windows"
             VALUE "CompanyName", "wpkg.org"
             VALUE "FileDescription", "WPKG Client"
-            VALUE "FileVersion", "1.0.0.8"
+            VALUE "FileVersion", "1, 0, 0, 18"
             VALUE "InternalName", "wpkginst"
             VALUE "LegalCopyright", "(c) Artur Majuch.  All rights reserved."
             VALUE "LegalTrademarks", "(c) Artur Majuch.  All rights reserved."
             VALUE "OriginalFilename", "wpkginst.exe"
-            VALUE "ProductName", "WPKG"
-            VALUE "ProductVersion", "1.0.0.8"
+            VALUE "ProductName", "WPKG Client"
+            VALUE "ProductVersion", "1, 0, 0, 18"
         END
     END
     BLOCK "VarFileInfo"
@@ -289,9 +345,9 @@ BEGIN
     IDD_WPKGINST_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 450
+        RIGHTMARGIN, 374
         TOPMARGIN, 7
-        BOTTOMMARGIN, 347
+        BOTTOMMARGIN, 216
     END
 
     IDD_DIALOG_GENERAL, DIALOG
@@ -333,6 +389,22 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 172
     END
+
+    IDD_DIALOG_GENERAL_MAIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 356
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 172
+    END
+
+    IDD_DIALOG_TOOLS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 356
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 172
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -357,6 +429,39 @@ BEGIN
     IDC_COMBO_PRIORITY, 0x403, 9, 0
 0x6552, 0x6c61, 0x6974, 0x656d, "\000" 
     0
+END
+
+IDD_DIALOG_LOGON_SETTINGS DLGINIT
+BEGIN
+    IDC_COMBO_EXECUTION_MODE, 0x403, 18, 0
+0x7441, 0x7320, 0x7379, 0x6574, 0x206d, 0x7473, 0x7261, 0x7574, 0x0070, 
+
+    IDC_COMBO_EXECUTION_MODE, 0x403, 19, 0
+0x7441, 0x7320, 0x7379, 0x6574, 0x206d, 0x6873, 0x7475, 0x6f64, 0x6e77, 
+"\000" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About WPKG Client..."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_IS_NOT_ADMIN        "You must have an administrative privilege to run this tool."
+    IDS_FIELD_REQUIRED      "Please fill required field(s)."
+END
+
+STRINGTABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "WPKG Client"
 END
 
 #endif    // English (U.S.) resources

@@ -31,7 +31,7 @@ private:
 	void TryUserContext(void);
 	void TryPing();
 	afx_msg void OnDestroy();
-	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	void TryConnect(CString path);
 	CString m_strResultLog;
 	afx_msg void OnBnClickedButtonSaveLog();

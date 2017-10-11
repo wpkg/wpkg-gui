@@ -1,0 +1,8 @@
+Table            - Action
+-----------------------------------------------------------------------------------------------
+
+Binary           - DefBannerBitmap = WPKG.bmp
+CustomAction     - for wpkginst (target: --SETTINGSFILE=[SETTINGSFILE]); type = 1554
+Property         - ALLUSERS = 1
+
+-----------------------------------------------------------------------------------------------

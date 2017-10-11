@@ -126,18 +126,22 @@ class CSecret
 public:
 	CSecret(void);
 	virtual ~CSecret(void);
-	DWORD DeleteSecret();
-	DWORD LoadSecret();
-	DWORD StoreSecret();
+	static DWORD DeleteSecret();
+	static DWORD LoadSecret();
+	static DWORD StoreSecret();
 	
 	
 
 public:
-	void Export(CString fileName);
-	void Import(CString fileName);
+	static void Export(CString fileName);
+	static void Import(CString fileName);
 	
 
+	static DWORD m_dwShutdownDelay;
+	static BOOL m_bRunOnShutdown;
+	static CString m_strLogFile;
 	static CString m_strScriptFile;
+	static BOOL  m_bNetUseMachineAccount;
 	static CString m_strScriptParameters;
 	static CString m_strScriptConnUser;
 	static CString m_strScriptConnPassword;
@@ -149,6 +153,9 @@ public:
 	static BOOL m_bShowGUI;
 	static DWORD m_dwPriority;
 	static DWORD m_dwLogonDelay;
+	static CString m_strMessageTitle;
+	static CString m_strMessageLogo;
+	static CString m_strInterruptPwd;
 	static CString m_strMessage1;
 	static CString m_strMessage2;
 	static BOOL m_bSilent;
@@ -161,22 +168,22 @@ public:
 	static BOOL m_bLaptopMode;
 
 
-	void ParsePriority(CString str);
-	CString FormatPriority();
+	static void ParsePriority(CString str);
+	static CString FormatPriority();
 
 	
 
 private:
-	void ParseXml(CXmlSettings& st);
-	void FormatXml(CXmlSettings& st);
+	static void ParseXml(CXmlSettings& st);
+	static void FormatXml(CXmlSettings& st);
 
-	NTSTATUS OpenPolicy(LPWSTR ServerName, DWORD DesiredAccess,
+	static NTSTATUS OpenPolicy(LPWSTR ServerName, DWORD DesiredAccess,
 		PLSA_HANDLE PolicyHandle);
 
-	void InitLsaString(PLSA_UNICODE_STRING LsaString, LPWSTR String);
-	void InitLsaString(PLSA_UNICODE_STRING LsaString,
+	static void InitLsaString(PLSA_UNICODE_STRING LsaString, LPWSTR String);
+	static void InitLsaString(PLSA_UNICODE_STRING LsaString,
 		LPWSTR String, DWORD size);
-	void InitLsaString(
+	static void InitLsaString(
 	    PLSA_UNICODE_STRING LsaString,
 		CString string);
 

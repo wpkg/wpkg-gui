@@ -1,10 +1,11 @@
 #pragma once
 #include "afxcmn.h"
+#include "BasePropertyPage.h"
 
 
 // CTabLaptopMode dialog
 
-class CTabLaptopMode : public CPropertyPage
+class CTabLaptopMode : public CBasePropertyPage
 {
 	DECLARE_DYNAMIC(CTabLaptopMode)
 

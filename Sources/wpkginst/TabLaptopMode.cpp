@@ -96,7 +96,7 @@ void AFXAPI DDV_EmptyStringCustomScript(
 
 IMPLEMENT_DYNAMIC(CTabLaptopMode, CPropertyPage)
 CTabLaptopMode::CTabLaptopMode()
-	: CPropertyPage(CTabLaptopMode::IDD)
+	: CBasePropertyPage(CTabLaptopMode::IDD)
 	, m_bValidate(TRUE)
 {
 }
@@ -170,6 +170,7 @@ BOOL CTabLaptopMode::OnInitDialog()
 
 	EnableEditActions();
 
+	DataLoaded();
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }

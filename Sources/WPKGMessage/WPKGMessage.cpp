@@ -6,6 +6,9 @@
 #include "..\components\filemap.h"
 #include "WPKGMessageDlg.h"
 
+//#include "..\components\Report.h"
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -13,16 +16,21 @@
 
 BOOL bWorking = TRUE;
 BOOL bConnected = FALSE;
-
 CEvent eTestServiceStatus;
 
-
+static CFileMap startTimeInfo;
 
 
 UINT WaitForDone(LPVOID)
 {
+	//CReport rep;
+		
+	//rep.OpenReport("c:\\wpkglogon.txt");
+	
+		
+
 	DWORD dwTimeOut = 60; // in seconds
-	CFileMap startTimeInfo;
+	
 
 
 	HKEY phkResult;
@@ -32,7 +40,6 @@ UINT WaitForDone(LPVOID)
 		KEY_READ,
 		&phkResult );
 
-	dwTimeOut = 60;
 	DWORD cbData = 4;
 	DWORD Type;
 	
@@ -48,70 +55,94 @@ UINT WaitForDone(LPVOID)
 		dwTimeOut -= 30;
 	
 	
+	
 	CTime date;
 	CTime current = date = CTime::GetCurrentTime();
 	CTimeSpan ts;
 
-	DWORD timeout = 0;
+	//rep.AddInfo("Logon timeout = %u s",dwTimeOut);
+
+	dwTimeOut *= 1000;
+	DWORD dwMaxTick = GetTickCount();
+	dwMaxTick += dwTimeOut;
+	//rep.AddInfo("dwMaxTick = %u ms",dwMaxTick);
 
 
-	while(timeout<dwTimeOut)
+	
+	DWORD dwTick = 0;
+
+	while(bWorking && dwTick<dwMaxTick)
 	{
 		try
 		{
 			startTimeInfo.OpenSharedMem();
 			date = startTimeInfo.ReadStartDate();
+			startTimeInfo.LogonDelayWorking();
+			//rep.AddInfo("Open shared memory = %s",date.Format("%Y-%m-%d %H:%M:%S"));
 			bConnected = TRUE;
 			break;
 		}
 		catch(CException* e)
 		{
+			//rep.AddInfo("Cant open shared memory, dwTick = %u",dwTick);
+			
 			e->Delete();
 			Sleep(5000);
-			timeout+=5;
+			dwTick = GetTickCount();
 			eTestServiceStatus.SetEvent();
 			continue;
 		}
 	}
-
-	if(dwTimeOut>timeout)
-		dwTimeOut -= timeout;
-
 	
 	ts = current - date;
+	
 	LONGLONG timeElapsed = ts.GetTotalSeconds();
 
+	//rep.AddInfo("timeElapsed = %d s",timeElapsed);
 
-	if(timeElapsed < dwTimeOut )
+
+	if(timeElapsed < ((dwMaxTick - dwTick)/1000) )
 	{
 		eTestServiceStatus.SetEvent();
 
-		if(timeElapsed<dwTimeOut && timeElapsed>0)
-			dwTimeOut-=(DWORD)timeElapsed;
+		CString str;
+
+		while(bWorking && startTimeInfo.IsWorking(str,dwMaxTick))
+		{
+			//rep.AddInfo("IsWorking tick = %u",GetTickCount());
+			CWnd* pWnd = AfxGetApp()->m_pMainWnd;
+			
+			if(pWnd && ::IsWindow(pWnd->GetSafeHwnd()))
+			{
+				pWnd->SendMessage(WM_USER+101,0,(LPARAM)str.GetBuffer());
+
+			}
+		}
+
+		//for(;;)
+		//{
+		//	BOOL bResult = startTimeInfo.IsWorking(str,dwMaxTick);
+
+		//	rep.AddInfo("IsWorking tick = %u",GetTickCount());
+		//	CWnd* pWnd = AfxGetApp()->m_pMainWnd;
+
+		//	if(pWnd && ::IsWindow(pWnd->GetSafeHwnd()))
+		//	{
+		//		pWnd->SendMessage(WM_USER+101,0,(LPARAM)str.GetBuffer());
+
+		//	}
+		//	if(!bResult)
+		//		break;
+		//}
 
 
-		dwTimeOut *= 1000;
-
-		HANDLE hWorking = OpenEvent(
-	        SYNCHRONIZE,
-		    FALSE,
-			"Global\\WORKING_WPKG_SRVR");   // name
-
-
-		WaitForSingleObject(hWorking,dwTimeOut);
-		if(hWorking!=INVALID_HANDLE_VALUE)
-			CloseHandle(hWorking);
 	}
 
+	//rep.AddInfo("Waiting done");
 	bWorking = FALSE;
-
 	eTestServiceStatus.SetEvent();
-
-
 	return 0;
 }
-
-
 
 
 BOOL IsWorking()
@@ -123,6 +154,14 @@ BOOL IsWorkingDone()
 {
 	return (!bWorking && bConnected);
 }
+
+
+void WorkingDone()
+{
+	bWorking = FALSE;
+	startTimeInfo.AbortWorkingMonitor();
+}
+
 
 
 // CWPKGMessageApp
@@ -151,9 +190,9 @@ CWPKGMessageApp theApp;
 BOOL CWPKGMessageApp::InitInstance()
 {
 	CWinApp::InitInstance();
-
-	CWinThread* pThr = AfxBeginThread(WaitForDone,NULL);
 	
+	CWinThread* pThr = AfxBeginThread(WaitForDone,NULL);
+		
 	CSingleLock lck(&eTestServiceStatus);
 	lck.Lock();
 
@@ -168,6 +207,5 @@ BOOL CWPKGMessageApp::InitInstance()
 	eTestServiceStatus.Unlock();
 
 	WaitForSingleObject(pThr->m_hThread,INFINITE);
-
 	return FALSE;
 }

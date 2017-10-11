@@ -1,1 +1,0 @@
-msiexec /i wpkgsetup.msi
