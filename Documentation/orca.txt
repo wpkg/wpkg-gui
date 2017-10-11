@@ -1,0 +1,4 @@
+Binary-DefBannerBitmap-zmienic
+CustomAction-dla wpkginst-zmienic type na 1554
+Property ALLUSERS - na 1
+Propert FolderForm_AllUsersVisible na 0

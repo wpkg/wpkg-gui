@@ -113,7 +113,7 @@ CAPTION "About WPKG Client"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,5,5,20,20
-    LTEXT           "WPKG Client - Version 1.2.0",IDC_STATIC,47,11,194,8,SS_NOPREFIX
+    LTEXT           "WPKG Client - Version 1.2.1",IDC_STATIC,47,11,194,8,SS_NOPREFIX
     DEFPUSHBUTTON   "OK",IDOK,391,5,50,16,WS_GROUP
     CONTROL         "",IDC_RICHEDIT,"RichEdit20A",ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,5,28,436,197
 END
@@ -235,8 +235,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,7
- PRODUCTVERSION 1,0,0,7
+ FILEVERSION 1,0,0,8
+ PRODUCTVERSION 1,0,0,8
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -254,13 +254,13 @@ BEGIN
             VALUE "Comments", "This is an installer for WPKG, an automated software deployment, upgrade and removal program for Windows"
             VALUE "CompanyName", "wpkg.org"
             VALUE "FileDescription", "WPKG Client"
-            VALUE "FileVersion", "1.0.0.7"
+            VALUE "FileVersion", "1.0.0.8"
             VALUE "InternalName", "wpkginst"
             VALUE "LegalCopyright", "(c) Artur Majuch.  All rights reserved."
             VALUE "LegalTrademarks", "(c) Artur Majuch.  All rights reserved."
             VALUE "OriginalFilename", "wpkginst.exe"
             VALUE "ProductName", "WPKG"
-            VALUE "ProductVersion", "1.0.0.7"
+            VALUE "ProductVersion", "1.0.0.8"
         END
     END
     BLOCK "VarFileInfo"
