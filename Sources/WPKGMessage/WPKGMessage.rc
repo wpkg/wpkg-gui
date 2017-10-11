@@ -64,7 +64,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\WPKGMessage.ico"
+IDR_MAINFRAME           ICON                    "wpkginst.ico"
 #endif    // Polish resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -83,15 +83,15 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Dialog
 //
 
-IDD_WPKGMESSAGE_DIALOG DIALOGEX 0, 0, 389, 62
+IDD_WPKGMESSAGE_DIALOG DIALOGEX 0, 0, 389, 79
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | 
     WS_CAPTION
 EXSTYLE WS_EX_APPWINDOW
 CAPTION "WPKG Software Deployment"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    CTEXT           "",IDC_STATIC_MESSAGE,7,14,375,16
-    CONTROL         "",IDC_PROGRESS,"msctls_progress32",WS_BORDER,7,41,375,
+    CTEXT           "",IDC_STATIC_MESSAGE,7,14,375,31
+    CONTROL         "",IDC_PROGRESS,"msctls_progress32",WS_BORDER,7,58,375,
                     14
 END
 
@@ -102,8 +102,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,2
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 1,0,0,4
+ PRODUCTVERSION 1,0,0,4
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -121,13 +121,13 @@ BEGIN
             VALUE "Comments", "This is an installer for WPKG, an automated software deployment, upgrade and removal program for Windows"
             VALUE "CompanyName", "wpkg.org"
             VALUE "FileDescription", "WPKG Logon control"
-            VALUE "FileVersion", "1.0.0.2"
+            VALUE "FileVersion", "1.0.0.4"
             VALUE "InternalName", "WPKGMessage"
             VALUE "LegalCopyright", "(c) Artur Majuch.  All rights reserved."
             VALUE "LegalTrademarks", "(c) Artur Majuch.  All rights reserved."
             VALUE "OriginalFilename", "WPKGMessage.exe"
             VALUE "ProductName", "WPKG"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "ProductVersion", "1.0.0.4"
         END
     END
     BLOCK "VarFileInfo"
@@ -150,7 +150,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 382
         TOPMARGIN, 7
-        BOTTOMMARGIN, 55
+        BOTTOMMARGIN, 72
     END
 END
 #endif    // APSTUDIO_INVOKED

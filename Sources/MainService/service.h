@@ -53,6 +53,10 @@ VOID AddMessageToMessageLog(LPCTSTR lpszMsg);
 VOID AddErrMsgToMessageLog(LPCTSTR lpszMsg);
 VOID AddToMessageLog(LPTSTR lpszMsg);
 VOID WINAPI service_ctrl(DWORD dwCtrlCode);
+VOID WINAPI service_ctrlEx(DWORD dwCtrlCode, DWORD dwEventType,
+  LPVOID lpEventData,
+  LPVOID lpContext);
+
 VOID WINAPI service_main(DWORD dwArgc, LPTSTR *lpszArgv);
 VOID CmdInstallService(char* user=NULL, char* password=NULL);
 VOID CmdRemoveService();

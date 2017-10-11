@@ -36,7 +36,7 @@ BOOL CExceptionEx::GetErrorMessage(LPTSTR lpszError, UINT nMaxError,
 void CExceptionEx::FormatMessage(DWORD dwErrorCode)
 {
 	CHAR szProvider[256]; 
-	m_strMessage = _T("Unknown error occured.");
+	m_strSystemMessage = _T("Unknown error occured.");
 
 	if (dwErrorCode != ERROR_EXTENDED_ERROR) 
 	{
@@ -45,14 +45,14 @@ void CExceptionEx::FormatMessage(DWORD dwErrorCode)
 			NULL,
 			dwErrorCode,
 			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-			(LPTSTR) m_strMessage.GetBufferSetLength(1025),
+			(LPTSTR) m_strSystemMessage.GetBufferSetLength(1025),
 			1024,
 			NULL );
 	}
 	else
 	{
 		WNetGetLastError(&dwErrorCode,	// error code
-			(LPSTR) m_strMessage.GetBufferSetLength(1025), 
+			(LPSTR) m_strSystemMessage.GetBufferSetLength(1025), 
 										// buffer for error description 
             1024,						// size of error buffer
             (LPSTR) szProvider,			// buffer for provider name 
@@ -60,17 +60,31 @@ void CExceptionEx::FormatMessage(DWORD dwErrorCode)
  
 	}
 
-	m_strMessage.ReleaseBuffer();
-	m_strMessage.Replace("\r\n","");
+	m_strSystemMessage.ReleaseBuffer();
+	m_strSystemMessage.Replace("\r\n","");
+
+	CString str;
+	str.Format("%s-> %s",m_strMessage,m_strSystemMessage);
+	m_strMessage = str;
+
 
 }
 
 
-void CExceptionEx::ThrowError(DWORD Error)
+void CExceptionEx::ThrowError(CString messageFrom, DWORD Error)
 {
 	CExceptionEx* exception = new CExceptionEx();
+	exception->m_strMessage = messageFrom;
 	exception->FormatMessage(Error);
 	exception->m_dwError = Error;
+	throw exception;
+}
+
+void CExceptionEx::ThrowError(CString strError)
+{
+	CExceptionEx* exception = new CExceptionEx();
+	exception->m_strMessage = strError;
+	exception->m_dwError = 1;
 	throw exception;
 }
 

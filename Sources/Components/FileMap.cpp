@@ -53,7 +53,7 @@ BOOL CFileMap::CreateSharedMem()
 
 	if(!bResult)
 	{
-		CExceptionEx::ThrowError(GetLastError());
+		CExceptionEx::ThrowError("CreateSharedMem",GetLastError());
 	}
 
 	return bResult;
@@ -85,7 +85,7 @@ BOOL CFileMap::OpenSharedMem()
 
 	if(!bResult)
 	{
-		CExceptionEx::ThrowError(GetLastError());
+		CExceptionEx::ThrowError("OpenSharedMem",GetLastError());
 	}
 
 	return bResult;

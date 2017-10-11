@@ -17,6 +17,7 @@
 class CWpkgInstApp : public CWinApp
 {
 public:
+	int m_iCodeReturned;
 	CWpkgInstApp();
 
 // Overrides
@@ -26,6 +27,7 @@ public:
 // Implementation
 
 	DECLARE_MESSAGE_MAP()
+	virtual int ExitInstance();
 };
 
 extern CWpkgInstApp theApp;

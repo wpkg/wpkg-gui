@@ -3,7 +3,10 @@
 #include "lmapibuf.h"
 #include "lmserver.h"
 
+
 #pragma once
+
+#include "..\components\XmlSettings.h"
 
 
 #define POLICY_GET_PRIVATE_INFORMATION             0x00000004L
@@ -123,30 +126,49 @@ class CSecret
 public:
 	CSecret(void);
 	virtual ~CSecret(void);
+	DWORD DeleteSecret();
 	DWORD LoadSecret();
 	DWORD StoreSecret();
-	DWORD DeleteSecret();
+	
+	
 
 public:
-	CString m_strScriptFile;
-	CString m_strScriptParameters;
-	CString m_strScriptConnUser;
-	CString m_strScriptConnPassword;
-	CString m_strScriptExecUser;
-	CString m_strScriptExecPassword;
-	CStringArray m_strVarArray;
-	CString m_strPreAction;
-	CString m_strPostAction;
-	BOOL m_bShowGUI;
-	DWORD m_dwPriority;
-	void SetPriority(CString str);
+	void Export(CString fileName);
+	void Import(CString fileName);
+	
+
+	static CString m_strScriptFile;
+	static CString m_strScriptParameters;
+	static CString m_strScriptConnUser;
+	static CString m_strScriptConnPassword;
+	static CString m_strScriptExecUser;
+	static CString m_strScriptExecPassword;
+	static CStringArray m_strVarArray;
+	static CString m_strPreAction;
+	static CString m_strPostAction;
+	static BOOL m_bShowGUI;
+	static DWORD m_dwPriority;
+	static DWORD m_dwLogonDelay;
+	static CString m_strMessage1;
+	static CString m_strMessage2;
+	static BOOL m_bSilent;
+	static BOOL m_bStopServiceAfterDone;
+	static int m_iServerTestingMethod;
+	static DWORD m_dwServerPingTimeout;
+	static DWORD m_dwServerPingScriptTimeout;
+	static CString m_strServerIP;
+	static CString m_ServerPingScriptFile;
+	static BOOL m_bLaptopMode;
+
+
+	void ParsePriority(CString str);
+	CString FormatPriority();
+
+	
 
 private:
-	void Load(void);
-	void Store(void);
-
-	char* m_pSecretBuffer;
-	DWORD m_dwSecretSize;
+	void ParseXml(CXmlSettings& st);
+	void FormatXml(CXmlSettings& st);
 
 	NTSTATUS OpenPolicy(LPWSTR ServerName, DWORD DesiredAccess,
 		PLSA_HANDLE PolicyHandle);
@@ -154,9 +176,10 @@ private:
 	void InitLsaString(PLSA_UNICODE_STRING LsaString, LPWSTR String);
 	void InitLsaString(PLSA_UNICODE_STRING LsaString,
 		LPWSTR String, DWORD size);
-
+	void InitLsaString(
+	    PLSA_UNICODE_STRING LsaString,
+		CString string);
 
 
 public:
-	//int Serialize(void);
 };

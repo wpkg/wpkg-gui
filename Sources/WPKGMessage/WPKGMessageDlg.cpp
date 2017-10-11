@@ -33,7 +33,6 @@ BEGIN_MESSAGE_MAP(CWPKGMessageDlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	//}}AFX_MSG_MAP
 	ON_WM_TIMER()
-	ON_WM_CREATE()
 END_MESSAGE_MAP()
 
 
@@ -82,7 +81,7 @@ HCURSOR CWPKGMessageDlg::OnQueryDragIcon()
 void CWPKGMessageDlg::OnTimer(UINT nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
-	static bMsg = FALSE;
+	static BOOL bMsg = FALSE;
 
 	switch(nIDEvent)
 	{
@@ -101,9 +100,9 @@ void CWPKGMessageDlg::OnTimer(UINT nIDEvent)
 			{
 				KillTimer(1);
 				KillTimer(2);
-				m_Message.SetWindowText("Software deployment - finished");
-				m_Progress.SetPos(10);
-				Sleep(2000);
+				//m_Message.SetWindowText("Software deployment - finished");
+				//m_Progress.SetPos(10);
+				Sleep(200);
 				EndDialog(IDOK);
 			}
 			else
@@ -168,14 +167,4 @@ void CWPKGMessageDlg::ReadLogonMessages(void)
 	m_strMessage1.ReleaseBuffer();
 	m_strMessage2.ReleaseBuffer();
 
-}
-
-int CWPKGMessageDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
-{
-	if (CDialog::OnCreate(lpCreateStruct) == -1)
-		return -1;
-
-	// TODO:  Add your specialized creation code here
-	
-	return 0;
 }

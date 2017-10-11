@@ -15,6 +15,9 @@ private:
 	MSXML::IXMLDOMNodeListPtr m_pNodeList;
 	MSXML::IXMLDOMNodePtr m_pConfigurationNode;
 public:
+	void LoadXml(CString xml);
+	CString GetXml();
+
 	void CreateInstance(void);
 	void GetParameter(CString paramName, CString& paramValue);
 	void Load(CString fileName);

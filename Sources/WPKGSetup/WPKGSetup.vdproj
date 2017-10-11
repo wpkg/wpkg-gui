@@ -1,7 +1,7 @@
 "DeployProject"
 {
-"VSVersion" = "3:701"
-"ProjectType" = "8:{2C2AF0D9-9B47-4FE5-BEF2-169778172667}"
+"VSVersion" = "3:800"
+"ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
 "ProjectName" = "8:WPKGSetup"
 "LanguageId" = "3:1033"
@@ -15,26 +15,68 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_0B2A942B69E84A208E2FE0FBC2902C22"
+        "MsmKey" = "8:_28F87085A0174BB8B657F0C6EF6A3182"
+        "OwnerKey" = "8:_A21A4D1283C742AB922253B2A80A30D8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_319EF6C307CEF0837BF333171C87ED8C"
+        "OwnerKey" = "8:_3F1406D3CD1E49A08374B435C7E48F09"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_319EF6C307CEF0837BF333171C87ED8C"
+        "OwnerKey" = "8:_55377793782A4FA5869D974018233182"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3F1406D3CD1E49A08374B435C7E48F09"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_176436F912914E598E860B946C658B92"
+        "MsmKey" = "8:_4A1F0281672EF1B2A1D355934138EF8D"
+        "OwnerKey" = "8:_55377793782A4FA5869D974018233182"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_55377793782A4FA5869D974018233182"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_2FA7FB4FC9D44F2388A88073061E1110"
+        "MsmKey" = "8:_77D768F0E11A4AABB3EF87BF5F3FAB8E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_5446D9DE53084D8F84E1E1EA83875117"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_91C40206CA7E4683F8D766265F27135A"
+        "OwnerKey" = "8:_55377793782A4FA5869D974018233182"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_94285CAB9F3CD6D111E0557AF63F8194"
+        "OwnerKey" = "8:_3F1406D3CD1E49A08374B435C7E48F09"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_94285CAB9F3CD6D111E0557AF63F8194"
+        "OwnerKey" = "8:_55377793782A4FA5869D974018233182"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A21A4D1283C742AB922253B2A80A30D8"
+        "OwnerKey" = "8:_3F1406D3CD1E49A08374B435C7E48F09"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -45,14 +87,38 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B77359F0350A43FFAC28D73BA24AFB8A"
+        "MsmKey" = "8:_C1E819C0B3674CAE998CA65CF7FA3558"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_C904A7BE7A03434692BE700971124971"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_CC9D9341EA3316A1064F6ABBAB7B8003"
+        "OwnerKey" = "8:_3F1406D3CD1E49A08374B435C7E48F09"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CC9D9341EA3316A1064F6ABBAB7B8003"
+        "OwnerKey" = "8:_77D768F0E11A4AABB3EF87BF5F3FAB8E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CC9D9341EA3316A1064F6ABBAB7B8003"
+        "OwnerKey" = "8:_55377793782A4FA5869D974018233182"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D9EE8B8D86D24BCB8FE44FA6783AFB50"
+        "OwnerKey" = "8:_3F1406D3CD1E49A08374B435C7E48F09"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E708AC99E7DC4BD7B33A3A12D8D1A3B8"
+        "OwnerKey" = "8:_D9EE8B8D86D24BCB8FE44FA6783AFB50"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -73,6 +139,27 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5"
+                    {
+                    "Name" = "8:.NET Framework 3.5"
+                    "ProductCode" = "8:Microsoft.Net.Framework.3.5"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -89,79 +176,86 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5"
+                    {
+                    "Name" = "8:.NET Framework 3.5"
+                    "ProductCode" = "8:Microsoft.Net.Framework.3.5"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
+            }
         }
     }
     "Deployable"
     {
         "CustomAction"
         {
-            "{0C9D821E-95BB-411F-BE03-2864360EBF94}:_2A4D2EE2A55C4B609824C9D1DA0C2149"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_8ADE898BA7F64E6EA969E482E94CC6A5"
             {
             "Name" = "8:WPKGSrvInstall"
             "Condition" = "8:"
-            "Object" = "8:_0B2A942B69E84A208E2FE0FBC2902C22"
+            "Object" = "8:_3F1406D3CD1E49A08374B435C7E48F09"
             "FileType" = "3:2"
             "InstallAction" = "3:2"
             "Arguments" = "8:/install"
             "EntryPoint" = "8:"
-            "Sequence" = "3:3"
-            "Identifier" = "8:_291F1C47_413F_4C05_9273_CC1E4305BBD7"
+            "Sequence" = "3:2"
+            "Identifier" = "8:_25773255_2E4C_4B11_9B7E_FF3EB8BD0D64"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
-            "{0C9D821E-95BB-411F-BE03-2864360EBF94}:_2DA6D8F2B5ED4799AF2713C2585FC933"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_8DE974AA9B954E27A9A011B9606912C3"
             {
-            "Name" = "8:WPKGSrvUninstall"
-            "Condition" = "8:"
-            "Object" = "8:_0B2A942B69E84A208E2FE0FBC2902C22"
+            "Name" = "8:WpkgDialog"
+            "Condition" = "8:UPGRADINGPRODUCTCODE=\"\""
+            "Object" = "8:_55377793782A4FA5869D974018233182"
             "FileType" = "3:2"
             "InstallAction" = "3:4"
             "Arguments" = "8:/remove"
             "EntryPoint" = "8:"
-            "Sequence" = "3:1"
-            "Identifier" = "8:_E193414B_6FF5_47F9_821F_A05BC7ADA8E9"
+            "Sequence" = "3:2"
+            "Identifier" = "8:_D6BA73C4_614F_4168_89DD_924ECFB56187"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
-            "{0C9D821E-95BB-411F-BE03-2864360EBF94}:_B08B1A4844554F09949D098C68EE1CDF"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_A62A9B456EF34D019B7C447881DD3BC9"
             {
             "Name" = "8:WpkgDialog"
             "Condition" = "8:"
-            "Object" = "8:_C904A7BE7A03434692BE700971124971"
-            "FileType" = "3:2"
-            "InstallAction" = "3:2"
-            "Arguments" = "8:/remove"
-            "EntryPoint" = "8:"
-            "Sequence" = "3:1"
-            "Identifier" = "8:_3148BE8A_9A5A_4EFF_BD30_7EBCA153F19B"
-            "InstallerClass" = "11:FALSE"
-            "CustomActionData" = "8:"
-            }
-            "{0C9D821E-95BB-411F-BE03-2864360EBF94}:_BE83A11FF02C4BBF88D004AEDAD74A6C"
-            {
-            "Name" = "8:WpkgDialog"
-            "Condition" = "8:"
-            "Object" = "8:_C904A7BE7A03434692BE700971124971"
+            "Object" = "8:_55377793782A4FA5869D974018233182"
             "FileType" = "3:2"
             "InstallAction" = "3:2"
             "Arguments" = "8:--SETTINGSFILE=[SETTINGSFILE]"
             "EntryPoint" = "8:"
-            "Sequence" = "3:2"
-            "Identifier" = "8:_C80DCABA_F908_47B9_8D19_F3F2F4C01E9C"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_A9459942_EE79_497A_9080_F39DDA8A7B80"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
-            "{0C9D821E-95BB-411F-BE03-2864360EBF94}:_DE014D6F9DF347A392FD8B57EB00EB1C"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_CA75E9B6BCBB4E3AB1FA0E8AB9D8759B"
             {
-            "Name" = "8:WpkgDialog"
+            "Name" = "8:WPKGSrvUninstall"
             "Condition" = "8:"
-            "Object" = "8:_C904A7BE7A03434692BE700971124971"
+            "Object" = "8:_3F1406D3CD1E49A08374B435C7E48F09"
             "FileType" = "3:2"
             "InstallAction" = "3:4"
             "Arguments" = "8:/remove"
             "EntryPoint" = "8:"
-            "Sequence" = "3:2"
-            "Identifier" = "8:_99038ACF_E047_4CF9_B73A_5F616DA2966E"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_0D93E37A_01AF_44E4_AFDA_E73FD4D75323"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
@@ -178,15 +272,12 @@
             {
             }
         }
-        "Feature"
-        {
-        }
         "File"
         {
-            "{A582A373-4685-4296-BEFE-614B80A702C3}:_0B2A942B69E84A208E2FE0FBC2902C22"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_319EF6C307CEF0837BF333171C87ED8C"
             {
-            "SourcePath" = "8:..\\..\\Images\\ApplicationFolder\\WPKGSrv.exe"
-            "TargetName" = "8:WPKGSrv.exe"
+            "SourcePath" = "8:WSOCK32.dll"
+            "TargetName" = "8:WSOCK32.dll"
             "Tag" = "8:"
             "Folder" = "8:_4CBB5D7A74B549A1836315AD4E91F746"
             "Condition" = "8:"
@@ -199,14 +290,14 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{A582A373-4685-4296-BEFE-614B80A702C3}:_176436F912914E598E860B946C658B92"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4A1F0281672EF1B2A1D355934138EF8D"
             {
-            "SourcePath" = "8:..\\..\\Images\\ApplicationFolder\\wpkglogon.dll"
-            "TargetName" = "8:wpkglogon.dll"
+            "SourcePath" = "8:oledlg.dll"
+            "TargetName" = "8:oledlg.dll"
             "Tag" = "8:"
             "Folder" = "8:_4CBB5D7A74B549A1836315AD4E91F746"
             "Condition" = "8:"
@@ -219,14 +310,14 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{A582A373-4685-4296-BEFE-614B80A702C3}:_2FA7FB4FC9D44F2388A88073061E1110"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_91C40206CA7E4683F8D766265F27135A"
             {
-            "SourcePath" = "8:..\\..\\Images\\ApplicationFolder\\WPKGMessage.exe"
-            "TargetName" = "8:WPKGMessage.exe"
+            "SourcePath" = "8:COMDLG32.dll"
+            "TargetName" = "8:COMDLG32.dll"
             "Tag" = "8:"
             "Folder" = "8:_4CBB5D7A74B549A1836315AD4E91F746"
             "Condition" = "8:"
@@ -239,14 +330,14 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{A582A373-4685-4296-BEFE-614B80A702C3}:_5446D9DE53084D8F84E1E1EA83875117"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94285CAB9F3CD6D111E0557AF63F8194"
             {
-            "SourcePath" = "8:..\\..\\Images\\ApplicationFolder\\WPKG Installer Parameters.txt"
-            "TargetName" = "8:WPKG Installer Parameters.txt"
+            "SourcePath" = "8:msxml.dll"
+            "TargetName" = "8:msxml.dll"
             "Tag" = "8:"
             "Folder" = "8:_4CBB5D7A74B549A1836315AD4E91F746"
             "Condition" = "8:"
@@ -258,12 +349,12 @@
             "Permanent" = "11:FALSE"
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
+            "Register" = "3:4"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{A582A373-4685-4296-BEFE-614B80A702C3}:_AE9E26BB0C8A463CA1958F45138E78D3"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AE9E26BB0C8A463CA1958F45138E78D3"
             {
             "SourcePath" = "8:license.rtf"
             "TargetName" = "8:license.rtf"
@@ -283,30 +374,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{A582A373-4685-4296-BEFE-614B80A702C3}:_B77359F0350A43FFAC28D73BA24AFB8A"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CC9D9341EA3316A1064F6ABBAB7B8003"
             {
-            "SourcePath" = "8:..\\..\\Images\\SystemFolder\\msvcrt.dll"
-            "TargetName" = "8:msvcrt.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_469464F1068B49B9B28CA6BB672A2496"
-            "Condition" = "8:Version9X or VersionNT < 500"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:TRUE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:TRUE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{A582A373-4685-4296-BEFE-614B80A702C3}:_C904A7BE7A03434692BE700971124971"
-            {
-            "SourcePath" = "8:..\\..\\Images\\ApplicationFolder\\wpkginst.exe"
-            "TargetName" = "8:wpkginst.exe"
+            "SourcePath" = "8:MPR.dll"
+            "TargetName" = "8:MPR.dll"
             "Tag" = "8:"
             "Folder" = "8:_4CBB5D7A74B549A1836315AD4E91F746"
             "Condition" = "8:"
@@ -319,8 +390,8 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
         }
@@ -329,7 +400,7 @@
         }
         "Folder"
         {
-            "{78BAF5CE-F2E5-45BE-83BC-DB6AF387E941}:_37FB4C236B434344AAF54EA68B6CBC11"
+            "{1525181F-901A-416C-8A58-119130FE478E}:_37FB4C236B434344AAF54EA68B6CBC11"
             {
             "Name" = "8:#1916"
             "AlwaysCreate" = "11:FALSE"
@@ -340,7 +411,7 @@
                 {
                 }
             }
-            "{78BAF5CE-F2E5-45BE-83BC-DB6AF387E941}:_469464F1068B49B9B28CA6BB672A2496"
+            "{1525181F-901A-416C-8A58-119130FE478E}:_469464F1068B49B9B28CA6BB672A2496"
             {
             "Name" = "8:#1914"
             "AlwaysCreate" = "11:FALSE"
@@ -351,7 +422,7 @@
                 {
                 }
             }
-            "{58C0ADA3-3CEA-43BD-A3B3-2EA121BC8217}:_4CBB5D7A74B549A1836315AD4E91F746"
+            "{3C67513D-01DD-4637-8A68-80971EB9504F}:_4CBB5D7A74B549A1836315AD4E91F746"
             {
             "DefaultLocation" = "8:[ProgramFilesFolder]wpkg"
             "Name" = "8:#1925"
@@ -363,7 +434,7 @@
                 {
                 }
             }
-            "{78BAF5CE-F2E5-45BE-83BC-DB6AF387E941}:_5BB694056EF241D6B055186BC8CBC22D"
+            "{1525181F-901A-416C-8A58-119130FE478E}:_5BB694056EF241D6B055186BC8CBC22D"
             {
             "Name" = "8:#1919"
             "AlwaysCreate" = "11:FALSE"
@@ -384,18 +455,20 @@
         "MsiBootstrapper"
         {
         "LangId" = "3:1033"
+        "RequiresElevation" = "11:FALSE"
         }
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:WPKG"
-        "ProductCode" = "8:{27A985C1-80D2-4EB9-81F6-D8B2EABE0DE6}"
-        "PackageCode" = "8:{FEDC9962-7A3E-4697-86C0-CF1666051B9D}"
+        "ProductCode" = "8:{EC1529D7-0920-4748-9A33-73D3D42531A5}"
+        "PackageCode" = "8:{7DB18295-2219-4DA3-BDA2-2A6675A19D75}"
         "UpgradeCode" = "8:{A7C6ACCE-162E-466E-B745-F522AA7EB12C}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "ProductVersion" = "8:1.0.2"
+        "InstallAllUsers" = "11:FALSE"
+        "ProductVersion" = "8:1.2.0"
         "Manufacturer" = "8:WPKG.ORG"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -409,6 +482,10 @@
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
+        "TargetPlatform" = "3:0"
+        "PreBuildEvent" = "8:"
+        "PostBuildEvent" = "8:"
+        "RunPostBuildEvent" = "3:0"
         }
         "Registry"
         {
@@ -416,7 +493,7 @@
             {
                 "Keys"
                 {
-                    "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_0056345DA1AD4D218FADB9EAFD9DA384"
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_0056345DA1AD4D218FADB9EAFD9DA384"
                     {
                     "Name" = "8:Software"
                     "Condition" = "8:"
@@ -425,7 +502,7 @@
                     "Transitive" = "11:FALSE"
                         "Keys"
                         {
-                            "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_5484357A3E57458C833D46314F6D152F"
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_5484357A3E57458C833D46314F6D152F"
                             {
                             "Name" = "8:Microsoft"
                             "Condition" = "8:"
@@ -434,7 +511,7 @@
                             "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
-                                    "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_8D82DD398138441F86F45CBBBB4B5AED"
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_8D82DD398138441F86F45CBBBB4B5AED"
                                     {
                                     "Name" = "8:Windows NT"
                                     "Condition" = "8:"
@@ -443,7 +520,7 @@
                                     "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
-                                            "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_9876DC0D45F34E1C8CA57989C11329C6"
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_9876DC0D45F34E1C8CA57989C11329C6"
                                             {
                                             "Name" = "8:CurrentVersion"
                                             "Condition" = "8:"
@@ -452,7 +529,7 @@
                                             "Transitive" = "11:FALSE"
                                                 "Keys"
                                                 {
-                                                    "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_ADF99650FBC646C2A4BEDD79CCF1960B"
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_ADF99650FBC646C2A4BEDD79CCF1960B"
                                                     {
                                                     "Name" = "8:Winlogon"
                                                     "Condition" = "8:"
@@ -461,7 +538,7 @@
                                                     "Transitive" = "11:FALSE"
                                                         "Keys"
                                                         {
-                                                            "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_53BF91A5F8564476A3418ACE5B280C3C"
+                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_53BF91A5F8564476A3418ACE5B280C3C"
                                                             {
                                                             "Name" = "8:Notify"
                                                             "Condition" = "8:"
@@ -470,7 +547,7 @@
                                                             "Transitive" = "11:FALSE"
                                                                 "Keys"
                                                                 {
-                                                                    "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_D5521C273A5748A381C985E4B7AF22AB"
+                                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_D5521C273A5748A381C985E4B7AF22AB"
                                                                     {
                                                                     "Name" = "8:WPKGLogon"
                                                                     "Condition" = "8:"
@@ -482,7 +559,7 @@
                                                                         }
                                                                         "Values"
                                                                         {
-                                                                            "{35AE352C-BC79-4EF9-ABD8-61F467188583}:_83DE9172745247488C3E8EB78EE1B945"
+                                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_83DE9172745247488C3E8EB78EE1B945"
                                                                             {
                                                                             "Name" = "8:MaxWait"
                                                                             "Condition" = "8:"
@@ -490,7 +567,7 @@
                                                                             "ValueTypes" = "3:3"
                                                                             "Value" = "3:0"
                                                                             }
-                                                                            "{35AE352C-BC79-4EF9-ABD8-61F467188583}:_8A7209A025FE4CA7B8A0AA712C798342"
+                                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_8A7209A025FE4CA7B8A0AA712C798342"
                                                                             {
                                                                             "Name" = "8:Impersonate"
                                                                             "Condition" = "8:"
@@ -498,7 +575,7 @@
                                                                             "ValueTypes" = "3:3"
                                                                             "Value" = "3:0"
                                                                             }
-                                                                            "{35AE352C-BC79-4EF9-ABD8-61F467188583}:_9A6256A198E140F7B3E5F4FB226BB2A5"
+                                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_9A6256A198E140F7B3E5F4FB226BB2A5"
                                                                             {
                                                                             "Name" = "8:DLLName"
                                                                             "Condition" = "8:"
@@ -506,7 +583,7 @@
                                                                             "ValueTypes" = "3:1"
                                                                             "Value" = "8:[TARGETDIR]wpkglogon.dll"
                                                                             }
-                                                                            "{35AE352C-BC79-4EF9-ABD8-61F467188583}:_A36D29547ABD49E280F25DC7AC9228BE"
+                                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_A36D29547ABD49E280F25DC7AC9228BE"
                                                                             {
                                                                             "Name" = "8:Asynchronous"
                                                                             "Condition" = "8:"
@@ -514,7 +591,7 @@
                                                                             "ValueTypes" = "3:3"
                                                                             "Value" = "3:0"
                                                                             }
-                                                                            "{35AE352C-BC79-4EF9-ABD8-61F467188583}:_D981EE52CD2A480FBB8DDDF277BB85DE"
+                                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_D981EE52CD2A480FBB8DDDF277BB85DE"
                                                                             {
                                                                             "Name" = "8:Startup"
                                                                             "Condition" = "8:"
@@ -549,7 +626,7 @@
                                 {
                                 }
                             }
-                            "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_E9D779C9B47C4366B8CCDED59D214599"
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_E9D779C9B47C4366B8CCDED59D214599"
                             {
                             "Name" = "8:[Manufacturer]"
                             "Condition" = "8:"
@@ -558,7 +635,7 @@
                             "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
-                                    "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_8F0287DDB26943AF84625D4879BFBB79"
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_8F0287DDB26943AF84625D4879BFBB79"
                                     {
                                     "Name" = "8:Logon Settings"
                                     "Condition" = "8:"
@@ -570,7 +647,7 @@
                                         }
                                         "Values"
                                         {
-                                            "{35AE352C-BC79-4EF9-ABD8-61F467188583}:_065344CD30C94FE9B4ECC7DC33C7D00C"
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_065344CD30C94FE9B4ECC7DC33C7D00C"
                                             {
                                             "Name" = "8:Logon message 2"
                                             "Condition" = "8:"
@@ -578,7 +655,7 @@
                                             "ValueTypes" = "3:1"
                                             "Value" = "8:Please wait, don't restart or power off your computer..."
                                             }
-                                            "{35AE352C-BC79-4EF9-ABD8-61F467188583}:_832110ED71254A35BC256A3F55ED3FA4"
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_832110ED71254A35BC256A3F55ED3FA4"
                                             {
                                             "Name" = "8:Logon message 1"
                                             "Condition" = "8:"
@@ -588,7 +665,7 @@
                                             }
                                         }
                                     }
-                                    "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_F07447AE2E924D50BF379F4AD879E844"
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_F07447AE2E924D50BF379F4AD879E844"
                                     {
                                     "Name" = "8:Settings"
                                     "Condition" = "8:"
@@ -600,7 +677,7 @@
                                         }
                                         "Values"
                                         {
-                                            "{35AE352C-BC79-4EF9-ABD8-61F467188583}:_F02CF97896AE46B5840F8CA3A112C933"
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_F02CF97896AE46B5840F8CA3A112C933"
                                             {
                                             "Name" = "8:Path"
                                             "Condition" = "8:"
@@ -620,7 +697,7 @@
                         {
                         }
                     }
-                    "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_F3A847CE775D493288C3B2FCC1BA8A77"
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_F3A847CE775D493288C3B2FCC1BA8A77"
                     {
                     "Name" = "8:SYSTEM"
                     "Condition" = "8:"
@@ -629,7 +706,7 @@
                     "Transitive" = "11:FALSE"
                         "Keys"
                         {
-                            "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_79C9FA9A9F43454FBD2BCF67FEFE51CA"
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_79C9FA9A9F43454FBD2BCF67FEFE51CA"
                             {
                             "Name" = "8:CurrentControlSet"
                             "Condition" = "8:"
@@ -638,7 +715,7 @@
                             "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
-                                    "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_58EEDDEC0142493A8072579BBC2450BF"
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_58EEDDEC0142493A8072579BBC2450BF"
                                     {
                                     "Name" = "8:Services"
                                     "Condition" = "8:"
@@ -647,7 +724,7 @@
                                     "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
-                                            "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_C6A3318993014A26876FECDF50EF326F"
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_C6A3318993014A26876FECDF50EF326F"
                                             {
                                             "Name" = "8:Eventlog"
                                             "Condition" = "8:"
@@ -656,7 +733,7 @@
                                             "Transitive" = "11:FALSE"
                                                 "Keys"
                                                 {
-                                                    "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_DE528DD0866E4115AC9903E08261DCC2"
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_DE528DD0866E4115AC9903E08261DCC2"
                                                     {
                                                     "Name" = "8:Application"
                                                     "Condition" = "8:"
@@ -665,7 +742,7 @@
                                                     "Transitive" = "11:FALSE"
                                                         "Keys"
                                                         {
-                                                            "{6A471EEF-D31B-40F8-BCF6-C9E8EC783F36}:_F07B721DC076481086AA062929A39325"
+                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_F07B721DC076481086AA062929A39325"
                                                             {
                                                             "Name" = "8:WPKGService"
                                                             "Condition" = "8:"
@@ -677,7 +754,7 @@
                                                                 }
                                                                 "Values"
                                                                 {
-                                                                    "{35AE352C-BC79-4EF9-ABD8-61F467188583}:_FC2EE8407F27431BA465556F7CFDE869"
+                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_FC2EE8407F27431BA465556F7CFDE869"
                                                                     {
                                                                     "Name" = "8:EventMessageFile"
                                                                     "Condition" = "8:"
@@ -747,14 +824,14 @@
         }
         "UserInterface"
         {
-            "{8D9DEE8B-DD8B-4F48-9072-C4364E4F4011}:_15F3E81BC68D49BA9205261BF00A1C31"
+            "{DF760B10-853B-4699-99F2-AFF7185B4A62}:_15F3E81BC68D49BA9205261BF00A1C31"
             {
             "Name" = "8:#1901"
             "Sequence" = "3:2"
             "Attributes" = "3:2"
                 "Dialogs"
                 {
-                    "{18ADD6EC-89FE-4ED7-AD3E-211C40278470}:_C89234AE569346218CFF09E47B40C533"
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_C89234AE569346218CFF09E47B40C533"
                     {
                     "Sequence" = "3:100"
                     "DisplayName" = "8:Progress"
@@ -791,14 +868,14 @@
                     }
                 }
             }
-            "{8D9DEE8B-DD8B-4F48-9072-C4364E4F4011}:_2A2A6666D4EE4689B22B7EFBA84268F2"
+            "{DF760B10-853B-4699-99F2-AFF7185B4A62}:_2A2A6666D4EE4689B22B7EFBA84268F2"
             {
             "Name" = "8:#1902"
             "Sequence" = "3:1"
             "Attributes" = "3:3"
                 "Dialogs"
                 {
-                    "{18ADD6EC-89FE-4ED7-AD3E-211C40278470}:_B367A47389AC416C9750A039D936BE58"
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_B367A47389AC416C9750A039D936BE58"
                     {
                     "Sequence" = "3:100"
                     "DisplayName" = "8:Finished"
@@ -835,14 +912,14 @@
                     }
                 }
             }
-            "{8D9DEE8B-DD8B-4F48-9072-C4364E4F4011}:_2F4BAC9827CC4BA281A2D49FB7031515"
+            "{DF760B10-853B-4699-99F2-AFF7185B4A62}:_2F4BAC9827CC4BA281A2D49FB7031515"
             {
             "Name" = "8:#1901"
             "Sequence" = "3:1"
             "Attributes" = "3:2"
                 "Dialogs"
                 {
-                    "{18ADD6EC-89FE-4ED7-AD3E-211C40278470}:_5250BA5C01824E868FEBC9E8FEC21904"
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_5250BA5C01824E868FEBC9E8FEC21904"
                     {
                     "Sequence" = "3:100"
                     "DisplayName" = "8:Progress"
@@ -879,14 +956,14 @@
                     }
                 }
             }
-            "{8D9DEE8B-DD8B-4F48-9072-C4364E4F4011}:_933BD8A2F03946BCB42D8B663C434925"
+            "{DF760B10-853B-4699-99F2-AFF7185B4A62}:_933BD8A2F03946BCB42D8B663C434925"
             {
             "Name" = "8:#1900"
             "Sequence" = "3:1"
             "Attributes" = "3:1"
                 "Dialogs"
                 {
-                    "{18ADD6EC-89FE-4ED7-AD3E-211C40278470}:_102CBBA542984EF3BD5C512E9D6B397C"
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_102CBBA542984EF3BD5C512E9D6B397C"
                     {
                     "Sequence" = "3:300"
                     "DisplayName" = "8:Installation Folder"
@@ -906,9 +983,22 @@
                             "Setting" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
+                            "InstallAllUsersVisible"
+                            {
+                            "Name" = "8:InstallAllUsersVisible"
+                            "DisplayName" = "8:#1059"
+                            "Description" = "8:#1159"
+                            "Type" = "3:5"
+                            "ContextData" = "8:1;True=1;False=0"
+                            "Attributes" = "3:0"
+                            "Setting" = "3:0"
+                            "Value" = "3:1"
+                            "DefaultValue" = "3:1"
+                            "UsePlugInResources" = "11:TRUE"
+                            }
                         }
                     }
-                    "{18ADD6EC-89FE-4ED7-AD3E-211C40278470}:_441637005C13477E8E1F171546A6A05A"
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_441637005C13477E8E1F171546A6A05A"
                     {
                     "Sequence" = "3:100"
                     "DisplayName" = "8:Welcome"
@@ -956,7 +1046,7 @@
                             }
                         }
                     }
-                    "{18ADD6EC-89FE-4ED7-AD3E-211C40278470}:_6E8F42369EB94010848A1CDAF0E7CB45"
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_6E8F42369EB94010848A1CDAF0E7CB45"
                     {
                     "Sequence" = "3:200"
                     "DisplayName" = "8:License Agreement"
@@ -1003,7 +1093,7 @@
                             }
                         }
                     }
-                    "{18ADD6EC-89FE-4ED7-AD3E-211C40278470}:_DC15B5EECC6040A3B5B2915849B2530E"
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_DC15B5EECC6040A3B5B2915849B2530E"
                     {
                     "Sequence" = "3:400"
                     "DisplayName" = "8:Confirm Installation"
@@ -1027,20 +1117,20 @@
                     }
                 }
             }
-            "{B654A020-6903-4E6A-A86C-75DC463DB54B}:_B128824984664B72861CBE093F245C78"
+            "{2479F3F5-0309-486D-8047-8187E2CE5BA0}:_B128824984664B72861CBE093F245C78"
             {
             "UseDynamicProperties" = "11:FALSE"
             "IsDependency" = "11:FALSE"
             "SourcePath" = "8:<VsdDialogDir>\\VsdUserInterface.wim"
             }
-            "{8D9DEE8B-DD8B-4F48-9072-C4364E4F4011}:_BD900F990E4D470988DC2DDF55B22C96"
+            "{DF760B10-853B-4699-99F2-AFF7185B4A62}:_BD900F990E4D470988DC2DDF55B22C96"
             {
             "Name" = "8:#1900"
             "Sequence" = "3:2"
             "Attributes" = "3:1"
                 "Dialogs"
                 {
-                    "{18ADD6EC-89FE-4ED7-AD3E-211C40278470}:_424ACE736C724FD3B1DB9B2421837BE0"
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_424ACE736C724FD3B1DB9B2421837BE0"
                     {
                     "Sequence" = "3:200"
                     "DisplayName" = "8:Installation Folder"
@@ -1062,7 +1152,7 @@
                             }
                         }
                     }
-                    "{18ADD6EC-89FE-4ED7-AD3E-211C40278470}:_5867252134504B15A6B4F87954B02003"
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_5867252134504B15A6B4F87954B02003"
                     {
                     "Sequence" = "3:300"
                     "DisplayName" = "8:Confirm Installation"
@@ -1084,7 +1174,7 @@
                             }
                         }
                     }
-                    "{18ADD6EC-89FE-4ED7-AD3E-211C40278470}:_C7335BAF85A3490AADE3A5C1D1D0D9C6"
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_C7335BAF85A3490AADE3A5C1D1D0D9C6"
                     {
                     "Sequence" = "3:100"
                     "DisplayName" = "8:Welcome"
@@ -1134,20 +1224,20 @@
                     }
                 }
             }
-            "{B654A020-6903-4E6A-A86C-75DC463DB54B}:_BEB9DBD05D2E43B1BA2AFC0EFE6BD782"
+            "{2479F3F5-0309-486D-8047-8187E2CE5BA0}:_BEB9DBD05D2E43B1BA2AFC0EFE6BD782"
             {
             "UseDynamicProperties" = "11:FALSE"
             "IsDependency" = "11:FALSE"
             "SourcePath" = "8:<VsdDialogDir>\\VsdBasicDialogs.wim"
             }
-            "{8D9DEE8B-DD8B-4F48-9072-C4364E4F4011}:_F54D28C3452B4E97AA9A81C69F63668D"
+            "{DF760B10-853B-4699-99F2-AFF7185B4A62}:_F54D28C3452B4E97AA9A81C69F63668D"
             {
             "Name" = "8:#1902"
             "Sequence" = "3:2"
             "Attributes" = "3:3"
                 "Dialogs"
                 {
-                    "{18ADD6EC-89FE-4ED7-AD3E-211C40278470}:_B961FDC9EBB04062A73EE0B230855B1C"
+                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_B961FDC9EBB04062A73EE0B230855B1C"
                     {
                     "Sequence" = "3:100"
                     "DisplayName" = "8:Finished"
@@ -1174,12 +1264,177 @@
         }
         "MergeModule"
         {
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_28F87085A0174BB8B657F0C6EF6A3182"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "SourcePath" = "8:microsoft_vc90_mfc_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_A21A4D1283C742AB922253B2A80A30D8"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "SourcePath" = "8:policy_9_0_Microsoft_VC90_MFC_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_D9EE8B8D86D24BCB8FE44FA6783AFB50"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "SourcePath" = "8:policy_9_0_Microsoft_VC90_CRT_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_E708AC99E7DC4BD7B33A3A12D8D1A3B8"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "SourcePath" = "8:microsoft_vc90_crt_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
         }
         "ProjectOutput"
         {
-        }
-        "VJSharpPlugin"
-        {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_3F1406D3CD1E49A08374B435C7E48F09"
+            {
+            "SourcePath" = "8:..\\MainService\\Release\\WPKGSrv.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_4CBB5D7A74B549A1836315AD4E91F746"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{299F9463-0F07-4924-8AB9-0980E782E3FC}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_55377793782A4FA5869D974018233182"
+            {
+            "SourcePath" = "8:..\\wpkginst\\Release\\wpkginst.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_4CBB5D7A74B549A1836315AD4E91F746"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{1D4F47A4-99EF-4309-B0E2-A456D56D3516}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_77D768F0E11A4AABB3EF87BF5F3FAB8E"
+            {
+            "SourcePath" = "8:..\\WPKGMessage\\Release\\WPKGMessage.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_4CBB5D7A74B549A1836315AD4E91F746"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{E23F8493-F3B3-4BF8-871D-3B8E868B313F}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C1E819C0B3674CAE998CA65CF7FA3558"
+            {
+            "SourcePath" = "8:..\\wpkglogon\\Release\\wpkglogon.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_4CBB5D7A74B549A1836315AD4E91F746"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{5C923F67-AB71-49D1-8A4E-678B27D12C09}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
         }
     }
 }

@@ -6,7 +6,7 @@
 	<exec-user>SYSTEM</exec-user>
 	<exec-password></exec-password>
 	<parameters>/quiet /nonotify /synchronize</parameters>
-	<silent>YES</silent>
+	<silent>NO</silent>
 	<pre-action>notepad.exe</pre-action>
 	<post-action>notepad.exe</post-action>
 	<show-GUI>NO</show-GUI>

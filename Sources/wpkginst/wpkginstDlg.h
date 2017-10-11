@@ -25,7 +25,11 @@ public:
 
 
 // Implementation
+private:
+
+
 protected:
+	BOOL m_bAdvanced;
 	void ShowAdvanced();
 	
 	HICON m_hIcon;
@@ -37,37 +41,9 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	void SetPriority(DWORD priority);
-	DWORD GetPriority();
-	
-	
-	CString m_strScriptFile;
-	CString m_strScriptParameters;
-	CString m_strScriptConnUser;
-	CString m_strScriptConnPassword;
-	CString m_strScriptExecUser;
-	CString m_strScriptExecPassword;
-
 	afx_msg void OnBnClickedButtonHelp();
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedButtonSelectFile();
-
-
-	void AddScriptVarData(CStringArray& data);
-	void GetScriptVarData(CStringArray& data);
-
-
-	static CString m_strPreAction;
-	static CString m_strPostAction;
-	static BOOL m_bPreAction;
-	static BOOL m_bPostAction;
-	static BOOL m_bShowGUI;
-	// Logon delay in minutes
-	static DWORD m_dwLogonDelay;
-
-	static CString m_strMessage1;
-	static CString m_strMessage2;
-
 
 	afx_msg void OnBnClickedButtonAdvanced();
 
@@ -78,4 +54,8 @@ public:
 	void SaveLogonMessages(void);
 	void ReadLogonMessages(void);
 	afx_msg void OnBnClickedButtonAbout();
+	afx_msg void OnBnClickedButtonImportSettings();
+	afx_msg void OnBnClickedButtonTestSettings();
+protected:
+	virtual LRESULT WindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 };

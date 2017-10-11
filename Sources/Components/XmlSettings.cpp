@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include ".\xmlsettings.h"
+#include ".\exceptionex.h"
 #include "atlenc.h"
+
+
 
 #define KEY_LENGTH 40
 
@@ -130,9 +133,12 @@ void CXmlSettings::GetParameter(CString paramName, CString& paramValue)
 	_bstr_t bstrParamName;
 	bstrParamName = paramName.AllocSysString();
 	MSXML::IXMLDOMNodePtr node = m_plDomDocument->selectSingleNode(bstrParamName);
+	if(node!=NULL)
+	{
+		CString str((char*)node->text);
+		paramValue = str;
+	}
 
-	CString str((char*)node->text);
-	paramValue = str;
 }
 
 void CXmlSettings::GetParameterList(CString paramName, int& count)
@@ -141,7 +147,10 @@ void CXmlSettings::GetParameterList(CString paramName, int& count)
 	bstrParamName = paramName.AllocSysString();
 	
 	m_pNodeList = m_plDomDocument->selectNodes(bstrParamName);
-	count = m_pNodeList->length;
+	if(m_pNodeList!=NULL)
+		count = m_pNodeList->length;
+	else
+		count = 0;
 }
 
 void CXmlSettings::GetParameter(int index, CString& paramName, CString& paramValue)
@@ -152,15 +161,35 @@ void CXmlSettings::GetParameter(int index, CString& paramName, CString& paramVal
 	paramValue = (char*)pChild->text;
 }
 
+void CXmlSettings::LoadXml(CString xml)
+{
+	//IXMLDOMProcessingInstructionPtr x;
+	m_plDomDocument->loadXML(xml.AllocSysString());
+}
+
+CString CXmlSettings::GetXml()
+{
+	CString str(m_plDomDocument->xml.GetBSTR());
+	return str;
+}
 
 void CXmlSettings::Load(CString fileName)
 {
+	//IXMLDOMProcessingInstructionPtr x;
+
 	variant_t vResult;
 	_bstr_t bstrFileName;
-
 	bstrFileName = fileName.AllocSysString();
 	vResult = m_plDomDocument->load(bstrFileName);
-	
+
+	if(vResult.boolVal == FALSE)
+	{
+		_bstr_t lastErrorInfo = m_plDomDocument->parseError->reason;
+		CString str;
+		CString err(lastErrorInfo.GetBSTR());
+		str.Format("Invalid configuration file.: %s",err);
+		CExceptionEx::ThrowError(str);
+	}
 }
 
 void CXmlSettings::Save(CString fileName)
@@ -168,12 +197,13 @@ void CXmlSettings::Save(CString fileName)
 	
 	_bstr_t bstrFileName = fileName.AllocSysString();
 	m_plDomDocument->save(bstrFileName);
+	
 }
 
 void CXmlSettings::Init()
 {
 	_bstr_t bstrConfiguration=(_bstr_t)(LPCTSTR)"configuration";
-	MSXML::IXMLDOMProcessingInstructionPtr pi = m_plDomDocument->createProcessingInstruction("xml", "version='1.0' encoding='utf-8'"); 
+	MSXML::IXMLDOMProcessingInstructionPtr pi = m_plDomDocument->createProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\"");
 	m_plDomDocument->appendChild(pi); 
 	MSXML::IXMLDOMElementPtr pElement = m_plDomDocument->createElement(bstrConfiguration);
 	m_pConfigurationNode = m_plDomDocument->appendChild(pElement);
@@ -218,6 +248,5 @@ void CXmlSettings::WriteParameterEx(CString paramName, CString paramValue)
 	pText = m_plDomDocument->createTextNode(bstrParamValue);
 	pNode->appendChild(pText);
 	
-
 }
 

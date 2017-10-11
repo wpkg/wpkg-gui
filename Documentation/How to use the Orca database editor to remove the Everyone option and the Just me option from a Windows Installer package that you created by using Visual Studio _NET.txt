@@ -1,0 +1,271 @@
+How to use the Orca database editor to remove the "Everyone" option and the "Just me" option from a Windows Installer package that you created by using Visual Studio .NET
+            Strona główna witryny |Mapa witryny|Microsoft na Świecie
+
+
+      Szukaj w Microsoft.com:
+
+
+       
+
+      Główna strona pomocy technicznej|Centrum pomocy technicznej|Wyszukiwanie 
+      zaawansowane|Pobieranie plików i aktualizacji|Społeczności techniczne
+
+            How to use the Orca database editor to remove the "Everyone" option 
+            and the "Just me" option from a Windows Installer package that you 
+            created by using Visual Studio .NET
+            View products that this article applies to.
+                  Article ID:835460
+                  Last Review:January 22, 2007
+                  Revision:3.0
+            On This Page
+            INTRODUCTION
+            This step-by-step article describes how to remove the Everyone 
+            option and the Just me option from the installer when you deploy an 
+            application by using a Microsoft Windows Installer package. 
+
+            In Microsoft Visual Studio .NET, you cannot modify the predefined 
+            dialog boxes that appear in a typical Setup project (.msi) file. You 
+            must use a tool such as the Orca database editor to manually make 
+            these changes to the Setup package after you have created the 
+            package by using Visual Studio .NET.
+
+
+            Back to the top
+            Requirements
+            This article assumes that you are familiar with the following topic: 
+
+            How to create Setup and Deployment projects
+
+            The following list outlines the recommended hardware, software, 
+            network infrastructure, and service packs that you 
+                  need:•Microsoft Windows XP, Microsoft Windows Server 2003, or 
+                  Microsoft Windows 2000 Advanced Server
+                  •Microsoft Visual Studio .NET 2003 or Microsoft Visual Studio 
+                  .NET 2002
+                  •The Orca database editor
+            You can use the Orca database editor to edit the installer package. 
+            The Orca database editor is available as part of the Microsoft 
+            Windows Installer Software Development Kit (SDK). To download the 
+            Windows Installer SDK, visit the following Microsoft Web site: 
+            http://www.microsoft.com/msdownload/platformsdk/sdkupdate/ 
+            (http://www.microsoft.com/msdownload/platformsdk/sdkupdate/)
+            For additional information about the Orca database editor, click the 
+            following article number to view the article in the Microsoft 
+            Knowledge Base: 
+            255905 (http://support.microsoft.com/kb/255905/) How to use the Orca 
+            database editor to edit Windows Installer files 
+            Back to the top
+            Create a Windows application
+            To create a Windows application, follow these steps. 1.Start 
+                  Visual Studio .NET.
+                  2.On the File menu, point to New, and then click Project. The 
+                  New Project dialog box appears.
+                  3.Under Project Types, click Visual C# Projects or Visual 
+                  Basic Projects.
+                  4.Under Templates, click Windows Applications.
+                  5.In the Name box, type WindowsApplication1, and then click 
+OK.
+                  6.On the Build menu, click Build Solution.
+                  7.Press F5 to run the application.
+
+            Back to the top
+            Create a Setup project 
+            To create a Setup project, follow these steps: 1.On the File 
+                  menu, point to New, and then click Project. The New Project 
+                  dialog box appears.
+                  2.Under Project Types, click Setup and Deployment Projects.
+                  3.Under Template, click Setup Project.
+                  4.In the Name box, type Setup1, and then click OK.
+                  5.Under FileSystem on target Machine, right-click Application 
+                  Folder, point to Add, and then click Assembly. The Component 
+                  Selector dialog box appears.
+                  6.Click Browse. The Select Component dialog box appears.
+                  7.Locate the Bin\Debug folder of the WindowsApplication1 
+                  application that you created in the "Create a Windows 
+                  application" section.
+                  8.In the Bin\Debug folder, click WindowsApplication1.exe.
+                  9.On the Build menu, click Build Solution.
+
+            Back to the top
+            Edit your Setup project in the Orca database editor
+            To edit your Setup project, follow these steps: 1.Start the 
+                  Orca database editor. To do this, click Start, point to All 
+                  Programs, and then click ORCA.
+                  2.On the File menu, click Open. The Open dialog box appears.
+                  3.Locate the Setup1.msi file that was created when you created 
+                  your Setup project. By default, this file is located in the 
+                  Setup1\Debug folder.
+                  4.Click Setup1.msi, and then click Open.
+                  5.Under Tables, click the RadioButton table. The parameters 
+                  that correspond to the RadioButton table appear in the right 
+                  window.
+                  6.In the Property column, locate the following parameters, and 
+                  then delete these rows: 
+                        FolderForm_AllUsers1ALL0034217{\VSI_MS_Sans_Serif13.0_0_0}&Everyone
+                        FolderForm_AllUsers2ME01834217{\VSI_MS_Sans_Serif13.0_0_0}Just 
+                        &me
+
+                  7.Under Tables, click the Control table. The parameters that 
+                  correspond to the Control table appear in the right window.
+                  8.Locate the following values in the right window, and then 
+                  delete these rows:
+                        FolderFormAllUsersRadioGroupRadioButtonGroup24210342423FolderForm_AllUsers 
+                        { 
+                        \VSI_MS_Sans_Serif13.0_0_0}MsiRadioButtonGroupCancelButton
+                        FolderFormAllUsersTextText18186348243{\VSI_MS_Shell_Dlg13.0_0_0}Install 
+                        [ProductName] for yourself, or for anyone who uses this 
+                        computer:
+
+                  9.Under Tables, click the ControlCondition table. The 
+                  parameters that correspond to the ControlCondition table 
+                  appear in right window.
+                  10.Locate the following values in the right window, and then 
+                  delete these rows: 
+                        FolderFormAllUsersRadioGroupShowVersionNT>=400 AND 
+                        Privileged=1
+                        FolderFormAllUsersRadioGroupHideNOT (VersionNT>=400 AND 
+                        Privileged=1)
+                        FolderFormAllUsersTextShowVersionNT>=400 AND 
+Privileged=1
+                        FolderFormAllUsersTextHideNOT (VersionNT>=400 AND 
+                        Privileged=1)
+
+                  11.Under Tables, click the Control table. The parameters that 
+                  correspond to the Control table appear in the right window.
+                  12.Locate the following row in the right window: 
+                        Folder 
+                        FormDiskCostButtonPushButton27615090183{\VSI_MS_Sans_Serif13.0_0_0}&Disk 
+                        Cost...AllUserRadioGroup|
+
+                  Replace this row with the following: 
+                        Folder 
+                        FormDiskCostButtonPushButton27615090183{\VSI_MS_Sans_Serif13.0_0_0}&Disk 
+                        Cost...CancelButton|
+
+                  13.On the File menu, click Save, and then close the ORCA 
+                  window.
+
+            Back to the top
+            Verify that the changes appear in the installer
+            To verify that you have deleted the Everyone option and the Just me 
+            option from the installer, follow these steps.
+
+            Note When you run the installer, you will notice that the Everyone 
+            option and the Just me option never appear.1.Run the Windows 
+                  Installer package. To do this, locate and then double-click 
+                  the Setup1.msi file.
+                  2.In the Setup1 dialog box, click Next. 
+                  3.Select an installation folder path, and then click Next.
+                  4.Click Next to install the WindowsApplication1 application.
+                  5.Click Close to finish the installation.
+
+
+            Back to the top
+            REFERENCES
+            For more information about Windows Installer and about how to 
+            validate an installation database, visit the following Microsoft 
+            Developer Network (MSDN) Web sites:
+            http://msdn2.microsoft.com/en-us/library/aa372866.aspx 
+            (http://msdn2.microsoft.com/en-us/library/aa372866.aspx)
+
+            http://msdn2.microsoft.com/en-us/library/aa372477.aspx 
+            (http://msdn2.microsoft.com/en-us/library/aa372477.aspx)
+            For additional information, click the following article numbers to 
+            view the articles in the Microsoft Knowledge Base: 
+            317421 (http://support.microsoft.com/kb/317421/) How to create a 
+            setup project for a Windows service in Visual Basic .NET 
+            821766 (http://support.microsoft.com/kb/821766/) How to build an 
+            installer by using Visual Basic .NET 
+            Back to the top
+
+
+
+            APPLIES TO
+                  •Microsoft Visual Studio .NET 2003 Enterprise Architect
+                  •Microsoft Visual Studio .NET 2003 Enterprise Developer
+                  •Microsoft Visual Studio .NET 2003 Academic Edition
+                  •Microsoft Visual Studio .NET 2002 Enterprise Architect
+                  •Microsoft Visual Studio .NET 2002 Enterprise Developer
+                  •Microsoft Visual Studio .NET 2002 Professional Edition
+                  •Microsoft Visual Studio .NET 2002 Academic Edition
+
+            Back to the top
+                  Keywords: kbmsifaq kbsetup kbpackaging kbdeployment kbappsetup 
+                  kbappdev kbhowtomaster KB835460
+
+            Back to the top
+             
+                  Provide feedback on this article
+
+            Did this article help you solve your problem?
+                        Yes
+
+                        No
+
+                        Partially
+
+                        I do not know yet
+
+                        Strongly AgreeStrongly Disagree
+
+                  987654321
+                  The article is easy to understand
+                  The article is accurate
+                  Additional Comments:
+
+
+                  To protect your privacy, do not include contact information in 
+                  your feedback.
+
+
+
+
+            Thank you! Your feedback is used to help us improve our support 
+            content. For more assistance options, please visit the Help and 
+            Support Home Page.Wyszukiwanie w pomocy technicznej (Baza wiedzy)
+                   
+              "); Artykuły polskie Artykuły angielskie Wyszukiwanie zaawansowane   
+              
+            Article Translations
+                    ArabicFrenchGermanItalianJapanesePortuguese 
+                    (Brazil)Portuguese (Portugal)Simplified 
+                    ChineseSpanishTraditional Chinese 
+
+                  Pozostałe strony pomocy technicznej
+                    Visual Studio .NET 2003
+                    Visual Studio
+                    Visual Studio .NET 2002
+
+
+                  Inne opcje pomocy technicznej
+                    Kontakt z firmą Microsoft
+                    Numery telefonów, opcje i cennik pomocy technicznej, Pomoc 
+                    online i inne.
+                    Obsługa klienta
+                    Pomoc nietechniczna w zakresie zakupów produktów, 
+                    subskrypcji, usług online, zdarzeń, kursów szkoleniowych, 
+                    oferty handlowej dla firm, zagadnień dotyczących pirackiego 
+                    oprogramowania i innych.
+                    Grupy dyskusyjne
+                    Zadaj pytanie innym użytkownikom. Grupy dyskusyjne i fora 
+                    poświęcone określonym produktom, technologiom i usługom 
+                    firmy Microsoft.
+
+
+                  Narzędzia obsługi stron
+                    Wydrukuj tę stronę
+                    Wyślij tę stronę pocztą e-mail
+                    Microsoft na świecie
+                    Zapisz w Moich ulubionych stronach pomocy technicznej
+                    Moje ulubione strony pomocy technicznej
+                    Prześlij opinię
+
+
+
+
+
+
+      Zmień Swój Profil |Kontakt z nami |Umowa dotycząca usług
+      ©2007 Microsoft Corporation. Wszelkie prawa zastrzeżone. Zasady 
+      użytkowania witryny microsoft.com |Znaki towarowe |Ochrona prywatności
+

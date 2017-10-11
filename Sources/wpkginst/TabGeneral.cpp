@@ -6,6 +6,7 @@
 #include "TabGeneral.h"
 #include "wpkginstDlg.h"
 #include ".\tabgeneral.h"
+#include "..\components\secret.h"
 
 
 // CTabGeneral dialog
@@ -14,6 +15,8 @@ IMPLEMENT_DYNAMIC(CTabGeneral, CPropertyPage)
 CTabGeneral::CTabGeneral()
 	: CPropertyPage(CTabGeneral::IDD)
 {
+	m_bPreAction = FALSE;
+	m_bPostAction = FALSE;
 }
 
 CTabGeneral::~CTabGeneral()
@@ -24,11 +27,11 @@ void CTabGeneral::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_SCRIPT_VARIABLES, m_PathVariables);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT_PREACTION, CWpkgInstDlg::m_strPreAction);
-	DDX_Text(pDX, IDC_EDIT_SCRIPT_POSTACTION, CWpkgInstDlg::m_strPostAction);
-	DDX_Check(pDX, IDC_CHECK_PRE, CWpkgInstDlg::m_bPreAction);
-	DDX_Check(pDX, IDC_CHECK_POST, CWpkgInstDlg::m_bPostAction);
-	DDX_Check(pDX, IDC_CHECK_SHOW_GUI, CWpkgInstDlg::m_bShowGUI);
+	DDX_Text(pDX, IDC_EDIT_SCRIPT_PREACTION, CSecret::m_strPreAction);
+	DDX_Text(pDX, IDC_EDIT_SCRIPT_POSTACTION, CSecret::m_strPostAction);
+	DDX_Check(pDX, IDC_CHECK_PRE, m_bPreAction);
+	DDX_Check(pDX, IDC_CHECK_POST, m_bPostAction);
+	DDX_Check(pDX, IDC_CHECK_SHOW_GUI, CSecret::m_bShowGUI);
 
 }
 
@@ -67,14 +70,8 @@ void CTabGeneral::OnBnClickedCheck()
 {
 	UpdateData();
 
-	GetDlgItem(IDC_EDIT_SCRIPT_PREACTION)->EnableWindow(CWpkgInstDlg::m_bPreAction);
-	if(!CWpkgInstDlg::m_bPreAction)
-		GetDlgItem(IDC_EDIT_SCRIPT_PREACTION)->SetWindowText("");
-	GetDlgItem(IDC_EDIT_SCRIPT_POSTACTION)->EnableWindow(CWpkgInstDlg::m_bPostAction);
-	if(!CWpkgInstDlg::m_bPostAction)
-		GetDlgItem(IDC_EDIT_SCRIPT_POSTACTION)->SetWindowText("");
-	GetDlgItem(IDC_BUTTON_SELECT_PREFILE)->EnableWindow(CWpkgInstDlg::m_bPreAction);
-	GetDlgItem(IDC_BUTTON_SELECT_POSTFILE)->EnableWindow(CWpkgInstDlg::m_bPostAction);
+	EnableEditActions();
+
 }
 
 void CTabGeneral::OnBnClickedButtonSelectPrefile()
@@ -85,7 +82,7 @@ void CTabGeneral::OnBnClickedButtonSelectPrefile()
 
 	if(fdlg.DoModal()==IDOK)
 	{
-		CWpkgInstDlg::m_strPreAction = fdlg.GetPathName();
+		CSecret::m_strPreAction = fdlg.GetPathName();
 		UpdateData(FALSE);
 	}
 
@@ -99,7 +96,7 @@ void CTabGeneral::OnBnClickedButtonSelectPostfile()
 
 	if(fdlg.DoModal()==IDOK)
 	{
-		CWpkgInstDlg::m_strPostAction = fdlg.GetPathName();
+		CSecret::m_strPostAction = fdlg.GetPathName();
 		UpdateData(FALSE);
 	}
 }
@@ -113,14 +110,9 @@ BOOL CTabGeneral::OnInitDialog()
 	m_PathVariables.InsertColumn(0,"Name",LVCFMT_LEFT,250);
 	m_PathVariables.InsertColumn(1,"Value",LVCFMT_LEFT,250);
 	
-	int pos = 0;
-	for(int i=0;i<m_strVarArray.GetCount();i+=2)
-	{
-		pos = m_PathVariables.InsertItem(pos,m_strVarArray.GetAt(i));
-		m_PathVariables.SetItemText(pos,1,m_strVarArray.GetAt(i+1));
-		pos++;
-	}
+	SetScriptVarData();
 
+	UpdateCheck();
 
 	OnBnClickedCheck();
 
@@ -128,31 +120,55 @@ BOOL CTabGeneral::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
+void CTabGeneral::SetScriptVarData()
+{
+	int pos = 0;
+
+	m_PathVariables.DeleteAllItems();
+
+	for(int i=0;i<CSecret::m_strVarArray.GetCount();i+=2)
+	{
+		pos = m_PathVariables.InsertItem(pos,CSecret::m_strVarArray.GetAt(i));
+		m_PathVariables.SetItemText(pos,1,CSecret::m_strVarArray.GetAt(i+1));
+		pos++;
+	}
+
+}
+
 void CTabGeneral::GetScriptVarData()
 {
-	m_strVarArray.RemoveAll();
+	CSecret::m_strVarArray.RemoveAll();
 
 	for(int i=0;i<m_PathVariables.GetItemCount();i++)
 	{
-		m_strVarArray.Add(m_PathVariables.GetItemText(i,0));
-		m_strVarArray.Add(m_PathVariables.GetItemText(i,1));
+		CSecret::m_strVarArray.Add(m_PathVariables.GetItemText(i,0));
+		CSecret::m_strVarArray.Add(m_PathVariables.GetItemText(i,1));
 	}
+
 }
 
-void CTabGeneral::AddScriptVarData(CStringArray& data)
+void CTabGeneral::EnableEditActions()
 {
-	m_strVarArray.Copy(data);
-	
+	GetDlgItem(IDC_EDIT_SCRIPT_PREACTION)->EnableWindow(m_bPreAction);
+	if(!m_bPreAction)
+		GetDlgItem(IDC_EDIT_SCRIPT_PREACTION)->SetWindowText("");
+	GetDlgItem(IDC_EDIT_SCRIPT_POSTACTION)->EnableWindow(m_bPostAction);
+	if(!m_bPostAction)
+		GetDlgItem(IDC_EDIT_SCRIPT_POSTACTION)->SetWindowText("");
+	GetDlgItem(IDC_BUTTON_SELECT_PREFILE)->EnableWindow(m_bPreAction);
+	GetDlgItem(IDC_BUTTON_SELECT_POSTFILE)->EnableWindow(m_bPostAction);
 }
 
-void CTabGeneral::GetScriptVarData(CStringArray& data)
+void CTabGeneral::UpdateCheck()
 {
-	data.Copy(m_strVarArray);
+	m_bPreAction = !CSecret::m_strPreAction.IsEmpty();
+	m_bPostAction = !CSecret::m_strPostAction.IsEmpty();
+
+	EnableEditActions();
+
+	UpdateData(FALSE);
 }
 
-CListCtrl* CTabGeneral::GetScriptVarCtrl()
-{
-	return &m_PathVariables;
-}
+
 
 

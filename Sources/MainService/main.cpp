@@ -8,6 +8,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+
 /////////////////////////////////////////////////////////////////////////////
 // The one and only application object
 
@@ -31,11 +32,20 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 	// initialize MFC and print and error on failure
 	if (!AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0))
 	{
+		
 		// TODO: change error code to suit your needs
 		printf("Fatal Error: MFC initialization failed\n");
 		nRetCode = 1;
 		return nRetCode;
 	}
+
+	if(!AfxSocketInit())
+	{
+		printf("Could not initialize socket library\n");
+		nRetCode = 1;
+		return nRetCode;
+	}
+
 
 	if ( (argc > 1) &&
          ((*argv[1] == '-') || (*argv[1] == '/')) )

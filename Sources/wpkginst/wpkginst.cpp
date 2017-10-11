@@ -8,7 +8,9 @@
 #include "..\components\security.h"
 #include "..\components\securefile.h"
 #include "..\components\parameters.h"
-#include "XmlSettings.h"
+#include "..\components\XmlSettings.h"
+#include "wincon.h"
+#include ".\wpkginst.h"
 
 
 #ifdef _DEBUG
@@ -30,6 +32,7 @@ CWpkgInstApp::CWpkgInstApp()
 {
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
+	m_iCodeReturned = 0;
 }
 
 
@@ -42,25 +45,30 @@ CWpkgInstApp theApp;
 
 BOOL CWpkgInstApp::InitInstance()
 {
+	
 	CWinApp::InitInstance();
 
 	AfxEnableControlContainer();
 	AfxInitRichEdit();
+	AfxSocketInit();
 
 	::CoInitialize(NULL);
-	
+
 	CParameters param;
 	CSecret s;
-	s.m_strScriptFile = "wpkg.js";
-	s.m_strScriptParameters = " /synchronize /nonotify /quiet";
-	s.m_strScriptExecUser = "SYSTEM";
+	BOOL bSilent = TRUE;
+
 
 	// remove secret data and return imediatelly
 	if(CString("/remove").CompareNoCase(m_lpCmdLine)==0)
 	{
+		//AfxMessageBox("DELETE_SECRET");
 		s.DeleteSecret();
-		return TRUE;
+		m_iCodeReturned = 0;
+		return FALSE;
+		
 	}
+
 
 	// Standard initialization
 	// If you are not using these features and wish to reduce the size
@@ -71,7 +79,7 @@ BOOL CWpkgInstApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("WPKG Installer"));
 
-	
+
 	///////////////////////////////////////////////////////////
 	//
 	// TODO: comment 2 lines below (used for test/debug only)
@@ -82,149 +90,124 @@ BOOL CWpkgInstApp::InitInstance()
 	// --settingsfile=settings.xml
 	//
 	///////////////////////////////////////////////////////////
-	
-	BOOL bSilent = FALSE;
+
+
 	CWpkgInstDlg dlg;
 	CString strFile;
 	strFile.Empty();
 
+	// import/export feature
+
 	if(CString("").CompareNoCase(m_lpCmdLine)!=0)
 	{
-		param.SetCommandLine(m_lpCmdLine);
-		param.Compute();
-		strFile = param.GetParameter("settingsfile");
-	}
-	if(!strFile.IsEmpty())
-	{
-
-		CXmlSettings st;
-		CString str;
-
 		try
 		{
-			// note:
-			// the XML parameters are case sensitive
-			CString name,value;
-			int count;
-
-			st.CreateInstance();
-			st.Load(strFile);
-			
-			st.GetParameter("/configuration/file",value);
-			s.m_strScriptFile = value;
-							
-			st.GetParameterList("/configuration/script-variable",count);
-			for(int i=0; i<count;i++)
+			param.SetCommandLine(m_lpCmdLine);
+			param.Compute();
+			CString str = param.GetParameter("import");
+			if(!str.IsEmpty())
 			{
-				st.GetParameter(i,name,value);
-				s.m_strVarArray.Add(name);
-				s.m_strVarArray.Add(value);
+				s.Import(str);
+				s.StoreSecret();
+				m_iCodeReturned = 0;
+				return FALSE;
 			}
-	
-			st.GetParameter("/configuration/silent",value);
-			if(value.CompareNoCase("YES")==0)
+			str = param.GetParameter("export");
+			if(!str.IsEmpty())
 			{
-				bSilent = TRUE;
+				s.LoadSecret();
+				s.Export(str);
+				m_iCodeReturned = 0;
+				return FALSE;
 			}
-		
-			st.GetParameter("/configuration/parameters",value);
-			s.m_strScriptParameters = value;
-			
-			st.GetParameter("/configuration/path-user",value);
-			s.m_strScriptConnUser = value;
-			st.GetParameter("/configuration/path-password",value);
-			s.m_strScriptConnPassword = st.Decrypt(value);
-			st.GetParameter("/configuration/exec-user",value);
-			s.m_strScriptExecUser = value;
-
-			st.GetParameter("/configuration/exec-password",value);
-			s.m_strScriptExecPassword = st.Decrypt(value);
-			st.GetParameter("/configuration/pre-action",value);
-			s.m_strPreAction = value;
-			st.GetParameter("/configuration/post-action",value);
-			s.m_strPostAction = value;
-
-			st.GetParameter("/configuration/show-GUI",value);
-
-			if(value.CompareNoCase("YES")==0)
-				s.m_bShowGUI = TRUE;
-			else
-				s.m_bShowGUI = FALSE;
-
-			st.GetParameter("/configuration/logon-delay",value);
-			dlg.m_dwLogonDelay = atol(value);
-			st.GetParameter("/configuration/logon-message-1",value);
-			dlg.m_strMessage1 = value;
-			st.GetParameter("/configuration/logon-message-2",value);
-			dlg.m_strMessage2 = value;
-
-			st.GetParameter("/configuration/priority",value);
-			s.SetPriority(value);
-			
-			
-		
 		}
 		catch(_com_error e)
 		{
 			CString str;
 			str.Format("Error occured while reading parameter from settings file:\n%s",e.ErrorMessage());
-			AfxMessageBox(str);
+			m_iCodeReturned = 2;
+			return FALSE;
+		}
+		catch(CException* e)
+		{
+			char buffer[1024];
+			e->GetErrorMessage(buffer,1024);
+			e->Delete();
+			printf(buffer);
+			m_iCodeReturned = 2;
+			return FALSE;
 		}
 		catch(...)
 		{
-			AfxMessageBox("Unknown error occured while reading parameter from settings file");
+			printf("Unknown error occured while reading parameter from settings file");
+			m_iCodeReturned = 2;
+			return FALSE;
 		}
+
+
+
+		strFile = param.GetParameter("settingsfile");
+	}
+
+	// run from command prompt, get configuration from external file
+	if(!strFile.IsEmpty())
+	{
+		try
+		{
+			bSilent = TRUE;
+			s.Import(strFile);
+			bSilent = s.m_bSilent;
+		}
+		catch(_com_error e)
+		{
+			CString str;
+			str.Format("Error occured while reading parameter from settings file:\n%s",e.ErrorMessage());
+			if(!bSilent)
+				AfxMessageBox(str);
+			m_iCodeReturned = 2;
+			return FALSE;
+		}
+		catch(CException* e)
+		{
+			if(!bSilent)
+				e->ReportError();
+			e->Delete();
+			m_iCodeReturned = 2;
+			return FALSE;
+		}
+		catch(...)
+		{
+			if(!bSilent)
+				AfxMessageBox("Unknown error occured while reading parameter from settings file");
+			m_iCodeReturned = 2;
+			return FALSE;
+		}
+
+		
 	}
 	else
 	{
+		// load internal configuration
 		s.LoadSecret();
+		//s.m_bSilent = FALSE;
+		bSilent = FALSE;
 	}
 
 	if(!CSecurity::IsAdmin())
 	{
 		if(!bSilent)
 			AfxMessageBox(IDS_IS_NOT_ADMIN);
+		m_iCodeReturned = 2;
 		return FALSE;
 	}
 
 
-	
-	dlg.m_strScriptFile = s.m_strScriptFile;
-	dlg.m_strScriptParameters = s.m_strScriptParameters;
-	dlg.m_strScriptConnUser = s.m_strScriptConnUser;
-	dlg.m_strScriptConnPassword = s.m_strScriptConnPassword;
-	dlg.m_strScriptExecUser = s.m_strScriptExecUser;
-	dlg.m_strScriptExecPassword = s.m_strScriptExecPassword;
-	dlg.AddScriptVarData(s.m_strVarArray);
-	dlg.m_strPreAction = s.m_strPreAction;
-	dlg.m_strPostAction = s.m_strPostAction;
-	dlg.m_bShowGUI = s.m_bShowGUI;
-	dlg.m_bPreAction = !dlg.m_strPreAction.IsEmpty();
-	dlg.m_bPostAction = !dlg.m_strPostAction.IsEmpty();
-
-	dlg.SetPriority(s.m_dwPriority);
-
-		
 	INT_PTR nResponse = IDCANCEL;
 
 	if(!bSilent)
 	{
 		m_pMainWnd = &dlg;
 		nResponse = dlg.DoModal();
-
-		s.m_strScriptFile = dlg.m_strScriptFile;
-		s.m_strScriptParameters = dlg.m_strScriptParameters;
-		s.m_strScriptConnUser = dlg.m_strScriptConnUser;
-		s.m_strScriptConnPassword = dlg.m_strScriptConnPassword;
-		s.m_strScriptExecUser = dlg.m_strScriptExecUser;
-		s.m_strScriptExecPassword = dlg.m_strScriptExecPassword;
-		s.m_strVarArray.RemoveAll();
-		dlg.GetScriptVarData(s.m_strVarArray);
-		s.m_strPreAction = dlg.m_strPreAction;
-		s.m_strPostAction = dlg.m_strPostAction;
-		s.m_bShowGUI = dlg.m_bShowGUI;
-		s.m_dwPriority = dlg.GetPriority();
-
 	}
 	else
 		nResponse = IDOK;
@@ -236,28 +219,41 @@ BOOL CWpkgInstApp::InitInstance()
 		s.StoreSecret();
 		dlg.SaveLogonDelay();
 		dlg.SaveLogonMessages();
-	
+
 	}
 	else if (nResponse == IDCANCEL)
 	{
 		// TODO: Place code here to handle when the dialog is
 		//  dismissed with Cancel
+		m_iCodeReturned = 2;
 		return FALSE;
 	}
 
-	CRegKey key;
-	char value[1024];
-	DWORD size = 1024;
-	key.Open(HKEY_LOCAL_MACHINE,"SOFTWARE\\WPKG.ORG\\Settings",KEY_READ);
-	key.QueryValue(value,"Path",&size);
-	key.Close();
-	
-	CSecureFile::SetEmptyDACL(value);
 
-	
-	CSecureFile::AddAdminsGroupAllAccess(value);
+	// removed at 2007-07-23 ////////////////////////////////////////////////////////////////
+	//
+	//CRegKey key;
+	//char value[1024];
+	//DWORD size = 1024;
+	//key.Open(HKEY_LOCAL_MACHINE,"SOFTWARE\\WPKG.ORG\\Settings",KEY_READ);
+	//key.QueryValue(value,"Path",&size);
+	//key.Close();
+
+	// CSecureFile::SetEmptyDACL(value);
+	// CSecureFile::AddAdminsGroupAllAccess(value);
+
+	// ///////////////////////////////////////////////////////////////////////////////////////
+
 	// Since the dialog has been closed, return FALSE so that we exit the
 	//  application, rather than start the application's message pump.
+	m_iCodeReturned = 0;
+	return FALSE;
 	
-	return TRUE;
+}
+
+int CWpkgInstApp::ExitInstance()
+{
+	// TODO: Add your specialized code here and/or call the base class
+	CWinApp::ExitInstance();
+	return m_iCodeReturned;
 }

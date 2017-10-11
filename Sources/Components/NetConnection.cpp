@@ -136,7 +136,7 @@ void CNetConnection::AddConnection(CString RemotePath, CString user,
 		
 
 	if( Error != 0 && Error != ERROR_ALREADY_ASSIGNED )
-		CExceptionEx::ThrowError(Error);
+		CExceptionEx::ThrowError("WNetAddConnection2",Error);
 	
 }
 

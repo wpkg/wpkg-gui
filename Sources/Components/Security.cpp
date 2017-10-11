@@ -834,7 +834,7 @@ void CSecurity::AddDesktopPermission(LPCTSTR winstationName, LPCTSTR desktopName
              );
 
         if (hwinsta == NULL)
-             CExceptionEx::ThrowError(GetLastError());
+             CExceptionEx::ThrowError("OpenWindowStation",GetLastError());
 
         HWINSTA hwinstaold = GetProcessWindowStation();
 
@@ -843,7 +843,7 @@ void CSecurity::AddDesktopPermission(LPCTSTR winstationName, LPCTSTR desktopName
         // correct default desktop
         // 
         if (!SetProcessWindowStation(hwinsta))
-             CExceptionEx::ThrowError(GetLastError());
+             CExceptionEx::ThrowError("SetProcessWindowStation",GetLastError());
 
         // 
         // obtain a handle to the "default" desktop
@@ -857,25 +857,25 @@ void CSecurity::AddDesktopPermission(LPCTSTR winstationName, LPCTSTR desktopName
              );
 
         if (hdesk == NULL)
-             CExceptionEx::ThrowError(GetLastError());
+             CExceptionEx::ThrowError("OpenDesktop",GetLastError());
 
         // 
         // obtain the logon sid of the user
         // 
         if (!ObtainSid(hToken, &psid))
-             CExceptionEx::ThrowError(GetLastError());
+             CExceptionEx::ThrowError("ObtainSid",GetLastError());
 
         // 
         // add the user to interactive windowstation
         // 
         if (!AddTheAceWindowStation(hwinsta, psid))
-             CExceptionEx::ThrowError(GetLastError());
+             CExceptionEx::ThrowError("AddTheAceWindowStation",GetLastError());
 
         // 
         // add user to "default" desktop
         // 
         if (!AddTheAceDesktop(hdesk, psid))
-             CExceptionEx::ThrowError(GetLastError());
+             CExceptionEx::ThrowError("AddTheAceDesktop",GetLastError());
 
         // 
         // free the buffer for the logon sid
@@ -923,12 +923,13 @@ void CSecurity::LogonUser(char* user, char* password, HANDLE& hToken)
 
 
 		if(!bResult)
-			CExceptionEx::ThrowError(GetLastError());
+			CExceptionEx::ThrowError("LogonUser",GetLastError());
 
 		bResult = ImpersonateLoggedOnUser( hToken );
 		if(!bResult)
-			CExceptionEx::ThrowError(GetLastError());
+			CExceptionEx::ThrowError("ImpersonateLoggedOnUser",GetLastError());
 	}
+
 	
 }
 

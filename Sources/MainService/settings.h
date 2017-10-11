@@ -21,7 +21,8 @@
 #define SZSERVICEDESCRIPTION       "Software deployment"
 
 // list of service dependencies - "dep1\0dep2\0\0"
-#define SZDEPENDENCIES       ""
+#define SZDEPENDENCIES       "afd\0tcpip\0\0"
+//#define SZDEPENDENCIES       ""
 
 
 //////////////////////////////////////////////////////////////////////////////

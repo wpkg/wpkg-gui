@@ -40,5 +40,5 @@ protected:
 	virtual void OnCancel();
 public:
 	void BringToFront(void);
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	
 };

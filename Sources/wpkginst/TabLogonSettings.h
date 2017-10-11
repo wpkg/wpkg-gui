@@ -1,5 +1,6 @@
 #pragma once
 #include "afxcmn.h"
+#include "afxwin.h"
 
 
 // CTabLogonSettings dialog
@@ -25,4 +26,7 @@ public:
 
 	CSpinButtonCtrl m_spinLogonDelay;
 	virtual BOOL OnInitDialog();
+	CStatic m_stVistaPrompt;
+private:
+	void DisableLogonDelaying();
 };

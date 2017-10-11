@@ -1,4 +1,5 @@
 #pragma once
+#include "afxwin.h"
 
 
 // CPrioritySettings dialog
@@ -15,10 +16,20 @@ public:
 	enum { IDD = IDD_DIALOG_PRIORITY_SETTINGS };
 
 protected:
+	
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:
-	int m_iPriority;
+	void PriorityToCombo(DWORD priority);
+	DWORD ComboToPriority();
+
+	
+	virtual BOOL OnInitDialog();
+private:
+	CComboBox m_cbPriority;
+	
+
+public:
 
 };

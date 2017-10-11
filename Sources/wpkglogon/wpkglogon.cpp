@@ -6,6 +6,11 @@
 #include "wpkglogon.h"
 #include <stdio.h>
 
+typedef DWORD  (__stdcall *CSI)  (void);
+
+
+static CSI WTSGetActiveConsoleSessionIdEx;
+
 
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD  ul_reason_for_call, 
@@ -15,16 +20,21 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
+		{
+		}
+		break;
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:
 	case DLL_PROCESS_DETACH:
 		break;
 	}
+	
+	
     return TRUE;
 }
 
 
-static void CreateMessage(char* commandLine)
+static DWORD CreateMessage(char* commandLine)
 {
 	char command[4096];
 	ZeroMemory(command,4096);
@@ -68,9 +78,14 @@ static void CreateMessage(char* commandLine)
     // Close process and thread handles. 
 	WaitForSingleObject(pi.hProcess,INFINITE);
 
+	DWORD exitCode = 0;
+	GetExitCodeProcess(pi.hProcess,&exitCode);
+
     CloseHandle( pi.hProcess );
     CloseHandle( pi.hThread );
 	Sleep(100);
+
+	return exitCode;
 }
 
 
@@ -94,9 +109,28 @@ extern "C" void WINAPI WLEventStartup (PWLX_NOTIFICATION_INFO pInfo)
 
 	RegCloseKey(phkResult); 
 
-	if(dwTimeOut>0)
-	{
+	// not all operating systems support terminal services ->
+	HMODULE hModule = LoadLibrary("Kernel32.dll");
+	WTSGetActiveConsoleSessionIdEx = NULL;
 
+	if(hModule)
+		WTSGetActiveConsoleSessionIdEx = (CSI)GetProcAddress(hModule,"WTSGetActiveConsoleSessionId");
+	DWORD sessionId = 0;
+	
+	if(WTSGetActiveConsoleSessionIdEx)
+		sessionId = WTSGetActiveConsoleSessionIdEx();
+
+	if(hModule)
+		FreeLibrary(hModule);
+
+	// <- term. serv.
+	
+	int cleantBoot = GetSystemMetrics(SM_CLEANBOOT);
+	int remoteSession = GetSystemMetrics(SM_REMOTESESSION);
+
+	if(dwTimeOut>0 && cleantBoot==0 && sessionId==0 && remoteSession==0)
+	{
+	
 		RegOpenKeyEx(HKEY_LOCAL_MACHINE,
 			"SOFTWARE\\WPKG.ORG\\Settings",
 			0,
@@ -118,6 +152,8 @@ extern "C" void WINAPI WLEventStartup (PWLX_NOTIFICATION_INFO pInfo)
 		strcat(value,"WPKGMessage.exe");
 
 		CreateMessage(value);
+
+		
 	}
 }
 

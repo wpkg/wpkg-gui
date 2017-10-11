@@ -9,7 +9,9 @@ class CTabGeneral : public CPropertyPage
 	DECLARE_DYNAMIC(CTabGeneral)
 
 public:
+	void UpdateCheck();
 	void GetScriptVarData();
+	void SetScriptVarData();
 	CTabGeneral();
 	virtual ~CTabGeneral();
 
@@ -17,7 +19,11 @@ public:
 	enum { IDD = IDD_DIALOG_GENERAL };
 
 protected:
-	CStringArray m_strVarArray;
+	void EnableEditActions();
+	BOOL m_bPreAction;
+	BOOL m_bPostAction;
+
+	
 	CListCtrlEx m_PathVariables;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -31,8 +37,6 @@ protected:
 
 
 public:
-	void AddScriptVarData(CStringArray& data);
-	void GetScriptVarData(CStringArray& data);
 	virtual BOOL OnInitDialog();
-	CListCtrl* GetScriptVarCtrl();
+	
 };
